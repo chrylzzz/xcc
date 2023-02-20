@@ -22,11 +22,18 @@ import java.util.Map;
 @Component
 public class IVRHandler {
 
+    /**
+     * 一定要交给spring管理,哪怕是此方法被调用
+     */
     @Async
     public void ivrDomain(Connection nc, JSONObject params) {
-        log.info(Thread.currentThread().getName());
-        final long call_id = IdGenerator.snowflakeId();//呼叫call_id
+        for (int i = 0; i < 500; i++) {
+            for (int j = 0; j < 500; j++) {
+                System.out.println(Thread.currentThread().getName());
+            }
+        }
     }
+
 
     @Async
     public void HandlerChannelEvent(Connection nc, ChannelEvent event) {

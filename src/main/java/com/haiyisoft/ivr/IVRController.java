@@ -11,24 +11,76 @@ import io.nats.client.Message;
 import io.nats.client.Nats;
 import io.nats.client.Subscription;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * IVR
  * Created By Chryl on 2023-02-08.
  */
 @Slf4j
+@Component
 public class IVRController {
 
     public static void main(String[] args) {
         new IVRController().domain();
     }
 
+    @Autowired
+    private IVRHandler ivrHandler;
+
+    //    @Async
+    public void show() {
+        System.out.println(" Ivr Controller started ");
+
+/*
+        CountDownLatch countDownLatch = new CountDownLatch(1000);
+        countDownLatch.countDown();
+        for (int i = 0; i < 500; i++) {
+
+//            new IVRHandler().ivrDomain(null, null);
+            ivrHandler.ivrDomain(null, null);
+
+
+            countDownLatch.countDown();
+        }
+        try {
+            countDownLatch.await();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        */
+        try {
+            //获取nats连接
+//            Connection nc = Nats.connect(XCCConstants.NATS_URL);
+//            //从nats获取订阅主题
+//            Subscription sub = nc.subscribe(XCCConstants.XCTRL_SUBJECT);
+            while (true) {
+                //订阅接收的消息
+//                Message subMsg = sub.nextMessage(Duration.ofMillis(500000));
+                for (int i = 0; i < 500; i++) {
+                    ivrHandler.ivrDomain(null, null);
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
     /**
      * waiting for incoming call
      */
+
     public void domain() {
         try {
             System.out.println(" Ivr Controller started ");
