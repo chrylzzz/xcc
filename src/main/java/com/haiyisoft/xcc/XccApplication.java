@@ -1,6 +1,5 @@
 package com.haiyisoft.xcc;
 
-import com.haiyisoft.ivr.IvrHandler;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;

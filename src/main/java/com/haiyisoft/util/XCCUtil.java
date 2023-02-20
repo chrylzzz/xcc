@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
+import com.haiyisoft.xctrl.Xctrl;
 import io.nats.client.Connection;
 import io.nats.client.Message;
 import io.nats.client.Nats;
@@ -158,9 +159,9 @@ public class XCCUtil {
         JSONObject params = new JSONObject();
         params.put("uuid", uuid);
         params.put("ctrl_uuid", "ctrl_uuid");
-        params.put("dtmf", this.getDtmf18());
-        params.put("speech", this.getSpeech());
-        params.put("media", this.getPlayMedia(XCCConstants.PLAY_TTS, text));
+        params.put("dtmf", getDtmf(18));
+        params.put("speech", getSpeech());
+        params.put("media", getPlayMedia(XCCConstants.PLAY_TTS, text));
         rpc.put("params", params);
 
         Future<Message> asr = nc.request(service, rpc.toString().getBytes(StandardCharsets.UTF_8));
@@ -243,7 +244,6 @@ public class XCCUtil {
 
     //=====================================================================================================
     static String subject_prefix = "cn.xswitch.";
-    static String engine = "ali";
     static String voice = "default";
     //    static String media_path = "/usr/local/freeswitch/storage/5g";
 //    static String png_file = "{png_ms=3000,tts_engine=" + engine + ",tts_voice=" + voice + ",text=\"欢迎进入语音识别服务，请说出你想办理的业务\"}" + media_path + "/5g-1.png";
@@ -256,7 +256,7 @@ public class XCCUtil {
      * @param content  内容,可为text,file
      * @return JSONObject
      */
-    public JSONObject getPlayMedia(String playType, String content) {
+    public static JSONObject getPlayMedia(String playType, String content) {
         JSONObject media = new JSONObject();
         /**
          *  type：枚举字符串，文件类型，
@@ -267,52 +267,39 @@ public class XCCUtil {
         media.put("type", playType);
         media.put("data", content);
         //TTS引擎
-        media.put("engine", "ali");
+        media.put("engine", XCCConstants.TTS_ENGINE);
         //嗓音，由TTS引擎决定，默认为default。
         media.put("voice", "default");
         return media;
     }
 
     /**
-     * 获取按键对象,一位按键
+     * 获取按键对象
      *
-     * @return JSONObject
+     * @param maxDigits 最大位长
+     * @return
      */
-    public JSONObject getDtmfOne() {
+    public static JSONObject getDtmf(int maxDigits) {
         JSONObject dtmf = new JSONObject();
         dtmf.put("min_digits", 1);
-        dtmf.put("max_digits", 1);
+        dtmf.put("max_digits", maxDigits);
         dtmf.put("timeout", 1500);
         dtmf.put("digit_timeout", 2000);
         dtmf.put("terminators", "#");
         return dtmf;
     }
 
-    /**
-     * 获取按键对象,多位按键
-     *
-     * @return JSONObject
-     */
-    public JSONObject getDtmf18() {
-        JSONObject dtmf = new JSONObject();
-        dtmf.put("min_digits", 1);
-        dtmf.put("max_digits", 18);
-        dtmf.put("timeout", 1500);
-        dtmf.put("digit_timeout", 2000);
-        dtmf.put("terminators", "#");
-        return dtmf;
-    }
 
     /**
      * 获取语音识别对象
      *
      * @return JSONObject
      */
-    public JSONObject getSpeech() {
+    public static JSONObject getSpeech() {
         JSONObject speech = new JSONObject();
 //        speech.put("grammar", "default");
         //ASR引擎
-        speech.put("engine", engine);
+        speech.put("engine", XCCConstants.ASR_ENGINE);
         //禁止打断。用户讲话不会打断放音。
         speech.put("nobreak", XCCConstants.NO_BREAK);
         //正整数，未检测到语音超时，默认为5000ms
@@ -348,7 +335,7 @@ public class XCCUtil {
     }
 
     //TODO 应答
-    public void answer(Connection nc, ChannelEvent event) {
+    public static void answer(Connection nc, ChannelEvent event) {
         RequestUtil request = new RequestUtil();
         JSONObject params = new JSONObject();
         params.put("ctrl_uuid", "ivvr");
@@ -363,16 +350,33 @@ public class XCCUtil {
      * @param event
      * @param ttsContent 内容
      */
-    public void playTTS(Connection nc, ChannelEvent event, String ttsContent) {
+    public static void playTTS(Connection nc, ChannelEvent event, String ttsContent) {
         RequestUtil request = new RequestUtil();
         JSONObject params = new JSONObject();
         params.put("ctrl_uuid", "ivvr");
         params.put("uuid", event.getUuid());
-        JSONObject media = this.getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
+        JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
         params.put("media", media);
         RequestUtil.natsRequest(subject_prefix + "node." + event.getNodeUuid(), "Xnode.Play", params, nc);
     }
 
+
+    /**
+     * 播放text
+     *
+     * @param nc
+     * @param event
+     * @param ttsContent 内容
+     */
+    public static void playTTS(Connection nc, Xctrl.ChannelEvent.Builder event, String ttsContent) {
+        RequestUtil request = new RequestUtil();
+        JSONObject params = new JSONObject();
+        params.put("ctrl_uuid", "ivvr");
+        params.put("uuid", event.getUuid());
+        JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
+        params.put("media", media);
+        RequestUtil.natsRequest(subject_prefix + "node." + event.getNodeUuid(), "Xnode.Play", params, nc);
+    }
 
     /**
      * 播放file
@@ -397,18 +401,18 @@ public class XCCUtil {
      * @param event
      * @return
      */
-    public String detectSpeechPlayTTSNoDTMF(Connection nc, ChannelEvent event, String ttsContent) {
+    public static String detectSpeechPlayTTSNoDTMF(Connection nc, ChannelEvent event, String ttsContent) {
         JSONObject params = new JSONObject();
         //ctrl_uuid:ctrl_uuid
         params.put("ctrl_uuid", "ivvr");
         //uuid：如果请求中有uuid，则结果中也有uuid，代表当前的Channel UUID。
         //Channel API：作用于一个Channel，必须有一个uuid参数，uuid即为当前Channel的uuid。
         params.put("uuid", event.getUuid());
-        JSONObject media = this.getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
+        JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
         params.put("media", media);
         //如果不需要同时检测DTMF，可以不传该参数。
 //        params.put("dtmf", null);
-        JSONObject speech = this.getSpeech();
+        JSONObject speech = getSpeech();
         params.put("speech", speech);
         Message msg = RequestUtil.natsRequestTimeOut(subject_prefix + "node." + event.getNodeUuid(), "Xnode.DetectSpeech", params, nc, 10);
         String str = new String(msg.getData(), StandardCharsets.UTF_8);
@@ -416,13 +420,14 @@ public class XCCUtil {
     }
 
     /**
-     * 多位按键并播放
+     * 播报并收集按键
      *
      * @param nc
      * @param event
      * @param ttsContent 播报内容
+     * @param maxDigits  最大位长
      */
-    public String readDTMF(Connection nc, ChannelEvent event, String ttsContent) {
+    public static String playAndReadDTMF(Connection nc, ChannelEvent event, String ttsContent, int maxDigits) {
 //        播放一个语音并获取用户按键信息，将在收到满足条件的按键后返回。
 //
 //        min_digits：最小位长。
@@ -440,10 +445,14 @@ public class XCCUtil {
         JSONObject params = new JSONObject();
         params.put("ctrl_uuid", "ivvr");
         params.put("uuid", event.getUuid());
-        params.put("dtmf", this.getDtmf18());
+        JSONObject dtmf = getDtmf(maxDigits);
+        params.put("dtmf", dtmf);
+        JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
+        params.put("data", media);
         Message msg = RequestUtil.natsRequestTimeOut(subject_prefix + "node." + event.getNodeUuid(), "Xnode.ReadDTMF", params, nc, 10);
         String str = new String(msg.getData(), StandardCharsets.UTF_8);
         return str;
     }
+
 
 }
