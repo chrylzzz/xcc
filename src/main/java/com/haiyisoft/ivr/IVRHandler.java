@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,14 +45,15 @@ public class IVRHandler {
 //                XCCUtil.playTTS(nc, event, XCCConstants.WELCOME_TEXT);
 
                 //播报欢迎语收音
-                String speechMsg = XCCUtil.detectSpeechPlayTTSNoDTMF(nc, event, XCCConstants.WELCOME_TEXT);
+                String speechMsg = "";
                 //调用多轮
-                String res = NGDUtil.doGxZsk(speechMsg);
+                String res = "";
                 //处理指令和内容
-                Map<String, String> resMap = NGDUtil.convertResText(res);
+                Map<String, String> resMap = Collections.emptyMap();
                 //获取多轮指令和内容
-                String retKey = resMap.get("retKey");
-                String retValue = resMap.get("retValue");
+                String retKey = XCCConstants.YYSR;
+                //欢迎语
+                String retValue = XCCConstants.WELCOME_TEXT;
                 while (true) {
                     if (XCCConstants.YYSR.equals(retKey)) {
                         //调用播报收音

@@ -17,6 +17,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Logger;
 
 /**
  * Created By Chryl on 2023-02-08.
@@ -69,21 +70,21 @@ public class RequestUtil {
 
 
     /**
-     * @param con     connection
-     * @param service node uuid
-     * @param method  xcc method
-     * @param params  rpc-json params
-     * @param millis  毫秒
+     * @param con          connection
+     * @param service      node uuid
+     * @param method       xcc method
+     * @param params       rpc-json params
+     * @param milliSeconds 毫秒
      * @return
      */
-    public static Message natsRequestTimeOut(Connection con, String service, String method, JSONObject params, long millis) {
+    public static Message natsRequestTimeOut(Connection con, String service, String method, JSONObject params, long milliSeconds) {
         JSONObject jsonRpc = getJsonRpc(method, params);
         StringWriter request = new StringWriter();
         jsonRpc.writeJSONString(request);
 //        jsonRpc.toString().getBytes()
         log.info("===================== service:{}, jsonRpc:{}", service, jsonRpc);
         try {
-            return con.request(service, request.toString().getBytes(StandardCharsets.UTF_8), Duration.ofMillis(millis));
+            return con.request(service, request.toString().getBytes(StandardCharsets.UTF_8), Duration.ofMillis(milliSeconds));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -187,22 +188,34 @@ public class RequestUtil {
     }
 
     /**
-     * @param con     connection
-     * @param service node uuid
-     * @param method  xcc method
-     * @param params  rpc-json params
-     * @param millis  毫秒
-     * @return
+     * @param con          connection
+     * @param service      node uuid
+     * @param method       xcc method
+     * @param params       rpc-json params
+     * @param milliSeconds 毫秒
+     * @returnS
      */
-    public static String natsRequestFuture(Connection con, String service, String method, JSONObject params, long millis) {
+    public static String natsRequestFuture(Connection con, String service, String method, JSONObject params, long milliSeconds) {
         JSONObject jsonRpc = getJsonRpc(method, params);
         StringWriter request = new StringWriter();
         jsonRpc.writeJSONString(request);
         log.info("===================== service:{}, jsonRpc:{}", service, jsonRpc);
         try {
             Future<Message> incoming = con.request(service, request.toString().getBytes(StandardCharsets.UTF_8));
-            Message msg = incoming.get(1000, TimeUnit.MILLISECONDS);
+            Message msg = incoming.get(milliSeconds, TimeUnit.MILLISECONDS);
             String response = new String(msg.getData(), StandardCharsets.UTF_8);
+            log.info("asr返回信息:{}", response);
+
+
+            JSONObject result = JSONObject.parseObject(response).getJSONObject("result");
+            String asrText = "";
+            if (result.getInteger("code") == 200) {
+                asrText = result.getJSONObject("data").getString("text");
+            } else if (result.getInteger("code") == 404) {
+                asrText = "error";
+            }
+
+
             return response;
         } catch (InterruptedException e) {
             e.printStackTrace();

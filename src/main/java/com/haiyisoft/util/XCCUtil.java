@@ -219,10 +219,9 @@ public class XCCUtil {
         params.put("speech", speech);
         String service = XCCConstants.XNODE_SUBJECT_PREFIX + event.getNodeUuid();
 //        Message msg = RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.DETECT_SPEECH, params, 1000);
-        String msg = RequestUtil.natsRequestFuture(nc, service, XCCConstants.DETECT_SPEECH, params, 1000);
+        String msg = RequestUtil.natsRequestFuture(nc, service, XCCConstants.DETECT_SPEECH, params, 10000);
 //        String str = new String(msg.getData(), StandardCharsets.UTF_8);
-        String str = msg;
-        return str;
+        return msg;
     }
 
     /**
