@@ -6,8 +6,6 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-
 /**
  * 初始化启动
  * Created by Chr.yl on 2023/2/21.
@@ -20,22 +18,6 @@ public class IVRInit {
     @Autowired
     private IVRController ivrController;
 
-    @PostConstruct
-    public void ivrRunnerInit() {
-        System.out.println("gogogo");
-        //没有使用spring容器里的变量,所以不生效
-//        IVRHandler ivr = new IVRHandler();
-//        ivr.ivrDomain(null, null);
-//        IVRController ivrController = new IVRController();
-//        ivrController.show();
-        //使用spring容器表里生效
-//        ivrController.show();
-    }
-
-
-    /**
-     * 启动成功
-     */
     @Bean
     public ApplicationRunner applicationRunner() {
         return applicationArguments -> {

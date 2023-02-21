@@ -34,19 +34,16 @@ public class IVRController {
     @Autowired
     private IVRHandler ivrHandler;
 
+    //测试xswitch能否支持线程池
     //    @Async
     public void show() {
         System.out.println(" Ivr Controller started ");
-
 /*
         CountDownLatch countDownLatch = new CountDownLatch(1000);
         countDownLatch.countDown();
         for (int i = 0; i < 500; i++) {
-
 //            new IVRHandler().ivrDomain(null, null);
             ivrHandler.ivrDomain(null, null);
-
-
             countDownLatch.countDown();
         }
         try {
@@ -55,16 +52,15 @@ public class IVRController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         */
         try {
             //获取nats连接
-//            Connection nc = Nats.connect(XCCConstants.NATS_URL);
-//            //从nats获取订阅主题
-//            Subscription sub = nc.subscribe(XCCConstants.XCTRL_SUBJECT);
+            Connection nc = Nats.connect(XCCConstants.NATS_URL);
+            //从nats获取订阅主题
+            Subscription sub = nc.subscribe(XCCConstants.XCTRL_SUBJECT);
             while (true) {
                 //订阅接收的消息
-//                Message subMsg = sub.nextMessage(Duration.ofMillis(500000));
+                Message subMsg = sub.nextMessage(Duration.ofMillis(500000));
                 for (int i = 0; i < 500; i++) {
                     ivrHandler.ivrDomain(null, null);
                 }

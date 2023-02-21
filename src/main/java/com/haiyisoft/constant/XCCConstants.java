@@ -5,14 +5,13 @@ package com.haiyisoft.constant;
  * Created By Chryl on 2023-02-08.
  */
 public class XCCConstants {
-    //--------------------------------------xcc相关--------------------------------------
+    /********************************************xcc相关********************************************/
     //XSwitch 服务地址
     public static final String XSWITCH_SERVICE = "xswitchService";
     //Nats 地址
-    public static final String NATS_URL = "nats://demo:demoxytdemo@nats.xswitch.cn:4222";
+    public static final String NATS_URL = "nats://hy:h8klu6bRwW@nats.xswitch.cn:4222";
     //Ctrl 订阅主题
     public static final String XCTRL_SUBJECT = "cn.xswitch.ctrl";
-    public static final String subject_prefix = "";
     //
     public static final String XCTRL_UUID = "";
 
@@ -74,4 +73,5 @@ public class XCCConstants {
     public static final String YWAJ = "YWAJ";
     //结束符
     public static final String TERMINATORS = "#";
+    /********************************************xcc相关********************************************/
 }
