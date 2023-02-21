@@ -1,11 +1,8 @@
 package com.haiyisoft.util;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
-import com.haiyisoft.xctrl.Xctrl;
 import io.nats.client.Connection;
 import io.nats.client.Message;
 import io.nats.client.Nats;
@@ -13,15 +10,9 @@ import io.nats.client.Options;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 /**
  * XCC工具类
@@ -31,11 +22,6 @@ import java.util.concurrent.TimeoutException;
 public class XCCUtil {
 
 
-    String service = "cn.xswitch.node.test";
-    String natsUrl = "nats://hy:h8klu6bRwW@nats.xswitch.cn:4222";
-    //    String natsUrl = "nats://172.20.200.7:4222";
-    String dialStr = "sofia/public/sip401007@xyt.xswitch.cn:18880;transport=tcp";
-
     /**
      * 声明nats连接
      *
@@ -44,210 +30,12 @@ public class XCCUtil {
      */
     public Connection getConnection() throws IOException, InterruptedException {
         Options options = new Options.Builder()
-                .server(natsUrl)
+                .server(XCCConstants.NATS_URL)
                 // Set a user and plain text password
                 .userInfo("myname", "password")
                 .build();
         return Nats.connect(options);
     }
-
-    /**
-     * 获取rpc对象
-     *
-     * @param method 方法名
-     * @param id     id
-     * @return JSONObject
-     */
-//    public JSONObject getRpc(String method, String id) {
-//        JSONObject rpc = new JSONObject();
-//        rpc.put("jsonrpc", "2.0");
-//        rpc.put("id", id);
-//        rpc.put("method", "XNode." + method);
-//
-//        return rpc;
-//    }
-
-    /**
-     * 外呼
-     *
-     * @param uuid
-     * @return
-     */
-    public JSONObject dial(Connection nc, String id, String uuid, String tel) throws IOException,
-            InterruptedException {
-        JSONObject rpc = RequestUtil.getJsonRpc("Dial", id);
-
-        JSONObject globalParams = new JSONObject();
-        globalParams.put("ignore_early_media", "true");
-        JSONObject destination = new JSONObject();
-        destination.put("global_params", globalParams);
-        JSONObject callParam = new JSONObject();
-        callParam.put("uuid", uuid);
-        callParam.put("dial_string", new StringBuilder("sofia/public/sip40").append(tel).append("@xyt.xswitch.cn:18880;transport=tcp"));
-        //        callParam.put("dial_string", "user/1007");
-        JSONObject cParams = new JSONObject();
-        cParams.put("absolute_codec_string", "PCMA");
-        callParam.put("params", cParams);
-        JSONArray callParams = new JSONArray();
-        callParams.add(callParam);
-        destination.put("call_params", callParams);
-        JSONObject params = new JSONObject();
-        params.put("ctrl_uuid", "ctrl_uuid");
-        params.put("destination", destination);
-        rpc.put("params", params);
-        log.info("dial:{}", rpc);
-
-        JSONObject response = new JSONObject();
-        Message msg = nc.request(service, rpc.toString().getBytes(StandardCharsets.UTF_8), Duration.ofSeconds(20));
-        if (msg != null) {
-            response = JSONObject.parseObject(new String(msg.getData(), StandardCharsets.UTF_8));
-            log.info("外呼结果：{}", response.toJSONString());
-        } else {
-            JSONObject result = new JSONObject();
-            result.put("code", 600);
-            response.put("result", result);
-        }
-
-        return response;
-    }
-
-    /**
-     * tts播报
-     *
-     * @param uuid
-     * @return
-     * @throws IOException
-     * @throws InterruptedException
-     * @throws ExecutionException
-     * @throws TimeoutException
-     */
-    public JSONObject play(Connection nc, String id, String uuid, String text) throws IOException, InterruptedException,
-            ExecutionException, TimeoutException {
-        JSONObject rpc = RequestUtil.getJsonRpc("Play", id);
-        JSONObject params = new JSONObject();
-        params.put("uuid", uuid);
-        params.put("ctrl_uuid", "ctrl_uuid");
-        params.put("media", this.getPlayMedia(XCCConstants.PLAY_TTS, text));
-        rpc.put("params", params);
-        StringWriter request = new StringWriter();
-        rpc.writeJSONString(request);
-        log.info(request.toString());
-
-        Future<Message> incoming = nc.request(service, request.toString().getBytes(StandardCharsets.UTF_8));
-        Message msg = incoming.get(5000, TimeUnit.MILLISECONDS);
-        String callResponse = new String(msg.getData(), StandardCharsets.UTF_8);
-        log.info(callResponse);
-
-        return JSONObject.parseObject(callResponse);
-    }
-
-    /**
-     * 播放一个语音，并进行asr识别、收集按键信息
-     *
-     * @param id
-     * @param uuid
-     * @param text
-     * @return
-     * @throws IOException
-     * @throws InterruptedException
-     * @throws ExecutionException
-     * @throws TimeoutException
-     */
-    public String detectSpeech(Connection nc, String id, String uuid, String text) throws ExecutionException,
-            InterruptedException, TimeoutException {
-        JSONObject rpc = RequestUtil.getJsonRpc("DetectSpeech", id);
-        JSONObject params = new JSONObject();
-        params.put("uuid", uuid);
-        params.put("ctrl_uuid", "ctrl_uuid");
-        params.put("dtmf", getDtmf(18));
-        params.put("speech", getSpeech());
-        params.put("media", getPlayMedia(XCCConstants.PLAY_TTS, text));
-        rpc.put("params", params);
-
-        Future<Message> asr = nc.request(service, rpc.toString().getBytes(StandardCharsets.UTF_8));
-        Message asrMsg = asr.get(50000, TimeUnit.MILLISECONDS);
-        String callResponse = new String(asrMsg.getData(), StandardCharsets.UTF_8);
-        log.info(callResponse);
-
-        JSONObject result = JSONObject.parseObject(callResponse).getJSONObject("result");
-        String asrText = "";
-        if (result.getInteger("code") == 200) {
-            asrText = result.getJSONObject("data").getString("text");
-        } else if (result.getInteger("code") == 404) {
-            asrText = "error";
-        }
-        return asrText;
-    }
-
-    /**
-     * 桥接
-     *
-     * @param nc   nats连接
-     * @param id   rpc的id
-     * @param uuid 通话唯一标识
-     * @throws ExecutionException   ExecutionException
-     * @throws InterruptedException 中断异常
-     * @throws TimeoutException     超时异常
-     */
-    public void bridge(Connection nc, String id, String uuid) throws ExecutionException, InterruptedException, TimeoutException {
-        JSONObject rpc = RequestUtil.getJsonRpc("Bridge", id);
-        JSONObject params = new JSONObject();
-        params.put("uuid", uuid);
-        params.put("ctrl_uuid", "ctrl_uuid");
-        params.put("flow_control", "ANY");
-        JSONObject destination = new JSONObject();
-        JSONObject callParam = new JSONObject();
-        JSONArray callArray = new JSONArray();
-        callParam.put("uuid", IdGenerator.snowflakeId());
-        callParam.put("dial_string", new StringBuilder("sofia/public/sip40").append("15553551792").append("@xyt" +
-                ".xswitch.cn:18880;transport=tcp"));
-        JSONObject cParams = new JSONObject();
-        cParams.put("absolute_codec_string", "PCMA");
-        callParam.put("params", cParams);
-        callArray.add(callParam);
-        destination.put("call_params", callArray);
-        destination.put("global_params", new JSONObject());
-        params.put("destination", destination);
-        rpc.put("params", params);
-        log.info("Bridge入参：{}", rpc);
-
-        Future<Message> incoming = nc.request(service, rpc.toString().getBytes(StandardCharsets.UTF_8));
-        Message msg = incoming.get(50000, TimeUnit.MILLISECONDS);
-        String callResponse = new String(msg.getData(), StandardCharsets.UTF_8);
-        JSONObject jsonObject = JSONObject.parseObject(callResponse);
-        log.info("Bridge：{}", jsonObject);
-    }
-
-    /**
-     * 挂机
-     *
-     * @param nc
-     * @param id
-     * @param uuid
-     * @throws ExecutionException
-     * @throws InterruptedException
-     * @throws TimeoutException
-     */
-    public void hangup(Connection nc, String id, String uuid) throws ExecutionException, InterruptedException, TimeoutException {
-        JSONObject rpc = RequestUtil.getJsonRpc("Hangup", id);
-        JSONObject params = new JSONObject();
-        params.put("uuid", uuid);
-        rpc.put("params", params);
-
-        Future<Message> incoming = nc.request(service, rpc.toString().getBytes(StandardCharsets.UTF_8));
-        Message msg = incoming.get(5000, TimeUnit.MILLISECONDS);
-        String callResponse = new String(msg.getData(), StandardCharsets.UTF_8);
-        JSONObject jsonObject = JSONObject.parseObject(callResponse);
-        log.info("HangUp：{}", jsonObject);
-    }
-
-
-    //=====================================================================================================
-    static String subject_prefix = "cn.xswitch.";
-    static String voice = "default";
-    //    static String media_path = "/usr/local/freeswitch/storage/5g";
-//    static String png_file = "{png_ms=3000,tts_engine=" + engine + ",tts_voice=" + voice + ",text=\"欢迎进入语音识别服务，请说出你想办理的业务\"}" + media_path + "/5g-1.png";
-
 
     /**
      * 获取媒体对象
@@ -322,25 +110,52 @@ public class XCCUtil {
         params.put("ctrl_uuid", "ivvr");
         params.put("uuid", event.getUuid());
         params.put("data", data);
-        request.natsRequest(subject_prefix + "node." + event.getNodeUuid(), "Xnode.SetVar", params, nc);
+        String service = XCCConstants.XNODE_SUBJECT_PREFIX + event.getNodeUuid();
+        RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.SET_VAR, params, 1000);
     }
 
 
+    //获取当前通道状态
     public void getState(Connection nc, ChannelEvent event) {
         RequestUtil request = new RequestUtil();
         JSONObject params = new JSONObject();
         params.put("ctrl_uuid", "ivvr");
         params.put("uuid", event.getUuid());
-        request.natsRequest(subject_prefix + "node." + event.getNodeUuid(), "Xnode.GetState", params, nc);
+        String service = XCCConstants.XNODE_SUBJECT_PREFIX + event.getNodeUuid();
+        RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.GET_STATE, params, 1000);
     }
 
-    //TODO 应答
-    public static void answer(Connection nc, ChannelEvent event) {
-        RequestUtil request = new RequestUtil();
+
+    //接管话务
+    public static void accept(Connection nc, ChannelEvent event) {
         JSONObject params = new JSONObject();
         params.put("ctrl_uuid", "ivvr");
+        //当前channel 的uuid
         params.put("uuid", event.getUuid());
-        request.natsRequest(subject_prefix + "node." + event.getNodeUuid(), "Xnode.Answer", params, nc);
+        String service = XCCConstants.XNODE_SUBJECT_PREFIX + event.getNodeUuid();
+        String channelUuid = event.getUuid();
+        RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.ACCEPT, params, 1000);
+    }
+
+    //应答
+    public static void answer(Connection nc, ChannelEvent event) {
+        JSONObject params = new JSONObject();
+        params.put("ctrl_uuid", "ivvr");
+        //当前channel 的uuid
+        params.put("uuid", event.getUuid());
+        String service = XCCConstants.XNODE_SUBJECT_PREFIX + event.getNodeUuid();
+        RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.ANSWER, params, 1000);
+    }
+
+    public static void hangup(Connection nc, ChannelEvent event) {
+        JSONObject params = new JSONObject();
+        params.put("ctrl_uuid", "ivvr");
+        //当前channel 的uuid
+        params.put("uuid", event.getUuid());
+        //flag integer 值为,0：挂断自己,1：挂断对方,2：挂断双方
+        params.put("flag", 2);
+        String service = XCCConstants.XNODE_SUBJECT_PREFIX + event.getNodeUuid();
+        RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.HANGUP, params, 1000);
     }
 
     /**
@@ -351,32 +166,17 @@ public class XCCUtil {
      * @param ttsContent 内容
      */
     public static void playTTS(Connection nc, ChannelEvent event, String ttsContent) {
-        RequestUtil request = new RequestUtil();
         JSONObject params = new JSONObject();
         params.put("ctrl_uuid", "ivvr");
-        params.put("uuid", event.getUuid());
+        //当前channel 的uuid
+        String channelUuid = event.getUuid();
+        params.put("uuid", channelUuid);
         JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
         params.put("media", media);
-        RequestUtil.natsRequest(subject_prefix + "node." + event.getNodeUuid(), "Xnode.Play", params, nc);
+        String service = XCCConstants.XNODE_SUBJECT_PREFIX + event.getNodeUuid();
+        RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.PLAY, params, 10000);
     }
 
-
-    /**
-     * 播放text
-     *
-     * @param nc
-     * @param event
-     * @param ttsContent 内容
-     */
-    public static void playTTS(Connection nc, Xctrl.ChannelEvent.Builder event, String ttsContent) {
-        RequestUtil request = new RequestUtil();
-        JSONObject params = new JSONObject();
-        params.put("ctrl_uuid", "ivvr");
-        params.put("uuid", event.getUuid());
-        JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
-        params.put("media", media);
-        RequestUtil.natsRequest(subject_prefix + "node." + event.getNodeUuid(), "Xnode.Play", params, nc);
-    }
 
     /**
      * 播放file
@@ -388,10 +188,13 @@ public class XCCUtil {
     public void playFILE(Connection nc, ChannelEvent event, String file) {
         JSONObject params = new JSONObject();
         params.put("ctrl_uuid", "ivvr");
-        params.put("uuid", event.getUuid());
-        JSONObject media = this.getPlayMedia(XCCConstants.PLAY_FILE, file);
+        //当前channel 的uuid
+        String channelUuid = event.getUuid();
+        params.put("uuid", channelUuid);
+        JSONObject media = getPlayMedia(XCCConstants.PLAY_FILE, file);
         params.put("media", media);
-        RequestUtil.natsRequest(subject_prefix + "node." + event.getNodeUuid(), "Xnode.Play", params, nc);
+        String service = XCCConstants.XNODE_SUBJECT_PREFIX + event.getNodeUuid();
+        RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.PLAY, params, 1000);
     }
 
     /**
@@ -405,17 +208,20 @@ public class XCCUtil {
         JSONObject params = new JSONObject();
         //ctrl_uuid:ctrl_uuid
         params.put("ctrl_uuid", "ivvr");
-        //uuid：如果请求中有uuid，则结果中也有uuid，代表当前的Channel UUID。
-        //Channel API：作用于一个Channel，必须有一个uuid参数，uuid即为当前Channel的uuid。
-        params.put("uuid", event.getUuid());
+        //当前channel 的uuid
+        String channelUuid = event.getUuid();
+        params.put("uuid", channelUuid);
         JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
         params.put("media", media);
         //如果不需要同时检测DTMF，可以不传该参数。
 //        params.put("dtmf", null);
         JSONObject speech = getSpeech();
         params.put("speech", speech);
-        Message msg = RequestUtil.natsRequestTimeOut(subject_prefix + "node." + event.getNodeUuid(), "Xnode.DetectSpeech", params, nc, 10);
-        String str = new String(msg.getData(), StandardCharsets.UTF_8);
+        String service = XCCConstants.XNODE_SUBJECT_PREFIX + event.getNodeUuid();
+//        Message msg = RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.DETECT_SPEECH, params, 1000);
+        String msg = RequestUtil.natsRequestFuture(nc, service, XCCConstants.DETECT_SPEECH, params, 1000);
+//        String str = new String(msg.getData(), StandardCharsets.UTF_8);
+        String str = msg;
         return str;
     }
 
@@ -444,15 +250,20 @@ public class XCCUtil {
 //
         JSONObject params = new JSONObject();
         params.put("ctrl_uuid", "ivvr");
-        params.put("uuid", event.getUuid());
+        //当前channel 的uuid
+        String channelUuid = event.getUuid();
+        params.put("uuid", channelUuid);
         JSONObject dtmf = getDtmf(maxDigits);
         params.put("dtmf", dtmf);
         JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
         params.put("data", media);
-        Message msg = RequestUtil.natsRequestTimeOut(subject_prefix + "node." + event.getNodeUuid(), "Xnode.ReadDTMF", params, nc, 10);
+        String service = XCCConstants.XNODE_SUBJECT_PREFIX + event.getNodeUuid();
+
+        Message msg = RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.READ_DTMF, params, 10000);
         String str = new String(msg.getData(), StandardCharsets.UTF_8);
         return str;
     }
-
+//    const channel_uuid = m.params.uuid;
+//    var service = 'cn.xswitch.node.' + m.params.node_uuid;
 
 }

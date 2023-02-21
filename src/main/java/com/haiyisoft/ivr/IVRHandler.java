@@ -37,41 +37,12 @@ public class IVRHandler {
 
     @Async
     public void HandlerChannelEvent(Connection nc, ChannelEvent event) {
-        /*
-        Xcc xcc = new Xcc();
-        switch (event.getState()) {
-            case CallConst.Channel_START:
-                org.json.simple.JSONObject params = new org.json.simple.JSONObject();
-                params.put("ctrl_uuid", "ivvr");
-
-
-                //开始接管
-                xcc.Answer(nc, event);
-
-                xcc.SetVar(nc, event);
-                //播放一段音频
-//                xcc.Play(nc, event);
-                //获取当前通道状态
-                xcc.GetState(nc, event);
-                //执行原生APP
-                xcc.NativeApp(nc, event);
-                //语音进入IVR
-                IvrHandler ivr = new IvrHandler();
-                ivr.Ivr(nc, event);
-
-            case "CALLING":
-            case "RINGING":
-            case "BRIDGE":
-            case "READY":
-                xcc.Bridge(nc, event);
-            case "MEDIA":
-        }
-        */
-//=================//=================//=================//=================
         switch (event.getState()) {
             case XCCConstants.Channel_START:
                 //开始接管
-                XCCUtil.answer(nc, event);
+                XCCUtil.accept(nc, event);
+//                XCCUtil.playTTS(nc, event, XCCConstants.WELCOME_TEXT);
+
                 //播报欢迎语收音
                 String speechMsg = XCCUtil.detectSpeechPlayTTSNoDTMF(nc, event, XCCConstants.WELCOME_TEXT);
                 //调用多轮
@@ -115,8 +86,11 @@ public class IVRHandler {
             case "RINGING":
             case "BRIDGE":
             case "READY":
+//                xcc.Bridge(nc, event);
             case "MEDIA":
         }
+
+        XCCUtil.hangup(nc, event);
 
     }
 

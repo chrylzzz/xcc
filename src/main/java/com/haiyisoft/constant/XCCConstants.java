@@ -14,9 +14,19 @@ public class XCCConstants {
     public static final String XCTRL_SUBJECT = "cn.xswitch.ctrl";
     //
     public static final String XCTRL_UUID = "";
+    //Node
+    public static final String NODE_SERVICE_PREFIX = "cn.xswitch.node.";
+    //XNode侧的Subject
+    public static final String XNODE_SUBJECT_PREFIX = "cn.xswitch.node.";
+    //Ctrl
+    public static final String XCtrl_SERVICE_PREFIX = "cn.xswitch.ctrl.";
+    //XCtrl侧的Subject
+    public static final String XCtrl_SUBJECT_PREFIX = "cn.xswitch.ctrl.";
 
 
+    //TTS引擎
     public static String TTS_ENGINE = "ali";
+    //ASR引擎
     public static String ASR_ENGINE = "ali";
 
     /**
@@ -73,5 +83,22 @@ public class XCCConstants {
     public static final String YWAJ = "YWAJ";
     //结束符
     public static final String TERMINATORS = "#";
+
     /********************************************xcc相关********************************************/
+
+    public static final String ACCEPT = "Xnode.Accept";
+    //
+    public static final String SET_VAR = "Xnode.SetVar";
+    //当前通道状态
+    public static final String GET_STATE = "Xnode.GetState";
+    //应答
+    public static final String ANSWER = "Xnode.Answer";
+    //播报
+    public static final String PLAY = "Xnode.Play";
+    //放音收音
+    public static final String DETECT_SPEECH = "Xnode.DetectSpeech";
+    //放音收号
+    public static final String READ_DTMF = "Xnode.ReadDTMF";
+    //挂断
+    public static final String HANGUP = "Xnode.Hangup";
 }

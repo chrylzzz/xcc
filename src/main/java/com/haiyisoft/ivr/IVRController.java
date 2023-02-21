@@ -85,17 +85,13 @@ public class IVRController {
             //从nats获取订阅主题
             Subscription sub = nc.subscribe(XCCConstants.XCTRL_SUBJECT);
 
-//            Connection nc = Nats.connect("nats://demo:demoxytdemo@nats.xswitch.cn:4222");
-//            Subscription sub = nc.subscribe("cn.xswitch.ctrl");
-//            Subscription sub = nc.subscribe("cn.xswitch.ctrl.>");
-
             while (true) {
                 //订阅接收的消息
                 Message subMsg = sub.nextMessage(Duration.ofMillis(500000));
 //                log.info("订阅接收的消息：{}", subMsg);
                 //订阅事件
                 String eventStr = new String(subMsg.getData(), StandardCharsets.UTF_8);
-                log.info("订阅事件 string data:{}", eventStr);
+//                log.info("订阅事件 string data:{}", eventStr);
 
                 JSONObject eventJson = JSONObject.parseObject(eventStr);
 //                log.info("订阅事件 json data:{}", eventJson);
@@ -109,10 +105,9 @@ public class IVRController {
 
                         // we have to serialize the params into a string and parse it again
                         // unless we can find a way to convert JsonElement to protobuf class
-//                        Xctrl.ChannelEvent.Builder cevent = Xctrl.ChannelEvent.newBuilder();
-//                        JsonFormat.parser().ignoringUnknownFields().merge(params.toString(), cevent);
-//                        log.info("订阅事件 cevent======:{}", cevent);
-//                        XCCUtil.playTTS(nc, cevent, "欢迎语播报：尊敬的用户您好，请说出您要咨询的问题。");
+                        Xctrl.ChannelEvent.Builder cevent = Xctrl.ChannelEvent.newBuilder();
+                        JsonFormat.parser().ignoringUnknownFields().merge(params.toString(), cevent);
+                        log.info("订阅事件 cevent :{}", cevent);
 
 
                         String uuid = params.getString("uuid");
