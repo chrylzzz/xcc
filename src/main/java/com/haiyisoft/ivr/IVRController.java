@@ -110,9 +110,9 @@ public class IVRController {
 
                                 // we have to serialize the params into a string and parse it again
                                 // unless we can find a way to convert JsonElement to protobuf class
-                                Xctrl.ChannelEvent.Builder cevent = Xctrl.ChannelEvent.newBuilder();
-                                JsonFormat.parser().ignoringUnknownFields().merge(params.toString(), cevent);
-                                log.info("订阅事件 cevent :{}", cevent);
+//                                Xctrl.ChannelEvent.Builder cevent = Xctrl.ChannelEvent.newBuilder();
+//                                JsonFormat.parser().ignoringUnknownFields().merge(params.toString(), cevent);
+//                                log.info("订阅事件 cevent :{}", cevent);
 //                            String state = cevent.getState();
 
 
