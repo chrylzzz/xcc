@@ -20,7 +20,7 @@ import javax.annotation.PostConstruct;
 @Component
 public class IdGenerator {
 
-    private static long workerId = 0;//机器id
+    private static long workerId = 1;//机器id
     private static long datacenterId = 1;//数据中心id
 
     private static Snowflake snowflake = IdUtil.createSnowflake(workerId, datacenterId);
@@ -105,5 +105,10 @@ public class IdGenerator {
         return ObjectId.next();
     }
 
+
+    public static void main(String[] args) {
+        String s = IdUtil.fastSimpleUUID();
+        System.out.println(s);
+    }
 
 }

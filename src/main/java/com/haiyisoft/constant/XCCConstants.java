@@ -1,9 +1,12 @@
 package com.haiyisoft.constant;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
 /**
  * XCC和NGD常量
  * Created By Chryl on 2023-02-08.
  */
+@ConfigurationProperties
 public class XCCConstants {
     /********************************************xcc相关********************************************/
     //XSwitch 服务地址
@@ -19,11 +22,9 @@ public class XCCConstants {
     //XNode侧的Subject
     public static final String XNODE_SUBJECT_PREFIX = "cn.xswitch.node.";
     //Ctrl
-    public static final String XCtrl_SERVICE_PREFIX = "cn.xswitch.ctrl.";
+    public static final String XCTRL_SERVICE_PREFIX = "cn.xswitch.ctrl.";
     //XCtrl侧的Subject
-    public static final String XCtrl_SUBJECT_PREFIX = "cn.xswitch.ctrl.";
-
-
+    public static final String XCTRL_SUBJECT_PREFIX = "cn.xswitch.ctrl.";
     //TTS引擎
     public static String TTS_ENGINE = "ali";
     //ASR引擎
@@ -71,21 +72,9 @@ public class XCCConstants {
     public static final String PLAY_TTS = "TEXT";
     //文件
     public static final String PLAY_FILE = "FILE";
-    //欢迎语
-    public static final String WELCOME_TEXT = "欢迎语播报：尊敬的用户您好，请说出您要咨询的问题。";
-    //多轮返回失败话术
-    public static final String NGD_ERROR = "YYSR#您的问题我不理解，请换个问法。如需人工服务，请讲 转人工";
-    //语音输入
-    public static final String YYSR = "YYSR";
-    //按键输入
-    public static final String AJSR = "AJSR";
-    //一位按键
-    public static final String YWAJ = "YWAJ";
-    //结束符
-    public static final String TERMINATORS = "#";
-
-    /********************************************xcc相关********************************************/
-
+    //dtmf结束符
+    public static final String DTMF_TERMINATORS = "#";
+    //
     public static final String ACCEPT = "Xnode.Accept";
     //
     public static final String SET_VAR = "Xnode.SetVar";
@@ -101,4 +90,40 @@ public class XCCConstants {
     public static final String READ_DTMF = "Xnode.ReadDTMF";
     //挂断
     public static final String HANGUP = "Xnode.Hangup";
+
+    //success
+    public static final int JSONRPC_OK = 200;
+    //
+    public static final int JSONRPC_CLIENT_ERROR = 400;
+    //error
+    public static final int JSONRPC_SERVER_ERROR = 500;
+
+
+    /********************************************xcc相关********************************************/
+
+    /********************************************NGD相关********************************************/
+
+    //广西知识库测试环境地址
+    public static String GX_ZSK_URL = "http://10.100.104.20:8304/api/v2/core/query";
+    public static String NGD_URL = "https://api-ngd.baidu.com/api/v2/core/query";
+    public static String NGD_AUTHORIZATION = "NGD 43b6f0be-4894-466f-a346-08046d935035";
+
+    //欢迎语
+    public static final String WELCOME_TEXT = "我是智能美美,您请说";
+    //多轮返回失败话术
+    public static final String NGD_MISSING_MSG = "YYSR#您的问题我不理解，请换个问法。如需人工服务，请讲 转人工";
+    //语音输入
+    public static final String YYSR = "YYSR";
+    //按键输入
+    public static final String AJSR = "AJSR";
+    //一位按键
+    public static final String YWAJ = "YWAJ";
+    //人工意图
+    public static final String RGYT = "RGYT";
+    //指令集合
+    public static String ZHILING_STR = "YYSR;AJSR;RGYT;YWAJ;";
+
+
+    /********************************************NGD相关********************************************/
+
 }

@@ -1,5 +1,6 @@
 package com.haiyisoft.util;
 
+import com.haiyisoft.constant.XCCConstants;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -234,8 +235,8 @@ public class HttpClientUtil {
             // 创建请求内容
             StringEntity entity = new StringEntity(json, ContentType.APPLICATION_JSON);
             httpPost.setEntity(entity);
-            //设置广西ivr-AGENT
-            httpPost.setHeader("Authorization", "NGD b99612ed-8935-4215-98e2-dd96f05244b3");
+            //设置广西ivr-bot id
+            httpPost.setHeader("Authorization", XCCConstants.NGD_AUTHORIZATION);
 
             // 执行http请求
             response = httpClient.execute(httpPost);

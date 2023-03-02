@@ -1,6 +1,7 @@
 package com.haiyisoft.util;
 
 import com.alibaba.fastjson.JSONObject;
+import com.haiyisoft.constant.XCCConstants;
 import io.nats.client.Connection;
 import io.nats.client.Message;
 import io.nats.client.Subscription;
@@ -49,7 +50,7 @@ public class RequestUtil {
         //JSON-RPC 2.0版本
         jsonRpc.put("jsonrpc", "2.0");
         //JSON-RPC id,每个请求一个，保证唯一.
-        jsonRpc.put("id", IdGenerator.simpleUUID());
+        jsonRpc.put("id", IdGenerator.snowflakeId());
         jsonRpc.put("method", method);
         jsonRpc.put("params", params);
         return jsonRpc;
@@ -82,10 +83,10 @@ public class RequestUtil {
         StringWriter request = new StringWriter();
         jsonRpc.writeJSONString(request);
 //        jsonRpc.toString().getBytes()
-        log.info("===================== service:{}, jsonRpc:{}", service, jsonRpc);
+        log.info(" service:{}, jsonRpc:{}", service, jsonRpc);
         try {
             return con.request(service, request.toString().getBytes(StandardCharsets.UTF_8), Duration.ofMillis(milliSeconds));
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return new Message() {
@@ -199,7 +200,7 @@ public class RequestUtil {
         JSONObject jsonRpc = getJsonRpc(method, params);
         StringWriter request = new StringWriter();
         jsonRpc.writeJSONString(request);
-        log.info("===================== service:{}, jsonRpc:{}", service, jsonRpc);
+        log.info("service:{}, jsonRpc:{}", service, jsonRpc);
         try {
             Future<Message> incoming = con.request(service, request.toString().getBytes(StandardCharsets.UTF_8));
             Message msg = incoming.get(milliSeconds, TimeUnit.MILLISECONDS);
@@ -209,19 +210,16 @@ public class RequestUtil {
 
             JSONObject result = JSONObject.parseObject(response).getJSONObject("result");
             String asrText = "";
-            if (result.getInteger("code") == 200) {
+            if (result.getInteger("code") == XCCConstants.JSONRPC_OK) {
                 asrText = result.getJSONObject("data").getString("text");
-            } else if (result.getInteger("code") == 404) {
-                asrText = "error";
+            } else {//调用失败
+//                if (result.getInteger("code") == XCCConstants.JSONRPC_CLIENT_ERROR) {
+//                } else if (result.getInteger("code") == XCCConstants.JSONRPC_SERVER_ERROR) {
+//                }
+                asrText = "error_500";
             }
-
-
-            return response;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
+            return asrText;
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return "";

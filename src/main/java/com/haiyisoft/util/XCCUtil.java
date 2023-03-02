@@ -68,12 +68,17 @@ public class XCCUtil {
      * @return
      */
     public static JSONObject getDtmf(int maxDigits) {
+//        min_digits：最小位长。
+//        max_digits：最大位长。
+//        timeout：超时，默认5000ms。
+//        digit_timeout：位间超时，默认2000ms。
+//        terminators：结束符，如#。
         JSONObject dtmf = new JSONObject();
         dtmf.put("min_digits", 1);
         dtmf.put("max_digits", maxDigits);
         dtmf.put("timeout", 1500);
         dtmf.put("digit_timeout", 2000);
-        dtmf.put("terminators", "#");
+        dtmf.put("terminators", XCCConstants.DTMF_TERMINATORS);
         return dtmf;
     }
 
@@ -91,9 +96,9 @@ public class XCCUtil {
         //禁止打断。用户讲话不会打断放音。
         speech.put("nobreak", XCCConstants.NO_BREAK);
         //正整数，未检测到语音超时，默认为5000ms
-        speech.put("no_input_timeout", 5 * 1000);
+        speech.put("no_input_timeout", 10 * 1000);
         //语音超时，即如果对方讲话一直不停超时，最大只能设置成6000ms，默认为6000ms。
-        speech.put("speech_timeout", 8 * 1000);
+        speech.put("speech_timeout", 15 * 1000);
         //是否返回中间结果
         speech.put("partial_event", false);
         //默认会发送Event.DetectedData事件，如果为true则不发送。
@@ -107,7 +112,7 @@ public class XCCUtil {
         JSONObject params = new JSONObject();
         Map<String, String> data = new HashMap<>();
         data.put("disable_img_fit", "true");
-        params.put("ctrl_uuid", "ivvr");
+        params.put("ctrl_uuid", "chryl-ivvr");
         params.put("uuid", event.getUuid());
         params.put("data", data);
         String service = XCCConstants.XNODE_SUBJECT_PREFIX + event.getNodeUuid();
@@ -119,37 +124,38 @@ public class XCCUtil {
     public void getState(Connection nc, ChannelEvent event) {
         RequestUtil request = new RequestUtil();
         JSONObject params = new JSONObject();
-        params.put("ctrl_uuid", "ivvr");
+        params.put("ctrl_uuid", "chryl-ivvr");
         params.put("uuid", event.getUuid());
         String service = XCCConstants.XNODE_SUBJECT_PREFIX + event.getNodeUuid();
-        RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.GET_STATE, params, 1000);
+        RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.GET_STATE, params, 10000);
     }
 
 
     //接管话务
     public static void accept(Connection nc, ChannelEvent event) {
         JSONObject params = new JSONObject();
-        params.put("ctrl_uuid", "ivvr");
+        params.put("ctrl_uuid", "chryl-ivvr");
         //当前channel 的uuid
-        params.put("uuid", event.getUuid());
-        String service = XCCConstants.XNODE_SUBJECT_PREFIX + event.getNodeUuid();
         String channelUuid = event.getUuid();
-        RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.ACCEPT, params, 1000);
+        params.put("uuid", channelUuid);
+        String service = XCCConstants.XNODE_SUBJECT_PREFIX + event.getNodeUuid();
+        RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.ACCEPT, params, 10000);
     }
 
     //应答
     public static void answer(Connection nc, ChannelEvent event) {
         JSONObject params = new JSONObject();
-        params.put("ctrl_uuid", "ivvr");
+        params.put("ctrl_uuid", "chryl-ivvr");
         //当前channel 的uuid
-        params.put("uuid", event.getUuid());
+        String channelId = event.getUuid();
+        params.put("uuid", channelId);
         String service = XCCConstants.XNODE_SUBJECT_PREFIX + event.getNodeUuid();
-        RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.ANSWER, params, 1000);
+        RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.ANSWER, params, 10000);
     }
 
     public static void hangup(Connection nc, ChannelEvent event) {
         JSONObject params = new JSONObject();
-        params.put("ctrl_uuid", "ivvr");
+        params.put("ctrl_uuid", "chryl-ivvr");
         //当前channel 的uuid
         params.put("uuid", event.getUuid());
         //flag integer 值为,0：挂断自己,1：挂断对方,2：挂断双方
@@ -167,10 +173,11 @@ public class XCCUtil {
      */
     public static void playTTS(Connection nc, ChannelEvent event, String ttsContent) {
         JSONObject params = new JSONObject();
-        params.put("ctrl_uuid", "ivvr");
+        params.put("ctrl_uuid", "chryl-ivvr");
         //当前channel 的uuid
-        String channelUuid = event.getUuid();
-        params.put("uuid", channelUuid);
+        String channelId = event.getUuid();
+        params.put("uuid", channelId);
+        log.info("TTS播报内容为:{}", ttsContent);
         JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
         params.put("media", media);
         String service = XCCConstants.XNODE_SUBJECT_PREFIX + event.getNodeUuid();
@@ -187,7 +194,7 @@ public class XCCUtil {
      */
     public void playFILE(Connection nc, ChannelEvent event, String file) {
         JSONObject params = new JSONObject();
-        params.put("ctrl_uuid", "ivvr");
+        params.put("ctrl_uuid", "chryl-ivvr");
         //当前channel 的uuid
         String channelUuid = event.getUuid();
         params.put("uuid", channelUuid);
@@ -207,10 +214,11 @@ public class XCCUtil {
     public static String detectSpeechPlayTTSNoDTMF(Connection nc, ChannelEvent event, String ttsContent) {
         JSONObject params = new JSONObject();
         //ctrl_uuid:ctrl_uuid
-        params.put("ctrl_uuid", "ivvr");
+        params.put("ctrl_uuid", "chryl-ivvr");
         //当前channel 的uuid
-        String channelUuid = event.getUuid();
-        params.put("uuid", channelUuid);
+        String channelId = event.getUuid();
+        params.put("uuid", channelId);
+        log.info("TTS播报内容为:{}", ttsContent);
         JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
         params.put("media", media);
         //如果不需要同时检测DTMF，可以不传该参数。
@@ -218,9 +226,7 @@ public class XCCUtil {
         JSONObject speech = getSpeech();
         params.put("speech", speech);
         String service = XCCConstants.XNODE_SUBJECT_PREFIX + event.getNodeUuid();
-//        Message msg = RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.DETECT_SPEECH, params, 1000);
         String msg = RequestUtil.natsRequestFuture(nc, service, XCCConstants.DETECT_SPEECH, params, 10000);
-//        String str = new String(msg.getData(), StandardCharsets.UTF_8);
         return msg;
     }
 
@@ -234,12 +240,6 @@ public class XCCUtil {
      */
     public static String playAndReadDTMF(Connection nc, ChannelEvent event, String ttsContent, int maxDigits) {
 //        播放一个语音并获取用户按键信息，将在收到满足条件的按键后返回。
-//
-//        min_digits：最小位长。
-//        max_digits：最大位长。
-//        timeout：超时，默认5000ms。
-//        digit_timeout：位间超时，默认2000ms。
-//        terminators：结束符，如#。
 //        data：播放的媒体，可以是语音文件或TTS。
 //        返回结果：
 //
@@ -248,10 +248,10 @@ public class XCCUtil {
 //        本接口将在收到第一个DTMF按键后打断当前的播放。
 //
         JSONObject params = new JSONObject();
-        params.put("ctrl_uuid", "ivvr");
+        params.put("ctrl_uuid", "chryl-ivvr");
         //当前channel 的uuid
-        String channelUuid = event.getUuid();
-        params.put("uuid", channelUuid);
+        String channelId = event.getUuid();
+        params.put("uuid", channelId);
         JSONObject dtmf = getDtmf(maxDigits);
         params.put("dtmf", dtmf);
         JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
@@ -262,7 +262,5 @@ public class XCCUtil {
         String str = new String(msg.getData(), StandardCharsets.UTF_8);
         return str;
     }
-//    const channel_uuid = m.params.uuid;
-//    var service = 'cn.xswitch.node.' + m.params.node_uuid;
 
 }
