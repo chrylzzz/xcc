@@ -4,13 +4,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
 import io.nats.client.Connection;
-import io.nats.client.Message;
 import io.nats.client.Nats;
 import io.nats.client.Options;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -76,8 +74,8 @@ public class XCCUtil {
         JSONObject dtmf = new JSONObject();
         dtmf.put("min_digits", 1);
         dtmf.put("max_digits", maxDigits);
-        dtmf.put("timeout", 1500);
-        dtmf.put("digit_timeout", 2000);
+        dtmf.put("timeout", 15000);
+        dtmf.put("digit_timeout", 20000);
         dtmf.put("terminators", XCCConstants.DTMF_TERMINATORS);
         return dtmf;
     }
@@ -226,7 +224,7 @@ public class XCCUtil {
         JSONObject speech = getSpeech();
         params.put("speech", speech);
         String service = XCCConstants.XNODE_SUBJECT_PREFIX + event.getNodeUuid();
-        String msg = RequestUtil.natsRequestFuture(nc, service, XCCConstants.DETECT_SPEECH, params, 10000);
+        String msg = RequestUtil.natsRequestFutureByDetectSpeech(nc, service, XCCConstants.DETECT_SPEECH, params, 10000);
         return msg;
     }
 
@@ -255,12 +253,12 @@ public class XCCUtil {
         JSONObject dtmf = getDtmf(maxDigits);
         params.put("dtmf", dtmf);
         JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
-        params.put("data", media);
+//        params.put("data", media);
+        params.put("media", media);
         String service = XCCConstants.XNODE_SUBJECT_PREFIX + event.getNodeUuid();
 
-        Message msg = RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.READ_DTMF, params, 10000);
-        String str = new String(msg.getData(), StandardCharsets.UTF_8);
-        return str;
+        String msg = RequestUtil.natsRequestFutureByReadDTMF(nc, service, XCCConstants.READ_DTMF, params, 10000);
+        return msg;
     }
 
 }

@@ -1,21 +1,23 @@
 package com.haiyisoft.constant;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
 /**
  * XCC和NGD常量
  * Created By Chryl on 2023-02-08.
  */
-@ConfigurationProperties
 public class XCCConstants {
+
     /********************************************xcc相关********************************************/
-    //XSwitch 服务地址
-    public static final String XSWITCH_SERVICE = "xswitchService";
     //Nats 地址
     public static final String NATS_URL = "nats://hy:h8klu6bRwW@nats.xswitch.cn:4222";
     //Ctrl 订阅主题
     public static final String XCTRL_SUBJECT = "cn.xswitch.ctrl";
-    //
+    //TTS引擎
+    public static final String TTS_ENGINE = "ali";
+    //ASR引擎
+    public static final String ASR_ENGINE = "ali";
+    //XSwitch 服务地址
+    public static final String XSWITCH_SERVICE = "xswitchService";
+    //uuid
     public static final String XCTRL_UUID = "";
     //Node
     public static final String NODE_SERVICE_PREFIX = "cn.xswitch.node.";
@@ -25,10 +27,7 @@ public class XCCConstants {
     public static final String XCTRL_SERVICE_PREFIX = "cn.xswitch.ctrl.";
     //XCtrl侧的Subject
     public static final String XCTRL_SUBJECT_PREFIX = "cn.xswitch.ctrl.";
-    //TTS引擎
-    public static String TTS_ENGINE = "ali";
-    //ASR引擎
-    public static String ASR_ENGINE = "ali";
+
 
     /**
      * 来话Channel状态:
@@ -67,7 +66,7 @@ public class XCCConstants {
     public static final String Event_DetectedFace = "Event.DetectedFace";
 
     //不可打断
-    public static final boolean NO_BREAK = false;
+    public static final boolean NO_BREAK = true;
     //TTS，即语音合成
     public static final String PLAY_TTS = "TEXT";
     //文件
@@ -93,8 +92,12 @@ public class XCCConstants {
 
     //success
     public static final int JSONRPC_OK = 200;
+    //NOTIFY
+    public static final int JSONRPC_NOTIFY = 202;
     //
     public static final int JSONRPC_CLIENT_ERROR = 400;
+    //cannot locate session by uuid 无法定位uuid,没传uuid,但是传了也有这种情况
+    public static final int JSONRPC_UUID_ERROR = 404;
     //error
     public static final int JSONRPC_SERVER_ERROR = 500;
 
@@ -103,13 +106,12 @@ public class XCCConstants {
 
     /********************************************NGD相关********************************************/
 
-    //广西知识库测试环境地址
-    public static String GX_ZSK_URL = "http://10.100.104.20:8304/api/v2/core/query";
-    public static String NGD_URL = "https://api-ngd.baidu.com/api/v2/core/query";
-    public static String NGD_AUTHORIZATION = "NGD 43b6f0be-4894-466f-a346-08046d935035";
-
+    //百度知识库测试环境地址
+    public static final String NGD_QUERY_URL = "https://api-ngd.baidu.com/api/v2/core/query";
+    //百度NGD auth
+    public static final String NGD_QUERY_AUTHORIZATION = "NGD 43b6f0be-4894-466f-a346-08046d935035";
     //欢迎语
-    public static final String WELCOME_TEXT = "我是智能美美,您请说";
+    public static final String WELCOME_TEXT = "我是智能美美, 您要咨询什么问题, 您请说";
     //多轮返回失败话术
     public static final String NGD_MISSING_MSG = "YYSR#您的问题我不理解，请换个问法。如需人工服务，请讲 转人工";
     //语音输入
@@ -121,7 +123,11 @@ public class XCCConstants {
     //人工意图
     public static final String RGYT = "RGYT";
     //指令集合
-    public static String ZHILING_STR = "YYSR;AJSR;RGYT;YWAJ;";
+    public static final String RET_KEY_STR = "YYSR;AJSR;RGYT;YWAJ;";
+    //智能ivr渠道
+    public static final String CHANNEL_IVR = "智能IVR";
+    //ngd话术分隔符
+    public static final String NGD_SEPARATOR = "#";
 
 
     /********************************************NGD相关********************************************/

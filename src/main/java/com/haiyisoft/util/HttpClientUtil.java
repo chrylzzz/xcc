@@ -236,7 +236,7 @@ public class HttpClientUtil {
             StringEntity entity = new StringEntity(json, ContentType.APPLICATION_JSON);
             httpPost.setEntity(entity);
             //设置广西ivr-bot id
-            httpPost.setHeader("Authorization", XCCConstants.NGD_AUTHORIZATION);
+            httpPost.setHeader("Authorization", XCCConstants.NGD_QUERY_AUTHORIZATION);
 
             // 执行http请求
             response = httpClient.execute(httpPost);

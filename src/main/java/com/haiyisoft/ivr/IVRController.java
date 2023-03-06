@@ -1,24 +1,19 @@
 package com.haiyisoft.ivr;
 
 import com.alibaba.fastjson.JSONObject;
-import com.google.protobuf.util.JsonFormat;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
-import com.haiyisoft.util.XCCUtil;
-import com.haiyisoft.xctrl.Xctrl;
 import io.nats.client.Connection;
 import io.nats.client.Message;
 import io.nats.client.Nats;
 import io.nats.client.Subscription;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * IVR
@@ -93,7 +88,7 @@ public class IVRController {
                     if (subMsg == null) {
                         log.info("this subMsg is null ,{}", subMsg);
                     } else {
-                        log.info(" subMsg ,{}" + subMsg);
+                        log.info(" subMsg ,{}", subMsg);
                         //订阅事件
                         String eventStr = new String(subMsg.getData(), StandardCharsets.UTF_8);
 //                log.info("订阅事件 string data:{}", eventStr);
@@ -107,40 +102,10 @@ public class IVRController {
                         switch (method) {
                             case XCCConstants.Event_Channel:
                                 JSONObject params = eventJson.getJSONObject("params");
-
-                                // we have to serialize the params into a string and parse it again
-                                // unless we can find a way to convert JsonElement to protobuf class
-//                                Xctrl.ChannelEvent.Builder cevent = Xctrl.ChannelEvent.newBuilder();
-//                                JsonFormat.parser().ignoringUnknownFields().merge(params.toString(), cevent);
-//                                log.info("订阅事件 cevent :{}", cevent);
-//                            String state = cevent.getState();
-
-
-                                String uuid = params.getString("uuid");
-                                String node_uuid = params.getString("node_uuid");
-                                //当前Channel的状态,如START--Event.Channel（state=START）
-                                String state = params.getString("state");
-//                            boolean answered = params.getBooleanValue("answered");
-//                            String billsec = params.getString("billsec");
-//                            String cause = params.getString("cause");
-//                            boolean video = params.getBooleanValue("video");
-                                ChannelEvent event = new ChannelEvent();
-                                event.setUuid(uuid);
-                                event.setNodeUuid(node_uuid);
-                                event.setState(state);
-//                            event.setAnswered(answered);
-//                            event.setBillsec(billsec);
-//                            event.setCause(cause);
-//                            event.setVideo(video);
-//                        event.setRingEpoch((int) result.get("ring_epoch"));
-//                        event.setCreateEpoch((int) result.get("create_epoch"));
-//                        event.setCidName((String) result.get("cid_name"));
-//                        event.setCidNumber((String) result.get("cid_number"));
-//                        event.setDestNumber((String) result.get("dest_number"));
-
-                                if (state != null) {
-                                    new IVRHandler().HandlerChannelEvent(nc, event);
-                                }
+                                //convert param
+                                ChannelEvent event = IVRHandler.convertParams(params);
+                                //asr domain
+                                new IVRHandler().handlerChannelEvent(nc, event);
                             case XCCConstants.Event_DetectedFace:
                                 log.info("事件 event======:{}", "Event.DetectedFace");
                             case XCCConstants.Event_NativeEvent:

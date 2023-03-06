@@ -1,6 +1,8 @@
 package com.haiyisoft.util;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.haiyisoft.constant.XCCConstants;
 import io.nats.client.Connection;
 import io.nats.client.Message;
@@ -71,6 +73,8 @@ public class RequestUtil {
 
 
     /**
+     * 无数据返回
+     *
      * @param con          connection
      * @param service      node uuid
      * @param method       xcc method
@@ -189,6 +193,8 @@ public class RequestUtil {
     }
 
     /**
+     * DetectSpeech
+     *
      * @param con          connection
      * @param service      node uuid
      * @param method       xcc method
@@ -196,11 +202,15 @@ public class RequestUtil {
      * @param milliSeconds 毫秒
      * @returnS
      */
-    public static String natsRequestFuture(Connection con, String service, String method, JSONObject params, long milliSeconds) {
+    public static String natsRequestFutureByDetectSpeech(Connection con, String service, String method, JSONObject params, long milliSeconds) {
         JSONObject jsonRpc = getJsonRpc(method, params);
         StringWriter request = new StringWriter();
         jsonRpc.writeJSONString(request);
         log.info("service:{}, jsonRpc:{}", service, jsonRpc);
+        String json = JSON.toJSONString(jsonRpc, SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteDateUseDateFormat, SerializerFeature.WriteNullListAsEmpty);
+        log.info("Serializer json:{}", json);
+        //识别返回数据
+        String xccResMsg = "";
         try {
             Future<Message> incoming = con.request(service, request.toString().getBytes(StandardCharsets.UTF_8));
             Message msg = incoming.get(milliSeconds, TimeUnit.MILLISECONDS);
@@ -209,20 +219,70 @@ public class RequestUtil {
 
 
             JSONObject result = JSONObject.parseObject(response).getJSONObject("result");
-            String asrText = "";
+
             if (result.getInteger("code") == XCCConstants.JSONRPC_OK) {
-                asrText = result.getJSONObject("data").getString("text");
+                xccResMsg = result.getJSONObject("data").getString("text");
             } else {//调用失败
 //                if (result.getInteger("code") == XCCConstants.JSONRPC_CLIENT_ERROR) {
 //                } else if (result.getInteger("code") == XCCConstants.JSONRPC_SERVER_ERROR) {
 //                }
-                asrText = "error_500";
+                xccResMsg = "error_500";
             }
-            return asrText;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "";
+        log.info("识别返回数据: {}", xccResMsg);
+        return xccResMsg;
+
 
     }
+
+    /**
+     * ReadDTMF
+     *
+     * @param con          connection
+     * @param service      node uuid
+     * @param method       xcc method
+     * @param params       rpc-json params
+     * @param milliSeconds 毫秒
+     * @returnS
+     */
+    public static String natsRequestFutureByReadDTMF(Connection con, String service, String method, JSONObject params, long milliSeconds) {
+        JSONObject jsonRpc = getJsonRpc(method, params);
+        StringWriter request = new StringWriter();
+        jsonRpc.writeJSONString(request);
+        log.info("service:{}, jsonRpc:{}", service, jsonRpc);
+        String json = JSON.toJSONString(jsonRpc, SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteDateUseDateFormat, SerializerFeature.WriteNullListAsEmpty);
+        log.info("Serializer json:{}", json);
+        //识别返回数据
+        String xccResMsg = "";
+        try {
+            Future<Message> incoming = con.request(service, request.toString().getBytes(StandardCharsets.UTF_8));
+            Message msg = incoming.get(milliSeconds, TimeUnit.MILLISECONDS);
+            String response = new String(msg.getData(), StandardCharsets.UTF_8);
+            log.info("asr返回信息:{}", response);
+
+
+            JSONObject result = JSONObject.parseObject(response).getJSONObject("result");
+
+            if (result.getInteger("code") == XCCConstants.JSONRPC_OK) {
+                xccResMsg = result.getString("dtmf");
+            } else if (result.getInteger("code") == XCCConstants.JSONRPC_NOTIFY) {
+                xccResMsg = result.getString("dtmf");
+            } else {//调用失败
+//                if (result.getInteger("code") == XCCConstants.JSONRPC_CLIENT_ERROR) {
+//                } else if (result.getInteger("code") == XCCConstants.JSONRPC_SERVER_ERROR) {
+//                }
+                xccResMsg = "error_500";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        log.info("识别返回数据: {}", xccResMsg);
+        return xccResMsg;
+
+
+    }
+
+
 }
