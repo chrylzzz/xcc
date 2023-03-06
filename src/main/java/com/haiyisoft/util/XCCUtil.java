@@ -9,6 +9,7 @@ import io.nats.client.Options;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -151,6 +152,7 @@ public class XCCUtil {
         RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.ANSWER, params, 10000);
     }
 
+    //挂断
     public static void hangup(Connection nc, ChannelEvent event) {
         JSONObject params = new JSONObject();
         params.put("ctrl_uuid", "chryl-ivvr");
@@ -224,7 +226,7 @@ public class XCCUtil {
         JSONObject speech = getSpeech();
         params.put("speech", speech);
         String service = XCCConstants.XNODE_SUBJECT_PREFIX + event.getNodeUuid();
-        String msg = RequestUtil.natsRequestFutureByDetectSpeech(nc, service, XCCConstants.DETECT_SPEECH, params, 10000);
+        String msg = RequestUtil.natsRequestFutureByDetectSpeech(nc, service, XCCConstants.DETECT_SPEECH, params, 1000);
         return msg;
     }
 
@@ -257,7 +259,7 @@ public class XCCUtil {
         params.put("media", media);
         String service = XCCConstants.XNODE_SUBJECT_PREFIX + event.getNodeUuid();
 
-        String msg = RequestUtil.natsRequestFutureByReadDTMF(nc, service, XCCConstants.READ_DTMF, params, 10000);
+        String msg = RequestUtil.natsRequestFutureByReadDTMF(nc, service, XCCConstants.READ_DTMF, params, 1000);
         return msg;
     }
 

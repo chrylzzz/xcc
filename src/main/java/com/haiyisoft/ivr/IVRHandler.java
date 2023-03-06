@@ -40,7 +40,7 @@ public class IVRHandler {
         if (state == null) {
             log.info("state is null ");
         } else {
-            log.info("state :{}, ", state);
+            log.info("state :{} ", state);
             switch (state) {
                 case XCCConstants.Channel_START:
                     //开始接管

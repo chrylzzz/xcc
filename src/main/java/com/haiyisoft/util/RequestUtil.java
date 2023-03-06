@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -82,115 +83,53 @@ public class RequestUtil {
      * @param milliSeconds 毫秒
      * @return
      */
-    public static Message natsRequestTimeOut(Connection con, String service, String method, JSONObject params, long milliSeconds) {
+    public static void natsRequestTimeOut(Connection con, String service, String method, JSONObject params, long milliSeconds) {
         JSONObject jsonRpc = getJsonRpc(method, params);
         StringWriter request = new StringWriter();
         jsonRpc.writeJSONString(request);
 //        jsonRpc.toString().getBytes()
         log.info(" service:{}, jsonRpc:{}", service, jsonRpc);
         try {
-            return con.request(service, request.toString().getBytes(StandardCharsets.UTF_8), Duration.ofMillis(milliSeconds));
+            con.request(service, request.toString().getBytes(StandardCharsets.UTF_8), Duration.ofMillis(milliSeconds));
+//            Future<Message> incoming = con.request(service, request.toString().getBytes(StandardCharsets.UTF_8));
+//            Message msg = incoming.get(milliSeconds, TimeUnit.MILLISECONDS);
+//            String response = new String(msg.getData(), StandardCharsets.UTF_8);
+//            log.info("DetectSpeech 返回信息:{}", response);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new Message() {
 
-            @Override
-            public String getSubject() {
-                return null;
-            }
-
-            @Override
-            public String getReplyTo() {
-                return null;
-            }
-
-            @Override
-            public boolean hasHeaders() {
-                return false;
-            }
-
-            @Override
-            public Headers getHeaders() {
-                return null;
-            }
-
-            @Override
-            public boolean isStatusMessage() {
-                return false;
-            }
-
-            @Override
-            public Status getStatus() {
-                return null;
-            }
-
-            @Override
-            public byte[] getData() {
-                return new byte[0];
-            }
-
-            @Override
-            public boolean isUtf8mode() {
-                return false;
-            }
-
-            @Override
-            public Subscription getSubscription() {
-                return null;
-            }
-
-            @Override
-            public String getSID() {
-                return null;
-            }
-
-            @Override
-            public Connection getConnection() {
-                return null;
-            }
-
-            @Override
-            public NatsJetStreamMetaData metaData() {
-                return null;
-            }
-
-            @Override
-            public AckType lastAck() {
-                return null;
-            }
-
-            @Override
-            public void ack() {
-
-            }
-
-            @Override
-            public void ackSync(Duration duration) throws TimeoutException, InterruptedException {
-
-            }
-
-            @Override
-            public void nak() {
-
-            }
-
-            @Override
-            public void term() {
-
-            }
-
-            @Override
-            public void inProgress() {
-
-            }
-
-            @Override
-            public boolean isJetStream() {
-                return false;
-            }
-        };
     }
+
+    /**
+     * 无数据返回 Future
+     *
+     * @param con          connection
+     * @param service      node uuid
+     * @param method       xcc method
+     * @param params       rpc-json params
+     * @param milliSeconds 毫秒
+     * @return
+     */
+    public static void natsRequestFuture(Connection con, String service, String method, JSONObject params, long milliSeconds) {
+        JSONObject jsonRpc = getJsonRpc(method, params);
+        StringWriter request = new StringWriter();
+        jsonRpc.writeJSONString(request);
+//        jsonRpc.toString().getBytes()
+        log.info(" service:{}, jsonRpc:{}", service, jsonRpc);
+        try {
+            Future<Message> incoming = con.request(service, request.toString().getBytes(StandardCharsets.UTF_8));
+            Message msg = incoming.get(milliSeconds, TimeUnit.MILLISECONDS);
+            String response = new String(msg.getData(), StandardCharsets.UTF_8);
+            log.info("返回信息:{}", response);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
     /**
      * DetectSpeech
@@ -203,6 +142,7 @@ public class RequestUtil {
      * @returnS
      */
     public static String natsRequestFutureByDetectSpeech(Connection con, String service, String method, JSONObject params, long milliSeconds) {
+        log.info("DetectSpeech 执行开始时间为:{}", LocalDateTime.now());
         JSONObject jsonRpc = getJsonRpc(method, params);
         StringWriter request = new StringWriter();
         jsonRpc.writeJSONString(request);
@@ -215,7 +155,7 @@ public class RequestUtil {
             Future<Message> incoming = con.request(service, request.toString().getBytes(StandardCharsets.UTF_8));
             Message msg = incoming.get(milliSeconds, TimeUnit.MILLISECONDS);
             String response = new String(msg.getData(), StandardCharsets.UTF_8);
-            log.info("asr返回信息:{}", response);
+            log.info("DetectSpeech 返回信息:{}", response);
 
 
             JSONObject result = JSONObject.parseObject(response).getJSONObject("result");
@@ -231,7 +171,8 @@ public class RequestUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        log.info("识别返回数据: {}", xccResMsg);
+        log.info("执行结束时间为:{}", LocalDateTime.now());
+        log.info("DetectSpeech 识别返回数据: {}", xccResMsg);
         return xccResMsg;
 
 
@@ -248,6 +189,7 @@ public class RequestUtil {
      * @returnS
      */
     public static String natsRequestFutureByReadDTMF(Connection con, String service, String method, JSONObject params, long milliSeconds) {
+        log.info("ReadDTMF 执行开始时间为:{}", LocalDateTime.now());
         JSONObject jsonRpc = getJsonRpc(method, params);
         StringWriter request = new StringWriter();
         jsonRpc.writeJSONString(request);
@@ -260,7 +202,7 @@ public class RequestUtil {
             Future<Message> incoming = con.request(service, request.toString().getBytes(StandardCharsets.UTF_8));
             Message msg = incoming.get(milliSeconds, TimeUnit.MILLISECONDS);
             String response = new String(msg.getData(), StandardCharsets.UTF_8);
-            log.info("asr返回信息:{}", response);
+            log.info("ReadDTMF 返回信息:{}", response);
 
 
             JSONObject result = JSONObject.parseObject(response).getJSONObject("result");
@@ -279,6 +221,7 @@ public class RequestUtil {
             e.printStackTrace();
         }
         log.info("识别返回数据: {}", xccResMsg);
+        log.info("ReadDTMF 执行结束时间为:{}", LocalDateTime.now());
         return xccResMsg;
 
 
