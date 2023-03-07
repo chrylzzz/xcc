@@ -3,6 +3,7 @@ package com.haiyisoft.util;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.haiyisoft.constant.XCCConstants;
+import com.haiyisoft.entry.IVRModel;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -82,7 +83,7 @@ public class NGDUtil {
      * @param glResText
      * @return
      */
-    public static Map<String, String> convertResText(String glResText) {
+    public static IVRModel convertResText(String glResText, IVRModel ivrModel) {
         String retKey = "";//指令
         String retValue = "";//播报内容
         log.info("convertResText resText: {}", glResText);
@@ -104,11 +105,10 @@ public class NGDUtil {
                 }
             }
         }
-        Map<String, String> resMap = new HashMap<>();
-        resMap.put("retKey", retKey);
-        resMap.put("retValue", retValue);
-        log.info("convertResText resMap: {}", resMap);
-        return resMap;
+        ivrModel.setRetKey(retKey);
+        ivrModel.setRetValue(retValue);
+        log.info("convertResText resMap: {}", ivrModel);
+        return ivrModel;
     }
 
     /**

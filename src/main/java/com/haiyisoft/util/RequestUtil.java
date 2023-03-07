@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.haiyisoft.constant.XCCConstants;
+import com.haiyisoft.entry.IVRModel;
 import io.nats.client.Connection;
 import io.nats.client.Message;
 import io.nats.client.Subscription;
@@ -17,6 +18,8 @@ import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -139,41 +142,38 @@ public class RequestUtil {
      * @param method       xcc method
      * @param params       rpc-json params
      * @param milliSeconds 毫秒
-     * @returnS
+     * @return
      */
-    public static String natsRequestFutureByDetectSpeech(Connection con, String service, String method, JSONObject params, long milliSeconds) {
+    public static IVRModel natsRequestFutureByDetectSpeech(Connection con, String service, String method, JSONObject params, long milliSeconds) {
         log.info("DetectSpeech 执行开始时间为:{}", LocalDateTime.now());
         JSONObject jsonRpc = getJsonRpc(method, params);
         StringWriter request = new StringWriter();
         jsonRpc.writeJSONString(request);
         log.info("service:{}, jsonRpc:{}", service, jsonRpc);
         String json = JSON.toJSONString(jsonRpc, SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteDateUseDateFormat, SerializerFeature.WriteNullListAsEmpty);
-        log.info("Serializer json:{}", json);
-        //识别返回数据
-        String xccResMsg = "";
+        log.info("request Serializer json:{}", json);
+        //识别返回数据,调用失败默认为""
+        String utterance = "";
+        IVRModel ivrModel = new IVRModel();
         try {
             Future<Message> incoming = con.request(service, request.toString().getBytes(StandardCharsets.UTF_8));
             Message msg = incoming.get(milliSeconds, TimeUnit.MILLISECONDS);
             String response = new String(msg.getData(), StandardCharsets.UTF_8);
             log.info("DetectSpeech 返回信息:{}", response);
-
-
             JSONObject result = JSONObject.parseObject(response).getJSONObject("result");
-
-            if (result.getInteger("code") == XCCConstants.JSONRPC_OK) {
-                xccResMsg = result.getJSONObject("data").getString("text");
+            Integer code = result.getInteger("code");
+            if (code == XCCConstants.JSONRPC_OK) {
+                utterance = result.getJSONObject("data").getString("text");
             } else {//调用失败
-//                if (result.getInteger("code") == XCCConstants.JSONRPC_CLIENT_ERROR) {
-//                } else if (result.getInteger("code") == XCCConstants.JSONRPC_SERVER_ERROR) {
-//                }
-                xccResMsg = "error_500";
             }
+            ivrModel.setCode(code);
+            ivrModel.setXccMsg(utterance);
         } catch (Exception e) {
             e.printStackTrace();
         }
         log.info("执行结束时间为:{}", LocalDateTime.now());
-        log.info("DetectSpeech 识别返回数据: {}", xccResMsg);
-        return xccResMsg;
+        log.info("DetectSpeech 识别返回数据: {}", utterance);
+        return ivrModel;
 
 
     }
@@ -186,18 +186,19 @@ public class RequestUtil {
      * @param method       xcc method
      * @param params       rpc-json params
      * @param milliSeconds 毫秒
-     * @returnS
+     * @return
      */
-    public static String natsRequestFutureByReadDTMF(Connection con, String service, String method, JSONObject params, long milliSeconds) {
+    public static IVRModel natsRequestFutureByReadDTMF(Connection con, String service, String method, JSONObject params, long milliSeconds) {
         log.info("ReadDTMF 执行开始时间为:{}", LocalDateTime.now());
         JSONObject jsonRpc = getJsonRpc(method, params);
         StringWriter request = new StringWriter();
         jsonRpc.writeJSONString(request);
         log.info("service:{}, jsonRpc:{}", service, jsonRpc);
         String json = JSON.toJSONString(jsonRpc, SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteDateUseDateFormat, SerializerFeature.WriteNullListAsEmpty);
-        log.info("Serializer json:{}", json);
-        //识别返回数据
-        String xccResMsg = "";
+        log.info("request Serializer json:{}", json);
+        //识别返回数据,调用失败默认为""
+        String dtmf = "";
+        IVRModel ivrModel = new IVRModel();
         try {
             Future<Message> incoming = con.request(service, request.toString().getBytes(StandardCharsets.UTF_8));
             Message msg = incoming.get(milliSeconds, TimeUnit.MILLISECONDS);
@@ -206,23 +207,21 @@ public class RequestUtil {
 
 
             JSONObject result = JSONObject.parseObject(response).getJSONObject("result");
-
-            if (result.getInteger("code") == XCCConstants.JSONRPC_OK) {
-                xccResMsg = result.getString("dtmf");
-            } else if (result.getInteger("code") == XCCConstants.JSONRPC_NOTIFY) {
-                xccResMsg = result.getString("dtmf");
+            Integer code = result.getInteger("code");
+            if (code == XCCConstants.JSONRPC_OK) {
+                dtmf = result.getString("dtmf");
+            } else if (code == XCCConstants.JSONRPC_NOTIFY) {
+                dtmf = result.getString("dtmf");
             } else {//调用失败
-//                if (result.getInteger("code") == XCCConstants.JSONRPC_CLIENT_ERROR) {
-//                } else if (result.getInteger("code") == XCCConstants.JSONRPC_SERVER_ERROR) {
-//                }
-                xccResMsg = "error_500";
             }
+            ivrModel.setCode(code);
+            ivrModel.setXccMsg(dtmf);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        log.info("识别返回数据: {}", xccResMsg);
         log.info("ReadDTMF 执行结束时间为:{}", LocalDateTime.now());
-        return xccResMsg;
+        log.info("识别返回数据: {}", dtmf);
+        return ivrModel;
 
 
     }

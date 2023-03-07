@@ -3,6 +3,7 @@ package com.haiyisoft.util;
 import com.alibaba.fastjson.JSONObject;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
+import com.haiyisoft.entry.IVRModel;
 import io.nats.client.Connection;
 import io.nats.client.Nats;
 import io.nats.client.Options;
@@ -211,7 +212,8 @@ public class XCCUtil {
      * @param event
      * @return
      */
-    public static String detectSpeechPlayTTSNoDTMF(Connection nc, ChannelEvent event, String ttsContent) {
+    public static IVRModel detectSpeechPlayTTSNoDTMF(Connection nc, ChannelEvent event, String ttsContent) {
+        Map<String, String> xccMap = new HashMap<>();
         JSONObject params = new JSONObject();
         //ctrl_uuid:ctrl_uuid
         params.put("ctrl_uuid", "chryl-ivvr");
@@ -226,8 +228,8 @@ public class XCCUtil {
         JSONObject speech = getSpeech();
         params.put("speech", speech);
         String service = XCCConstants.XNODE_SUBJECT_PREFIX + event.getNodeUuid();
-        String msg = RequestUtil.natsRequestFutureByDetectSpeech(nc, service, XCCConstants.DETECT_SPEECH, params, 1000);
-        return msg;
+        IVRModel ivrModel = RequestUtil.natsRequestFutureByDetectSpeech(nc, service, XCCConstants.DETECT_SPEECH, params, 10000);
+        return ivrModel;
     }
 
     /**
@@ -238,7 +240,7 @@ public class XCCUtil {
      * @param ttsContent 播报内容
      * @param maxDigits  最大位长
      */
-    public static String playAndReadDTMF(Connection nc, ChannelEvent event, String ttsContent, int maxDigits) {
+    public static IVRModel playAndReadDTMF(Connection nc, ChannelEvent event, String ttsContent, int maxDigits) {
 //        播放一个语音并获取用户按键信息，将在收到满足条件的按键后返回。
 //        data：播放的媒体，可以是语音文件或TTS。
 //        返回结果：
@@ -259,8 +261,8 @@ public class XCCUtil {
         params.put("media", media);
         String service = XCCConstants.XNODE_SUBJECT_PREFIX + event.getNodeUuid();
 
-        String msg = RequestUtil.natsRequestFutureByReadDTMF(nc, service, XCCConstants.READ_DTMF, params, 1000);
-        return msg;
+        IVRModel ivrModel = RequestUtil.natsRequestFutureByReadDTMF(nc, service, XCCConstants.READ_DTMF, params, 10000);
+        return ivrModel;
     }
 
 }

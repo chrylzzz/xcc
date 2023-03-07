@@ -96,8 +96,8 @@ public class XCCConstants {
     public static final int JSONRPC_NOTIFY = 202;
     //
     public static final int JSONRPC_CLIENT_ERROR = 400;
-    //cannot locate session by uuid 无法定位uuid,没传uuid,但是传了也有这种情况
-    public static final int JSONRPC_UUID_ERROR = 404;
+    //cannot locate session by uuid
+    public static final int JSONRPC_CANNOT_LOCATE_SESSION_BY_UUID = 404;
     //error
     public static final int JSONRPC_SERVER_ERROR = 500;
 
