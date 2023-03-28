@@ -58,7 +58,7 @@ public class IVRController {
                 //订阅接收的消息
                 Message subMsg = sub.nextMessage(Duration.ofMillis(500000));
                 for (int i = 0; i < 500; i++) {
-                    ivrHandler.ivrDomain(null, null);
+                    ivrHandler.ivrDomain();
                 }
 
             }
@@ -74,12 +74,11 @@ public class IVRController {
      */
     public void domain() {
         try {
-            log.info(" Ivr Controller started ");
+            log.warn(" Ivr Controller started ");
             //获取nats连接
             Connection nc = Nats.connect(XCCConstants.NATS_URL);
             //从nats获取订阅主题
             Subscription sub = nc.subscribe(XCCConstants.XCTRL_SUBJECT);
-
             while (true) {
                 try {
                     //订阅接收的消息
@@ -88,10 +87,22 @@ public class IVRController {
                     if (subMsg == null) {
                         log.info("this subMsg is null ,{}", subMsg);
                     } else {
+
+
+                        /*
+                        System.out.println("Got a new Call ...");
+                        // handle this call in a new thread so we can continue to listen for other calls
+//                        new IvrThread(nc, params).start();
+//                        new Ivr().ivrDomain(nc, params);
+//                        ivrHandler.ivrDomain();
+                        new IVRHandler().ivrDomain();
+*/
+
+
                         log.info(" subMsg ,{}", subMsg);
                         //订阅事件
                         String eventStr = new String(subMsg.getData(), StandardCharsets.UTF_8);
-//                log.info("订阅事件 string data:{}", eventStr);
+//                        log.info(" eventStr data:{}", eventStr);
 
                         JSONObject eventJson = JSONObject.parseObject(eventStr);
 //                log.info("订阅事件 json data:{}", eventJson);
@@ -105,30 +116,21 @@ public class IVRController {
                                 //convert param
                                 ChannelEvent event = IVRHandler.convertParams(params);
                                 //asr domain
-                                new IVRHandler().handlerChannelEvent(nc, event);
+                                ivrHandler.handlerChannelEvent(nc, event);
+//                                new IVRHandler().handlerChannelEvent(nc, event);
                             case XCCConstants.Event_DetectedFace:
                                 log.info("事件 event======:{}", "Event.DetectedFace");
                             case XCCConstants.Event_NativeEvent:
                                 log.info("事件 event======:{}", "Event.NativeEvent");
-//                        XCCUtil.playTTS(nc,ChannelEvent);
-
                         }
-/*
-                if (state != null) {
-                    if (CallConst.Channel_START.equals(state)) {
-                        System.out.println("Got a new Call ...");
-                        // handle this call in a new thread so we can continue to listen for other calls
-                        new IvrThread(nc, params).start();
-                        new Ivr().ivrDomain(nc, params);
-                    }
-                }
-                */
+
 
                     }
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
+
             }
 
         } catch (IOException e) {

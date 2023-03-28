@@ -27,7 +27,7 @@ public class IVRHandler {
      * 一定要交给spring管理,哪怕是此方法被调用
      */
     @Async
-    public void ivrDomain(Connection nc, JSONObject params) {
+    public void ivrDomain() {
         for (int i = 0; i < 500; i++) {
             for (int j = 0; j < 500; j++) {
                 System.out.println(Thread.currentThread().getName() + "===" + IdGenerator.snowflakeId());
@@ -70,6 +70,13 @@ public class IVRHandler {
                         } else if (XCCConstants.RGYT.equals(retKey)) {//转人工
 
                         }
+                        /**
+                         * TODO
+                         * 挂机api code为404, 此处先这样处理
+                         */
+                        if (ivrModel.getCode() == 404) {
+                            break;
+                        }
                         xccResMsg = ivrModel.getXccMsg();
                         //调用百度知识库
                         ngdResMsg = NGDUtil.invokeNGD(xccResMsg, sessionId);
@@ -95,6 +102,8 @@ public class IVRHandler {
                 case "READY":
 //                xcc.Bridge(nc, event);
                 case "MEDIA":
+                case XCCConstants.DESTROY:
+                    System.out.println("DESTROY");
             }
 
             //挂断双方

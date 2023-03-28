@@ -11,6 +11,7 @@ public class XCCConstants {
     public static final String NATS_URL = "nats://hy:h8klu6bRwW@nats.xswitch.cn:4222";
     //Ctrl 订阅主题
     public static final String XCTRL_SUBJECT = "cn.xswitch.ctrl";
+    public static final String XCTRL_SUBJECT_DESTROY = "cn.xswitch.ctrl.event";
     //TTS引擎
     public static final String TTS_ENGINE = "ali";
     //ASR引擎
@@ -50,6 +51,7 @@ public class XCCConstants {
      */
     //START：来话第一个事件
     public static final String Channel_START = "START";
+    public static final String DESTROY = "DESTROY";
     //CALLING：去话第一个事件
     public static final String Channel_CALLING = "CALLING";
     //RINGING：振铃

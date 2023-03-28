@@ -137,6 +137,52 @@ public class RequestUtil {
     /**
      * DetectSpeech
      *
+     * @param con     connection
+     * @param service node uuid
+     * @param method  xcc method
+     * @param params  rpc-json params
+     * @return
+     */
+    public static IVRModel natsRequestFutureByDetectSpeech(Connection con, String service, String method, JSONObject params) {
+        long startTime = System.currentTimeMillis();
+        log.info("DetectSpeech 执行开始时间为:{}", LocalDateTime.now());
+        JSONObject jsonRpc = getJsonRpc(method, params);
+        StringWriter request = new StringWriter();
+        jsonRpc.writeJSONString(request);
+        log.info("service:{}, jsonRpc:{}", service, jsonRpc);
+        String json = JSON.toJSONString(jsonRpc, SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteDateUseDateFormat, SerializerFeature.WriteNullListAsEmpty);
+        log.info("request Serializer json:{}", json);
+        //识别返回数据,调用失败默认为""
+        String utterance = "";
+        IVRModel ivrModel = new IVRModel();
+        try {
+            Future<Message> incoming = con.request(service, request.toString().getBytes(StandardCharsets.UTF_8));
+            Message msg = incoming.get();
+            String response = new String(msg.getData(), StandardCharsets.UTF_8);
+            log.info("DetectSpeech 返回信息:{}", response);
+            JSONObject result = JSONObject.parseObject(response).getJSONObject("result");
+            Integer code = result.getInteger("code");
+            if (code == XCCConstants.JSONRPC_OK) {
+                utterance = result.getJSONObject("data").getString("text");
+            } else {//调用失败
+            }
+            ivrModel.setCode(code);
+            ivrModel.setXccMsg(utterance);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ivrModel = tryIvr();
+
+        }
+        log.info("执行结束时间为:{}", LocalDateTime.now());
+        log.info("DetectSpeech 识别返回数据: {}", utterance);
+        long endTime = System.currentTimeMillis();
+        log.warn("{} ：调用业务结束，耗时：{} ms", Thread.currentThread().getName(), (endTime - startTime));
+        return ivrModel;
+    }
+
+    /**
+     * DetectSpeech
+     *
      * @param con          connection
      * @param service      node uuid
      * @param method       xcc method
@@ -170,13 +216,14 @@ public class RequestUtil {
             ivrModel.setXccMsg(utterance);
         } catch (Exception e) {
             e.printStackTrace();
+            ivrModel = tryIvr();
+
         }
         log.info("执行结束时间为:{}", LocalDateTime.now());
         log.info("DetectSpeech 识别返回数据: {}", utterance);
         return ivrModel;
-
-
     }
+
 
     /**
      * ReadDTMF
@@ -201,7 +248,8 @@ public class RequestUtil {
         IVRModel ivrModel = new IVRModel();
         try {
             Future<Message> incoming = con.request(service, request.toString().getBytes(StandardCharsets.UTF_8));
-            Message msg = incoming.get(milliSeconds, TimeUnit.MILLISECONDS);
+//            Message msg = incoming.get(milliSeconds, TimeUnit.MILLISECONDS);
+            Message msg = incoming.get();
             String response = new String(msg.getData(), StandardCharsets.UTF_8);
             log.info("ReadDTMF 返回信息:{}", response);
 
@@ -218,13 +266,18 @@ public class RequestUtil {
             ivrModel.setXccMsg(dtmf);
         } catch (Exception e) {
             e.printStackTrace();
+            ivrModel = tryIvr();
         }
         log.info("ReadDTMF 执行结束时间为:{}", LocalDateTime.now());
         log.info("识别返回数据: {}", dtmf);
         return ivrModel;
-
-
     }
 
 
+    public static IVRModel tryIvr() {
+        IVRModel ivrModel = new IVRModel();
+        ivrModel.setCode(500);
+        ivrModel.setXccMsg("");
+        return ivrModel;
+    }
 }

@@ -1,0 +1,9 @@
+server:
+  port: 8088
+#logging:
+#  level:
+#    root: info
+#  logback:
+#    rollingpolicy:
+#      max-file-size: 100MB
+#      file-name-pattern: server.%d{yyyy-MM-dd}.%i.log

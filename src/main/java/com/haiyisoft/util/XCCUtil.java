@@ -55,9 +55,9 @@ public class XCCUtil {
         media.put("type", playType);
         media.put("data", content);
         //TTS引擎
-        media.put("engine", XCCConstants.TTS_ENGINE);
+        media.put("engine", XCCConstants.TTS_ENGINE);//tts-mrcp协议都使用unimrcp
         //嗓音，由TTS引擎决定，默认为default。
-        media.put("voice", "default");
+        media.put("voice", "default");//tts科大提供
         return media;
     }
 
@@ -96,9 +96,9 @@ public class XCCUtil {
         //禁止打断。用户讲话不会打断放音。
         speech.put("nobreak", XCCConstants.NO_BREAK);
         //正整数，未检测到语音超时，默认为5000ms
-        speech.put("no_input_timeout", 10 * 1000);
+        speech.put("no_input_timeout", 5 * 1000);
         //语音超时，即如果对方讲话一直不停超时，最大只能设置成6000ms，默认为6000ms。
-        speech.put("speech_timeout", 15 * 1000);
+        speech.put("speech_timeout", 6 * 1000);
         //是否返回中间结果
         speech.put("partial_event", false);
         //默认会发送Event.DetectedData事件，如果为true则不发送。
@@ -213,7 +213,6 @@ public class XCCUtil {
      * @return
      */
     public static IVRModel detectSpeechPlayTTSNoDTMF(Connection nc, ChannelEvent event, String ttsContent) {
-        Map<String, String> xccMap = new HashMap<>();
         JSONObject params = new JSONObject();
         //ctrl_uuid:ctrl_uuid
         params.put("ctrl_uuid", "chryl-ivvr");
@@ -228,7 +227,7 @@ public class XCCUtil {
         JSONObject speech = getSpeech();
         params.put("speech", speech);
         String service = XCCConstants.XNODE_SUBJECT_PREFIX + event.getNodeUuid();
-        IVRModel ivrModel = RequestUtil.natsRequestFutureByDetectSpeech(nc, service, XCCConstants.DETECT_SPEECH, params, 10000);
+        IVRModel ivrModel = RequestUtil.natsRequestFutureByDetectSpeech(nc, service, XCCConstants.DETECT_SPEECH, params);
         return ivrModel;
     }
 

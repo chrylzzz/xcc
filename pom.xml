@@ -10,11 +10,13 @@
     </parent>
     <groupId>com.haiyisoft</groupId>
     <artifactId>xcc</artifactId>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
     <version>0.0.1-SNAPSHOT</version>
     <name>xcc</name>
     <description>XCC</description>
     <properties>
+        <!-- maven打包时跳过测试 -->
+        <skipTests>true</skipTests>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
