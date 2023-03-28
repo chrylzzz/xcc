@@ -1,6 +1,7 @@
 package com.haiyisoft.util;
 
 import com.alibaba.fastjson.JSONObject;
+import com.haiyisoft.boot.IVRInit;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
 import com.haiyisoft.entry.IVRModel;
@@ -10,7 +11,6 @@ import io.nats.client.Options;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,22 +20,6 @@ import java.util.Map;
  **/
 @Slf4j
 public class XCCUtil {
-
-
-    /**
-     * 声明nats连接
-     *
-     * @throws IOException          IOException
-     * @throws InterruptedException 中断异常
-     */
-    public Connection getConnection() throws IOException, InterruptedException {
-        Options options = new Options.Builder()
-                .server(XCCConstants.NATS_URL)
-                // Set a user and plain text password
-                .userInfo("myname", "password")
-                .build();
-        return Nats.connect(options);
-    }
 
     /**
      * 获取媒体对象
@@ -55,7 +39,7 @@ public class XCCUtil {
         media.put("type", playType);
         media.put("data", content);
         //TTS引擎
-        media.put("engine", XCCConstants.TTS_ENGINE);//tts-mrcp协议都使用unimrcp
+        media.put("engine", IVRInit.XCC_CONFIG_PROPERTY.getTtsEngine());//tts-mrcp协议都使用unimrcp
         //嗓音，由TTS引擎决定，默认为default。
         media.put("voice", "default");//tts科大提供
         return media;
@@ -92,7 +76,7 @@ public class XCCUtil {
         JSONObject speech = new JSONObject();
 //        speech.put("grammar", "default");
         //ASR引擎
-        speech.put("engine", XCCConstants.ASR_ENGINE);
+        speech.put("engine", IVRInit.XCC_CONFIG_PROPERTY.getAsrEngine());
         //禁止打断。用户讲话不会打断放音。
         speech.put("nobreak", XCCConstants.NO_BREAK);
         //正整数，未检测到语音超时，默认为5000ms
@@ -115,7 +99,7 @@ public class XCCUtil {
         params.put("ctrl_uuid", "chryl-ivvr");
         params.put("uuid", event.getUuid());
         params.put("data", data);
-        String service = XCCConstants.XNODE_SUBJECT_PREFIX + event.getNodeUuid();
+        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + event.getNodeUuid();
         RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.SET_VAR, params, 1000);
     }
 
@@ -126,7 +110,7 @@ public class XCCUtil {
         JSONObject params = new JSONObject();
         params.put("ctrl_uuid", "chryl-ivvr");
         params.put("uuid", event.getUuid());
-        String service = XCCConstants.XNODE_SUBJECT_PREFIX + event.getNodeUuid();
+        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + event.getNodeUuid();
         RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.GET_STATE, params, 10000);
     }
 
@@ -138,7 +122,7 @@ public class XCCUtil {
         //当前channel 的uuid
         String channelUuid = event.getUuid();
         params.put("uuid", channelUuid);
-        String service = XCCConstants.XNODE_SUBJECT_PREFIX + event.getNodeUuid();
+        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + event.getNodeUuid();
         RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.ACCEPT, params, 10000);
     }
 
@@ -149,7 +133,7 @@ public class XCCUtil {
         //当前channel 的uuid
         String channelId = event.getUuid();
         params.put("uuid", channelId);
-        String service = XCCConstants.XNODE_SUBJECT_PREFIX + event.getNodeUuid();
+        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + event.getNodeUuid();
         RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.ANSWER, params, 10000);
     }
 
@@ -161,7 +145,7 @@ public class XCCUtil {
         params.put("uuid", event.getUuid());
         //flag integer 值为,0：挂断自己,1：挂断对方,2：挂断双方
         params.put("flag", 2);
-        String service = XCCConstants.XNODE_SUBJECT_PREFIX + event.getNodeUuid();
+        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + event.getNodeUuid();
         RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.HANGUP, params, 1000);
     }
 
@@ -181,7 +165,7 @@ public class XCCUtil {
         log.info("TTS播报内容为:{}", ttsContent);
         JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
         params.put("media", media);
-        String service = XCCConstants.XNODE_SUBJECT_PREFIX + event.getNodeUuid();
+        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + event.getNodeUuid();
         RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.PLAY, params, 10000);
     }
 
@@ -201,7 +185,7 @@ public class XCCUtil {
         params.put("uuid", channelUuid);
         JSONObject media = getPlayMedia(XCCConstants.PLAY_FILE, file);
         params.put("media", media);
-        String service = XCCConstants.XNODE_SUBJECT_PREFIX + event.getNodeUuid();
+        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + event.getNodeUuid();
         RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.PLAY, params, 1000);
     }
 
@@ -226,7 +210,7 @@ public class XCCUtil {
 //        params.put("dtmf", null);
         JSONObject speech = getSpeech();
         params.put("speech", speech);
-        String service = XCCConstants.XNODE_SUBJECT_PREFIX + event.getNodeUuid();
+        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + event.getNodeUuid();
         IVRModel ivrModel = RequestUtil.natsRequestFutureByDetectSpeech(nc, service, XCCConstants.DETECT_SPEECH, params);
         return ivrModel;
     }
@@ -258,7 +242,7 @@ public class XCCUtil {
         JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
 //        params.put("data", media);
         params.put("media", media);
-        String service = XCCConstants.XNODE_SUBJECT_PREFIX + event.getNodeUuid();
+        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + event.getNodeUuid();
 
         IVRModel ivrModel = RequestUtil.natsRequestFutureByReadDTMF(nc, service, XCCConstants.READ_DTMF, params, 10000);
         return ivrModel;

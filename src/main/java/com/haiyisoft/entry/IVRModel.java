@@ -1,5 +1,7 @@
 package com.haiyisoft.entry;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -8,8 +10,8 @@ import java.io.Serializable;
  *
  * @author Chr.yl
  */
+@Data
 public class IVRModel implements Serializable {
-    private static final long serialVersionUID = 7055115971236055547L;
 
     //xcc返回code
     private Integer code;
@@ -21,38 +23,4 @@ public class IVRModel implements Serializable {
     private String retValue;
 
 
-    public IVRModel() {
-    }
-
-    public Integer getCode() {
-        return code;
-    }
-
-    public void setCode(Integer code) {
-        this.code = code;
-    }
-
-    public String getXccMsg() {
-        return xccMsg;
-    }
-
-    public void setXccMsg(String xccMsg) {
-        this.xccMsg = xccMsg;
-    }
-
-    public String getRetKey() {
-        return retKey;
-    }
-
-    public void setRetKey(String retKey) {
-        this.retKey = retKey;
-    }
-
-    public String getRetValue() {
-        return retValue;
-    }
-
-    public void setRetValue(String retValue) {
-        this.retValue = retValue;
-    }
 }

@@ -1,6 +1,7 @@
 package com.haiyisoft.ivr;
 
 import com.alibaba.fastjson.JSONObject;
+import com.haiyisoft.boot.IVRInit;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
 import io.nats.client.Connection;
@@ -22,11 +23,6 @@ import java.time.Duration;
 @Slf4j
 @Component
 public class IVRController {
-
-    public static void main(String[] args) {
-        new IVRController().domain();
-    }
-
     @Autowired
     private IVRHandler ivrHandler;
 
@@ -76,9 +72,9 @@ public class IVRController {
         try {
             log.warn(" Ivr Controller started ");
             //获取nats连接
-            Connection nc = Nats.connect(XCCConstants.NATS_URL);
+            Connection nc = Nats.connect(IVRInit.XCC_CONFIG_PROPERTY.getNatsUrl());
             //从nats获取订阅主题
-            Subscription sub = nc.subscribe(XCCConstants.XCTRL_SUBJECT);
+            Subscription sub = nc.subscribe(IVRInit.XCC_CONFIG_PROPERTY.getXctrlSubject());
             while (true) {
                 try {
                     //订阅接收的消息

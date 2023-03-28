@@ -1,16 +1,18 @@
 package com.haiyisoft.constant;
 
 /**
+ * 不可配置
  * XCC和NGD常量
  * Created By Chryl on 2023-02-08.
  */
 public class XCCConstants {
 
-    /********************************************xcc相关********************************************/
+    /********************************************xswitch相关********************************************/
     //Nats 地址
     public static final String NATS_URL = "nats://hy:h8klu6bRwW@nats.xswitch.cn:4222";
     //Ctrl 订阅主题
     public static final String XCTRL_SUBJECT = "cn.xswitch.ctrl";
+
     public static final String XCTRL_SUBJECT_DESTROY = "cn.xswitch.ctrl.event";
     //TTS引擎
     public static final String TTS_ENGINE = "ali";
@@ -104,9 +106,9 @@ public class XCCConstants {
     public static final int JSONRPC_SERVER_ERROR = 500;
 
 
-    /********************************************xcc相关********************************************/
+    /********************************************xswitch相关********************************************/
 
-    /********************************************NGD相关********************************************/
+    /********************************************ngd相关********************************************/
 
     //百度知识库测试环境地址
     public static final String NGD_QUERY_URL = "https://api-ngd.baidu.com/api/v2/core/query";
@@ -132,6 +134,6 @@ public class XCCConstants {
     public static final String NGD_SEPARATOR = "#";
 
 
-    /********************************************NGD相关********************************************/
+    /********************************************ngd相关********************************************/
 
 }

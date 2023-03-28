@@ -1,12 +1,14 @@
 package com.haiyisoft.ivr;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.protobuf.util.JsonFormat;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
 import com.haiyisoft.entry.IVRModel;
 import com.haiyisoft.util.IdGenerator;
 import com.haiyisoft.util.NGDUtil;
 import com.haiyisoft.util.XCCUtil;
+import com.haiyisoft.xctrl.Xctrl;
 import io.nats.client.Connection;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -42,7 +44,9 @@ public class IVRHandler {
         if (state == null) {
             log.info("state is null ");
         } else {
-            log.info("state :{} ", state);
+            //使用channelId作为callId,sessionId
+            String channelId = event.getUuid();
+            log.info(" start this call channelId: {} , state :{} ", channelId, state);
             switch (state) {
                 case XCCConstants.Channel_START:
                     //开始接管
@@ -58,8 +62,7 @@ public class IVRHandler {
                     String retValue = XCCConstants.WELCOME_TEXT;
                     //xcc返回数据
                     String xccResMsg = "";
-                    //使用channelId作为callId,sessionId
-                    String sessionId = event.getUuid();
+
                     while (true) {
                         if (XCCConstants.YYSR.equals(retKey)) {//调用播报收音
                             ivrModel = XCCUtil.detectSpeechPlayTTSNoDTMF(nc, event, retValue);
@@ -79,22 +82,12 @@ public class IVRHandler {
                         }
                         xccResMsg = ivrModel.getXccMsg();
                         //调用百度知识库
-                        ngdResMsg = NGDUtil.invokeNGD(xccResMsg, sessionId);
+                        ngdResMsg = NGDUtil.invokeNGD(xccResMsg, channelId);
                         //处理指令和话术
                         ivrModel = NGDUtil.convertResText(ngdResMsg, ivrModel);
                         retKey = ivrModel.getRetKey();
                         retValue = ivrModel.getRetValue();
                     }
-//                xcc.SetVar(nc, event);
-                    //播放一段音频
-//                xcc.Play(nc, event);
-                    //获取当前通道状态
-//                xcc.GetState(nc, event);
-                    //执行原生APP
-//                xcc.NativeApp(nc, event);
-                    //语音进入IVR
-//                IvrHandler ivr = new IvrHandler();
-//                ivr.Ivr(nc, event);
 
                 case "CALLING":
                 case "RINGING":
@@ -103,11 +96,12 @@ public class IVRHandler {
 //                xcc.Bridge(nc, event);
                 case "MEDIA":
                 case XCCConstants.DESTROY:
-                    System.out.println("DESTROY");
+                    log.info("destroy this call channelId: {}", channelId);
             }
 
             //挂断双方
             XCCUtil.hangup(nc, event);
+            log.info("hangup this call channelId: {} ", channelId);
         }
     }
 
@@ -128,25 +122,9 @@ public class IVRHandler {
             //当前Channel的状态,如START--Event.Channel（state=START）
             String state = params.getString("state");
 
-//        boolean answered = params.getBooleanValue("answered");
-//        String billsec = params.getString("billsec");
-//        String cause = params.getString("cause");
-//        boolean video = params.getBooleanValue("video");
-
-
             event.setUuid(uuid);
             event.setNodeUuid(node_uuid);
             event.setState(state);
-
-//        event.setAnswered(answered);
-//        event.setBillsec(billsec);
-//        event.setCause(cause);
-//        event.setVideo(video);
-//        event.setRingEpoch((int) result.get("ring_epoch"));
-//        event.setCreateEpoch((int) result.get("create_epoch"));
-//        event.setCidName((String) result.get("cid_name"));
-//        event.setCidNumber((String) result.get("cid_number"));
-//        event.setDestNumber((String) result.get("dest_number"));
 
         } catch (Exception e) {
             e.printStackTrace();
