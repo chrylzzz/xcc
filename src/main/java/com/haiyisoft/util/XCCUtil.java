@@ -134,7 +134,7 @@ public class XCCUtil {
         String channelId = event.getUuid();
         params.put("uuid", channelId);
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + event.getNodeUuid();
-        RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.ANSWER, params, 10000);
+        RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.ANSWER, params, 5000);
     }
 
     //挂断
@@ -146,7 +146,7 @@ public class XCCUtil {
         //flag integer 值为,0：挂断自己,1：挂断对方,2：挂断双方
         params.put("flag", 2);
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + event.getNodeUuid();
-        RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.HANGUP, params, 1000);
+        RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.HANGUP, params, 5000);
     }
 
     /**
@@ -243,8 +243,7 @@ public class XCCUtil {
 //        params.put("data", media);
         params.put("media", media);
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + event.getNodeUuid();
-
-        IVRModel ivrModel = RequestUtil.natsRequestFutureByReadDTMF(nc, service, XCCConstants.READ_DTMF, params, 10000);
+        IVRModel ivrModel = RequestUtil.natsRequestFutureByReadDTMF(nc, service, XCCConstants.READ_DTMF, params);
         return ivrModel;
     }
 

@@ -1,22 +1,17 @@
 package com.haiyisoft.ivr;
 
 import com.alibaba.fastjson.JSONObject;
-import com.google.protobuf.util.JsonFormat;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
 import com.haiyisoft.entry.IVRModel;
+import com.haiyisoft.util.ExceptionAdvice;
 import com.haiyisoft.util.IdGenerator;
 import com.haiyisoft.util.NGDUtil;
 import com.haiyisoft.util.XCCUtil;
-import com.haiyisoft.xctrl.Xctrl;
 import io.nats.client.Connection;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created By Chryl on 2023-02-08.
@@ -73,11 +68,9 @@ public class IVRHandler {
                         } else if (XCCConstants.RGYT.equals(retKey)) {//转人工
 
                         }
-                        /**
-                         * TODO
-                         * 挂机api code为404, 此处先这样处理
-                         */
-                        if (ivrModel.getCode() == 404) {
+                        //handle code
+                        boolean handleXcc = ExceptionAdvice.handleXcc(ivrModel);
+                        if (handleXcc) {
                             break;
                         }
                         xccResMsg = ivrModel.getXccMsg();
@@ -89,13 +82,13 @@ public class IVRHandler {
                         retValue = ivrModel.getRetValue();
                     }
 
-                case "CALLING":
-                case "RINGING":
-                case "BRIDGE":
-                case "READY":
+                case XCCConstants.Channel_CALLING:
+                case XCCConstants.Channel_RINGING:
+                case XCCConstants.Channel_BRIDGE:
+                case XCCConstants.Channel_READY:
 //                xcc.Bridge(nc, event);
-                case "MEDIA":
-                case XCCConstants.DESTROY:
+                case XCCConstants.Channel_MEDIA:
+                case XCCConstants.CHANNEL_DESTROY:
                     log.info("destroy this call channelId: {}", channelId);
             }
 
@@ -128,6 +121,7 @@ public class IVRHandler {
 
         } catch (Exception e) {
             e.printStackTrace();
+            log.error("服务器发生异常：{}", e);
         }
         return event;
     }

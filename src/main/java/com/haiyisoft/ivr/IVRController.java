@@ -124,15 +124,14 @@ public class IVRController {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
+                    log.error("服务器发生异常：{}", e);
                 }
-
-
             }
 
-        } catch (IOException e) {
+
+        } catch (Exception e) {
             e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            log.error("服务器发生异常：{}", e);
         }
     }
 

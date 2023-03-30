@@ -39,7 +39,7 @@ public class XCCConstants {
      * ANSWERED：应答
      * BRIDGE：桥接
      * UNBRIDGE： 断开桥接
-     * DESTROY：挂机
+     * CHANNEL_DESTROY：挂机
      * <p>
      * 去话Channel状态:
      * CALLING：去话第一个事件
@@ -49,11 +49,12 @@ public class XCCConstants {
      * BRIDGE：桥接
      * READY：就绪
      * UNBRIDGE： 断开桥接
-     * DESTROY： 挂机
+     * CHANNEL_DESTROY： 挂机
      */
     //START：来话第一个事件
     public static final String Channel_START = "START";
-    public static final String DESTROY = "DESTROY";
+    //小会
+    public static final String CHANNEL_DESTROY = "CHANNEL_DESTROY";
     //CALLING：去话第一个事件
     public static final String Channel_CALLING = "CALLING";
     //RINGING：振铃
