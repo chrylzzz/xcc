@@ -3,7 +3,7 @@ package com.haiyisoft.ivr;
 import com.alibaba.fastjson.JSONObject;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
-import com.haiyisoft.entry.IVRModel;
+import com.haiyisoft.entry.IVREvent;
 import com.haiyisoft.util.ExceptionAdvice;
 import com.haiyisoft.util.IdGenerator;
 import com.haiyisoft.util.NGDUtil;
@@ -50,8 +50,8 @@ public class IVRHandler {
 //                XCCUtil.playTTS(nc, event, XCCConstants.WELCOME_TEXT);
                     //调用多轮
                     String ngdResMsg = "";
-                    //处理指令和内容;获取多轮指令和内容
-                    IVRModel ivrModel = new IVRModel();
+                    //ivr event
+                    IVREvent ivrEvent = new IVREvent(channelId);
                     String retKey = XCCConstants.YYSR;
                     //欢迎语
                     String retValue = XCCConstants.WELCOME_TEXT;
@@ -60,26 +60,35 @@ public class IVRHandler {
 
                     while (true) {
                         if (XCCConstants.YYSR.equals(retKey)) {//调用播报收音
-                            ivrModel = XCCUtil.detectSpeechPlayTTSNoDTMF(nc, event, retValue);
+                            ivrEvent = XCCUtil.detectSpeechPlayTTSNoDTMF(ivrEvent, nc, event, retValue);
                         } else if (XCCConstants.AJSR.equals(retKey)) {//调用xcc收集按键方法，多位按键
-                            ivrModel = XCCUtil.playAndReadDTMF(nc, event, retValue, 18);
+                            ivrEvent = XCCUtil.playAndReadDTMF(ivrEvent, nc, event, retValue, 18);
                         } else if (XCCConstants.YWAJ.equals(retKey)) {//调用xcc收集按键方法，一位按键
-                            ivrModel = XCCUtil.playAndReadDTMF(nc, event, retValue, 1);
+                            ivrEvent = XCCUtil.playAndReadDTMF(ivrEvent, nc, event, retValue, 1);
                         } else if (XCCConstants.RGYT.equals(retKey)) {//转人工
 
                         }
-                        //handle code
-                        boolean handleXcc = ExceptionAdvice.handleXcc(ivrModel);
+                        //handle code agent
+                        boolean handleXcc = ExceptionAdvice.handleXccAgent(ivrEvent);
                         if (handleXcc) {
+                            //转人工
                             break;
                         }
-                        xccResMsg = ivrModel.getXccMsg();
+                        xccResMsg = ivrEvent.getXccMsg();
                         //调用百度知识库
                         ngdResMsg = NGDUtil.invokeNGD(xccResMsg, channelId);
                         //处理指令和话术
-                        ivrModel = NGDUtil.convertResText(ngdResMsg, ivrModel);
-                        retKey = ivrModel.getRetKey();
-                        retValue = ivrModel.getRetValue();
+                        ivrEvent = NGDUtil.convertResText(ngdResMsg, ivrEvent);
+                        //handle ngd agent
+                        ivrEvent = ExceptionAdvice.handleNgdAgent(ivrEvent);
+                        if (ivrEvent.isAgent()) {
+                            //转人工
+                            log.info("ivrEvent agent: {}", ivrEvent);
+                            break;
+                        }
+                        retKey = ivrEvent.getRetKey();
+                        retValue = ivrEvent.getRetValue();
+                        log.info("ivrEvent data: {}", ivrEvent);
                     }
 
                 case XCCConstants.Channel_CALLING:

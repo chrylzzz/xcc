@@ -15,8 +15,11 @@ import java.util.Map;
 @Data
 public class ChannelEvent {
 
+    //xswitch node id
     private String nodeUuid = "";
+    //channel id
     private String uuid = "";
+    //Channel state
     private String state = "";
 
 

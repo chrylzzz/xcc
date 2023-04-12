@@ -2,7 +2,7 @@ server:
   port: 8088
 
 
-####
+####XCC相关变量####
 xcc:
   #xswitch
   natsUrl: nats://hy:h8klu6bRwW@nats.xswitch.cn:4222

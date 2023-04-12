@@ -92,8 +92,17 @@ public class XCCConstants {
     public static final String DETECT_SPEECH = "Xnode.DetectSpeech";
     //放音收号
     public static final String READ_DTMF = "Xnode.ReadDTMF";
+    //转接
+    public static final String BRIDGE = "Xnode.Bridge";
     //挂断
     public static final String HANGUP = "Xnode.Hangup";
+
+    //flow_control：呼叫控制，跟程控交换机中的控制方式类似，略有不同。
+    //NONE：无控制，任意方挂机不影响其它一方
+    //CALLER：主叫控制，a-leg挂机后b-leg自动挂机
+    //CALLEE：被叫控制，b-leg挂机后a-leg自动挂机
+    //ANY：互不控制，任一方挂机后另一方也挂机
+    public static final String ANY = "ANY";
 
     //success
     public static final int JSONRPC_OK = 200;
@@ -117,8 +126,12 @@ public class XCCConstants {
     public static final String NGD_QUERY_AUTHORIZATION = "NGD 43b6f0be-4894-466f-a346-08046d935035";
     //欢迎语
     public static final String WELCOME_TEXT = "我是智能美美, 您要咨询什么问题, 您请说";
-    //多轮返回失败话术
-    public static final String NGD_MISSING_MSG = "YYSR#您的问题我不理解，请换个问法。如需人工服务，请讲 转人工";
+    //XCC返回失败话术
+    public static final String XCC_MISSING_MSG = "YYSR#您的问题我不理解，请换个问法。如需人工服务，请讲 转人工";
+    //XCC返回失败话术
+    public static final String XCC_MISSING_ANSWER = "您的问题我不理解，请换个问法。如需人工服务，请讲 转人工";
+    //NGD识别失败话术
+    public static final String NGD_MISSING_MSG = "我不太理解您的意思";
     //语音输入
     public static final String YYSR = "YYSR";
     //按键输入

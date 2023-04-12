@@ -70,18 +70,19 @@ public class IVRController {
      */
     public void domain() {
         try {
-            log.warn(" Ivr Controller started ");
+            log.warn("Ivr Controller tarted");
             //获取nats连接
             Connection nc = Nats.connect(IVRInit.XCC_CONFIG_PROPERTY.getNatsUrl());
+//            log.info("nats connect : {}",nc.getConnectedUrl());
             //从nats获取订阅主题
             Subscription sub = nc.subscribe(IVRInit.XCC_CONFIG_PROPERTY.getXctrlSubject());
             while (true) {
                 try {
-                    //订阅接收的消息
+                    //订阅消息
                     Message subMsg = sub.nextMessage(Duration.ofMillis(50000));
 //                log.info("订阅接收的消息：{}", subMsg);
                     if (subMsg == null) {
-                        log.info("this subMsg is null ,{}", subMsg);
+                        log.info(" this subMsg is null ");
                     } else {
 
 
@@ -98,13 +99,12 @@ public class IVRController {
                         log.info(" subMsg ,{}", subMsg);
                         //订阅事件
                         String eventStr = new String(subMsg.getData(), StandardCharsets.UTF_8);
-//                        log.info(" eventStr data:{}", eventStr);
+                        log.info(" eventStr data:{}", eventStr);
 
                         JSONObject eventJson = JSONObject.parseObject(eventStr);
-//                log.info("订阅事件 json data:{}", eventJson);
+                        log.info("订阅事件 json data:{}", eventJson);
                         //event状态,Event.Channel（state=START）
                         String method = eventJson.getString("method");
-//                log.info("event method :{}", method);
                         //XNode收到呼叫后，向NATS广播来话消息（Event.Channel（state = START）），Ctrl收到后进行处理。
                         switch (method) {
                             case XCCConstants.Event_Channel:

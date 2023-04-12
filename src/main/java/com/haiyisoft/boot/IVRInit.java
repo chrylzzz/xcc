@@ -27,10 +27,10 @@ public class IVRInit {
     public ApplicationRunner applicationRunner() {
         return applicationArguments -> {
             long startTime = System.currentTimeMillis();
-            log.info(Thread.currentThread().getName() + "：开始调用异步业务");
+            log.info("{} ：开始调用异步业务", Thread.currentThread().getName());
             ivrController.domain();
             long endTime = System.currentTimeMillis();
-            log.info(Thread.currentThread().getName() + "：调用异步业务结束，耗时：" + (endTime - startTime));
+            log.info("{} ：调用异步业务结束，耗时：{}", Thread.currentThread().getName(), (endTime - startTime));
         };
     }
 

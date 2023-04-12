@@ -1,16 +1,15 @@
 package com.haiyisoft.util;
 
 import com.alibaba.fastjson.JSONObject;
+import com.haiyisoft.anno.SysLog;
 import com.haiyisoft.boot.IVRInit;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
-import com.haiyisoft.entry.IVRModel;
+import com.haiyisoft.entry.IVREvent;
 import io.nats.client.Connection;
-import io.nats.client.Nats;
-import io.nats.client.Options;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +18,7 @@ import java.util.Map;
  * Created By Chryl on 2023-02-08.
  **/
 @Slf4j
+@Component
 public class XCCUtil {
 
     /**
@@ -61,7 +61,7 @@ public class XCCUtil {
         dtmf.put("min_digits", 1);
         dtmf.put("max_digits", maxDigits);
         dtmf.put("timeout", 15000);
-        dtmf.put("digit_timeout", 20000);
+        dtmf.put("digit_timeout", 2000);
         dtmf.put("terminators", XCCConstants.DTMF_TERMINATORS);
         return dtmf;
     }
@@ -84,7 +84,7 @@ public class XCCUtil {
         //语音超时，即如果对方讲话一直不停超时，最大只能设置成6000ms，默认为6000ms。
         speech.put("speech_timeout", 6 * 1000);
         //是否返回中间结果
-        speech.put("partial_event", false);
+        speech.put("partial_event", true);
         //默认会发送Event.DetectedData事件，如果为true则不发送。
         speech.put("disable_detected_data_event", true);
         return speech;
@@ -196,7 +196,7 @@ public class XCCUtil {
      * @param event
      * @return
      */
-    public static IVRModel detectSpeechPlayTTSNoDTMF(Connection nc, ChannelEvent event, String ttsContent) {
+    public static IVREvent detectSpeechPlayTTSNoDTMF(IVREvent ivrEvent, Connection nc, ChannelEvent event, String ttsContent) {
         JSONObject params = new JSONObject();
         //ctrl_uuid:ctrl_uuid
         params.put("ctrl_uuid", "chryl-ivvr");
@@ -211,8 +211,10 @@ public class XCCUtil {
         JSONObject speech = getSpeech();
         params.put("speech", speech);
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + event.getNodeUuid();
-        IVRModel ivrModel = RequestUtil.natsRequestFutureByDetectSpeech(nc, service, XCCConstants.DETECT_SPEECH, params);
-        return ivrModel;
+        ivrEvent = RequestUtil.natsRequestFutureByDetectSpeech(ivrEvent, nc, service, XCCConstants.DETECT_SPEECH, params, 0);
+//        RequestUtil requestUtil = new RequestUtil();
+//        IVREvent ivrEvent = requestUtil.natsRequestFutureByDetectSpeech(nc, service, XCCConstants.DETECT_SPEECH, params, 20000);
+        return ivrEvent;
     }
 
     /**
@@ -222,8 +224,9 @@ public class XCCUtil {
      * @param event
      * @param ttsContent 播报内容
      * @param maxDigits  最大位长
+     * @return
      */
-    public static IVRModel playAndReadDTMF(Connection nc, ChannelEvent event, String ttsContent, int maxDigits) {
+    public static IVREvent playAndReadDTMF(IVREvent ivrEvent, Connection nc, ChannelEvent event, String ttsContent, int maxDigits) {
 //        播放一个语音并获取用户按键信息，将在收到满足条件的按键后返回。
 //        data：播放的媒体，可以是语音文件或TTS。
 //        返回结果：
@@ -243,8 +246,72 @@ public class XCCUtil {
 //        params.put("data", media);
         params.put("media", media);
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + event.getNodeUuid();
-        IVRModel ivrModel = RequestUtil.natsRequestFutureByReadDTMF(nc, service, XCCConstants.READ_DTMF, params);
-        return ivrModel;
+        ivrEvent = RequestUtil.natsRequestFutureByReadDTMF(ivrEvent, nc, service, XCCConstants.READ_DTMF, params, 2000);
+        return ivrEvent;
+    }
+
+    /**
+     * @param nc
+     * @param event
+     * @return
+     */
+    public static IVREvent bridge(IVREvent ivrEvent, Connection nc, ChannelEvent event) {
+/*
+        JSONObject rpc = this.getRpc("Bridge", id);
+        JSONObject params = new JSONObject();
+//        params.put("uuid", uuid);
+        params.put("ctrl_uuid", "ctrl_uuid");
+        params.put("flow_control", "ANY");
+        JSONObject destination = new JSONObject();
+        JSONObject callParam = new JSONObject();
+        JSONArray callArray = new JSONArray();
+        callParam.put("uuid", CommonUtil.getUUID());
+        callParam.put("dial_string", new StringBuilder("sofia/public/sip40").append("15553551792").append("@xyt" +
+                ".xswitch.cn:18880;transport=tcp"));
+        JSONObject cParams = new JSONObject();
+        cParams.put("absolute_codec_string", "PCMA");
+        callParam.put("params", cParams);
+        callArray.add(callParam);
+        destination.put("call_params", callArray);
+        destination.put("global_params", new JSONObject());
+        params.put("destination", destination);
+        rpc.put("params", params);
+        logger.info("Bridge入参：{}", rpc);
+        Future<Message> incoming = nc.request(service, rpc.toString().getBytes(StandardCharsets.UTF_8));
+        Message msg = incoming.get(50000, TimeUnit.MILLISECONDS);
+        String callResponse = new String(msg.getData(), StandardCharsets.UTF_8);
+        JSONObject jsonObject = JSONObject.parseObject(callResponse);
+        logger.info("Bridge：{}", jsonObject);
+*/
+
+        JSONObject params = new JSONObject();
+        //当前channel 的uuid
+        String channelId = event.getUuid();
+        params.put("uuid", channelId);
+        params.put("ctrl_uuid", "chryl-ivvr");
+        params.put("flow_control", XCCConstants.ANY);
+        JSONObject destination = new JSONObject();
+        //全局参数
+        JSONObject global_params = new JSONObject();
+        global_params.put("队列名", "");
+        global_params.put("手机号", "");
+        global_params.put("归属地", "");
+        //呼叫参数
+        JSONObject call_params = new JSONObject();
+        call_params.put("uuid", IdGenerator.simpleUUID());
+        call_params.put("dial_string", "sofia/default");
+//        JSONObject associateData = new JSONObject();
+//        call_params.put("params", associateData);
+
+
+        params.put("global_params", global_params);
+        params.put("call_params", call_params);
+        params.put("destination", destination);
+
+
+        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + event.getNodeUuid();
+        ivrEvent = RequestUtil.natsRequestFutureByBridge(ivrEvent, nc, service, XCCConstants.BRIDGE, params, 2000);
+        return ivrEvent;
     }
 
 }
