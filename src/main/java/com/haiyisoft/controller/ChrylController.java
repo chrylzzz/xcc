@@ -30,7 +30,7 @@ import java.time.Duration;
  */
 @Slf4j
 @RestController
-@RequestMapping("test")
+@RequestMapping("xcc")
 public class ChrylController {
 
 

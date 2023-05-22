@@ -75,6 +75,7 @@ public class RequestUtil {
     /**
      * 无数据返回
      *
+     * @param ivrEvent     IVR业务实体
      * @param con          connection
      * @param service      node uuid
      * @param method       xcc method
@@ -82,28 +83,29 @@ public class RequestUtil {
      * @param milliSeconds 毫秒
      * @return
      */
-    public static void natsRequestTimeOut(Connection con, String service, String method, JSONObject params, long milliSeconds) {
+    public static void natsRequestTimeOut(IVREvent ivrEvent, Connection con, String service, String method, JSONObject params, long milliSeconds) {
+        log.info("{} 执行开始", method);
         JSONObject jsonRpc = getJsonRpc(method, params);
         StringWriter request = new StringWriter();
         jsonRpc.writeJSONString(request);
-        log.info("natsRequestTimeOut service:{}, jsonRpc:{}", service, jsonRpc);
         String json = JSON.toJSONString(jsonRpc, SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteDateUseDateFormat, SerializerFeature.WriteNullListAsEmpty);
-        log.info("natsRequestTimeOut request Serializer json:{}", json);
+        log.info("{} request service:{}, Serializer json:{}", method, service, json);
         try {
             con.request(service, request.toString().getBytes(StandardCharsets.UTF_8), Duration.ofMillis(milliSeconds));
             Future<Message> incoming = con.request(service, request.toString().getBytes(StandardCharsets.UTF_8));
             Message msg = incoming.get(milliSeconds, TimeUnit.MILLISECONDS);
             String response = new String(msg.getData(), StandardCharsets.UTF_8);
-            log.info("natsRequestTimeOut 返回信息:{}", response);
+            log.debug("{} 返回信息:{}", method, response);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        log.info("{} 执行结束", method);
     }
 
     /**
      * 无数据返回 Future
      *
+     * @param ivrEvent     IVR业务实体
      * @param con          connection
      * @param service      node uuid
      * @param method       xcc method
@@ -111,7 +113,8 @@ public class RequestUtil {
      * @param milliSeconds 毫秒
      * @return
      */
-    public static void natsRequestFuture(Connection con, String service, String method, JSONObject params, long milliSeconds) {
+    public static void natsRequestFuture(IVREvent ivrEvent, Connection con, String service, String method, JSONObject params, long milliSeconds) {
+        log.info("{} 执行开始", method);
         JSONObject jsonRpc = getJsonRpc(method, params);
         StringWriter request = new StringWriter();
         jsonRpc.writeJSONString(request);
@@ -121,11 +124,12 @@ public class RequestUtil {
             Future<Message> incoming = con.request(service, request.toString().getBytes(StandardCharsets.UTF_8));
             Message msg = incoming.get(milliSeconds, TimeUnit.MILLISECONDS);
             String response = new String(msg.getData(), StandardCharsets.UTF_8);
-            log.info("返回信息:{}", response);
+            log.debug("{} 返回信息:{}", method, response);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+        log.info("{} 执行结束", method);
 
     }
 
@@ -133,6 +137,7 @@ public class RequestUtil {
     /**
      * DetectSpeech
      *
+     * @param ivrEvent     IVR业务实体
      * @param con          connection
      * @param service      node uuid
      * @param method       xcc method
@@ -142,12 +147,12 @@ public class RequestUtil {
      */
     @SysLog("DetectSpeech")
     public static IVREvent natsRequestFutureByDetectSpeech(IVREvent ivrEvent, Connection con, String service, String method, JSONObject params, long milliSeconds) {
-        log.info("DetectSpeech 执行开始");
+        log.info("{} 执行开始", method);
         JSONObject jsonRpc = getJsonRpc(method, params);
         StringWriter request = new StringWriter();
         jsonRpc.writeJSONString(request);
         String json = JSON.toJSONString(jsonRpc, SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteDateUseDateFormat, SerializerFeature.WriteNullListAsEmpty);
-        log.info("DetectSpeech request service:{}, Serializer json:{}", service, json);
+        log.info("{} request service:{}, Serializer json:{}", method, service, json);
         //识别返回数据,调用失败默认为""
         String utterance = "";
         try {
@@ -155,7 +160,7 @@ public class RequestUtil {
             Message msg = incoming.get();
 //            Message msg = incoming.get(milliSeconds, TimeUnit.MILLISECONDS);
             String response = new String(msg.getData(), StandardCharsets.UTF_8);
-            log.debug("DetectSpeech 返回信息:{}", response);
+            log.debug("{} 返回信息:{}", method, response);
             JSONObject result = JSONObject.parseObject(response).getJSONObject("result");
 //            log.info("DetectSpeech 返回信息:{}", result);
             Integer code = result.getInteger("code");
@@ -167,11 +172,11 @@ public class RequestUtil {
             ivrEvent.setXccMsg(utterance);
         } catch (Exception e) {
             e.printStackTrace();
-            ivrEvent = ExceptionAdvice.handleException(e, ivrEvent);
+            ivrEvent = ExceptionAdvice.handleException(method, e, ivrEvent);
         }
-        log.info("DetectSpeech 识别返回数据 utterance: {}", utterance);
-        log.info("DetectSpeech ivrEvent: {}", ivrEvent);
-        log.info("DetectSpeech 执行结束时间为");
+        log.info("{} 识别返回数据 utterance: {}", method, utterance);
+        log.info("{} ivrEvent: {}", method, ivrEvent);
+        log.info("{} 执行结束", method);
         return ivrEvent;
     }
 
@@ -179,6 +184,7 @@ public class RequestUtil {
     /**
      * ReadDTMF
      *
+     * @param ivrEvent     IVR业务实体
      * @param con          connection
      * @param service      node uuid
      * @param method       xcc method
@@ -187,12 +193,12 @@ public class RequestUtil {
      * @return
      */
     public static IVREvent natsRequestFutureByReadDTMF(IVREvent ivrEvent, Connection con, String service, String method, JSONObject params, long milliSeconds) {
-        log.info("ReadDTMF 执行开始");
+        log.info("{} 执行开始时间为", method);
         JSONObject jsonRpc = getJsonRpc(method, params);
         StringWriter request = new StringWriter();
         jsonRpc.writeJSONString(request);
         String json = JSON.toJSONString(jsonRpc, SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteDateUseDateFormat, SerializerFeature.WriteNullListAsEmpty);
-        log.info("ReadDTMF request service:{}, Serializer json:{}", service, json);
+        log.info("{} request service:{}, Serializer json:{}", method, service, json);
         //识别返回数据,调用失败默认为""
         String dtmf = "";
         try {
@@ -200,7 +206,7 @@ public class RequestUtil {
             Message msg = incoming.get();
 //            Message msg = incoming.get(milliSeconds, TimeUnit.MILLISECONDS);
             String response = new String(msg.getData(), StandardCharsets.UTF_8);
-            log.debug("ReadDTMF 返回信息:{}", response);
+            log.info("{} 返回信息:{}", method, response);
 
             JSONObject result = JSONObject.parseObject(response).getJSONObject("result");
             Integer code = result.getInteger("code");
@@ -214,27 +220,38 @@ public class RequestUtil {
             ivrEvent.setXccMsg(dtmf);
         } catch (Exception e) {
             e.printStackTrace();
-            ivrEvent = ExceptionAdvice.handleException(e, ivrEvent);
+            ivrEvent = ExceptionAdvice.handleException(method, e, ivrEvent);
         }
-        log.info("ReadDTMF 识别返回数据 dtmf: {}", dtmf);
-        log.info("ReadDTMF ivrEvent: {}", ivrEvent);
-        log.info("ReadDTMF 执行结束");
+        log.info("{} 识别返回数据 dtmf: {}", method, dtmf);
+        log.info("{} ivrEvent: {}", method, ivrEvent);
+        log.info("{} 执行结束", method);
         return ivrEvent;
     }
 
-
+    /**
+     * Bridge
+     *
+     * @param ivrEvent     IVR业务实体
+     * @param con          connection
+     * @param service      node uuid
+     * @param method       xcc method
+     * @param params       rpc-json params
+     * @param milliSeconds 毫秒
+     * @return
+     */
     public static IVREvent natsRequestFutureByBridge(IVREvent ivrEvent, Connection con, String service, String method, JSONObject params, int milliSeconds) {
-        log.info("Bridge 执行开始时间为");
+        log.info("{} 执行开始时间为", method);
         JSONObject jsonRpc = getJsonRpc(method, params);
         StringWriter request = new StringWriter();
         jsonRpc.writeJSONString(request);
         String json = JSON.toJSONString(jsonRpc, SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteDateUseDateFormat, SerializerFeature.WriteNullListAsEmpty);
-        log.info("Bridge request service:{}, Serializer json:{}", service, json);
+        log.info("{} request service:{}, Serializer json:{}", method, service, json);
         try {
             Future<Message> incoming = con.request(service, request.toString().getBytes(StandardCharsets.UTF_8));
-            Message msg = incoming.get(milliSeconds, TimeUnit.MILLISECONDS);
+//            Message msg = incoming.get(milliSeconds, TimeUnit.MILLISECONDS);
+            Message msg = incoming.get();
             String response = new String(msg.getData(), StandardCharsets.UTF_8);
-            log.info("Bridge 返回信息:{}", response);
+            log.info("{} 返回信息:{}", method, response);
 
 
             JSONObject result = JSONObject.parseObject(response).getJSONObject("result");
@@ -246,11 +263,11 @@ public class RequestUtil {
             ivrEvent.setCode(code);
         } catch (Exception e) {
             e.printStackTrace();
-            ivrEvent = ExceptionAdvice.handleException(e, ivrEvent);
+            ivrEvent = ExceptionAdvice.handleException(method, e, ivrEvent);
         }
-        log.info("Bridge ivrEvent: {}", ivrEvent);
-        log.info("Bridge 识别返回数据: {}", "");
-        log.info("Bridge 执行结束");
+        log.info("{} ivrEvent: {}", method, ivrEvent);
+        log.info("{} 识别返回数据: {}", method, "===================");
+        log.info("{} 执行结束", method);
         return ivrEvent;
     }
 }

@@ -35,6 +35,12 @@ public class IVREvent implements Serializable {
     private Integer agentTime;
     //是否转人工
     private boolean isAgent;
+    //华为callId
+    private String huaweiCallId;
+    //归属地编码
+    private String phoneAds;
+    //来电手机号码
+    private String phone;
 
 
 }

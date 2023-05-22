@@ -41,23 +41,24 @@ public class IVRHandler {
         } else {
             //使用channelId作为callId,sessionId
             String channelId = event.getUuid();
+            //ivr event
+            IVREvent ivrEvent = new IVREvent(channelId);
             log.info(" start this call channelId: {} , state :{} ", channelId, state);
             switch (state) {
                 case XCCConstants.Channel_START:
                     //开始接管
 //                XCCUtil.accept(nc, event);
-                    XCCUtil.answer(nc, event);
+                    XCCUtil.answer(ivrEvent, nc, event);
 //                XCCUtil.playTTS(nc, event, XCCConstants.WELCOME_TEXT);
-                    //调用多轮
+                    //ngd return msg
                     String ngdResMsg = "";
-                    //ivr event
-                    IVREvent ivrEvent = new IVREvent(channelId);
+                    //
                     String retKey = XCCConstants.YYSR;
-                    //欢迎语
                     String retValue = XCCConstants.WELCOME_TEXT;
                     //xcc返回数据
                     String xccResMsg = "";
-
+                    IVREvent bridge = XCCUtil.bridge(ivrEvent, nc, event);
+                    log.info("===:{},", bridge);
                     while (true) {
                         if (XCCConstants.YYSR.equals(retKey)) {//调用播报收音
                             ivrEvent = XCCUtil.detectSpeechPlayTTSNoDTMF(ivrEvent, nc, event, retValue);
@@ -102,7 +103,7 @@ public class IVRHandler {
             }
 
             //挂断双方
-            XCCUtil.hangup(nc, event);
+            XCCUtil.hangup(ivrEvent, nc, event);
             log.info("hangup this call channelId: {} ", channelId);
         }
     }

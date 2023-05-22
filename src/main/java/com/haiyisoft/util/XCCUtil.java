@@ -1,5 +1,6 @@
 package com.haiyisoft.util;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.haiyisoft.anno.SysLog;
 import com.haiyisoft.boot.IVRInit;
@@ -91,7 +92,7 @@ public class XCCUtil {
     }
 
 
-    public void setVar(Connection nc, ChannelEvent event) {
+    public void setVar(IVREvent ivrEvent, Connection nc, ChannelEvent event) {
         RequestUtil request = new RequestUtil();
         JSONObject params = new JSONObject();
         Map<String, String> data = new HashMap<>();
@@ -100,45 +101,45 @@ public class XCCUtil {
         params.put("uuid", event.getUuid());
         params.put("data", data);
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + event.getNodeUuid();
-        RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.SET_VAR, params, 1000);
+        RequestUtil.natsRequestTimeOut(ivrEvent, nc, service, XCCConstants.SET_VAR, params, 1000);
     }
 
 
     //获取当前通道状态
-    public void getState(Connection nc, ChannelEvent event) {
+    public void getState(IVREvent ivrEvent, Connection nc, ChannelEvent event) {
         RequestUtil request = new RequestUtil();
         JSONObject params = new JSONObject();
         params.put("ctrl_uuid", "chryl-ivvr");
         params.put("uuid", event.getUuid());
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + event.getNodeUuid();
-        RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.GET_STATE, params, 10000);
+        RequestUtil.natsRequestTimeOut(ivrEvent, nc, service, XCCConstants.GET_STATE, params, 10000);
     }
 
 
     //接管话务
-    public static void accept(Connection nc, ChannelEvent event) {
+    public static void accept(IVREvent ivrEvent, Connection nc, ChannelEvent event) {
         JSONObject params = new JSONObject();
         params.put("ctrl_uuid", "chryl-ivvr");
         //当前channel 的uuid
         String channelUuid = event.getUuid();
         params.put("uuid", channelUuid);
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + event.getNodeUuid();
-        RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.ACCEPT, params, 10000);
+        RequestUtil.natsRequestTimeOut(ivrEvent, nc, service, XCCConstants.ACCEPT, params, 10000);
     }
 
     //应答
-    public static void answer(Connection nc, ChannelEvent event) {
+    public static void answer(IVREvent ivrEvent, Connection nc, ChannelEvent event) {
         JSONObject params = new JSONObject();
         params.put("ctrl_uuid", "chryl-ivvr");
         //当前channel 的uuid
         String channelId = event.getUuid();
         params.put("uuid", channelId);
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + event.getNodeUuid();
-        RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.ANSWER, params, 5000);
+        RequestUtil.natsRequestTimeOut(ivrEvent, nc, service, XCCConstants.ANSWER, params, 5000);
     }
 
     //挂断
-    public static void hangup(Connection nc, ChannelEvent event) {
+    public static void hangup(IVREvent ivrEvent, Connection nc, ChannelEvent event) {
         JSONObject params = new JSONObject();
         params.put("ctrl_uuid", "chryl-ivvr");
         //当前channel 的uuid
@@ -146,7 +147,7 @@ public class XCCUtil {
         //flag integer 值为,0：挂断自己,1：挂断对方,2：挂断双方
         params.put("flag", 2);
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + event.getNodeUuid();
-        RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.HANGUP, params, 5000);
+        RequestUtil.natsRequestTimeOut(ivrEvent, nc, service, XCCConstants.HANGUP, params, 5000);
     }
 
     /**
@@ -156,7 +157,7 @@ public class XCCUtil {
      * @param event
      * @param ttsContent 内容
      */
-    public static void playTTS(Connection nc, ChannelEvent event, String ttsContent) {
+    public static void playTTS(IVREvent ivrEvent, Connection nc, ChannelEvent event, String ttsContent) {
         JSONObject params = new JSONObject();
         params.put("ctrl_uuid", "chryl-ivvr");
         //当前channel 的uuid
@@ -166,7 +167,7 @@ public class XCCUtil {
         JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
         params.put("media", media);
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + event.getNodeUuid();
-        RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.PLAY, params, 10000);
+        RequestUtil.natsRequestTimeOut(ivrEvent, nc, service, XCCConstants.PLAY, params, 10000);
     }
 
 
@@ -177,7 +178,7 @@ public class XCCUtil {
      * @param event
      * @param file  file_path/png_file
      */
-    public void playFILE(Connection nc, ChannelEvent event, String file) {
+    public void playFILE(IVREvent ivrEvent, Connection nc, ChannelEvent event, String file) {
         JSONObject params = new JSONObject();
         params.put("ctrl_uuid", "chryl-ivvr");
         //当前channel 的uuid
@@ -186,7 +187,7 @@ public class XCCUtil {
         JSONObject media = getPlayMedia(XCCConstants.PLAY_FILE, file);
         params.put("media", media);
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + event.getNodeUuid();
-        RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.PLAY, params, 1000);
+        RequestUtil.natsRequestTimeOut(ivrEvent, nc, service, XCCConstants.PLAY, params, 1000);
     }
 
     /**
@@ -251,6 +252,8 @@ public class XCCUtil {
     }
 
     /**
+     * 转接
+     *
      * @param nc
      * @param event
      * @return
@@ -284,28 +287,57 @@ public class XCCUtil {
         logger.info("Bridge：{}", jsonObject);
 */
 
+/*
+        {
+            "jsonrpc": "2.0",
+                "method": "XNode.Bridge",
+                "id": "call2",
+                "params": {
+            "ctrl_uuid": "6e68eb16-9272-4ca6-80e2-26253ac29e25",
+                    "uuid": "08a53c50-fbea-413b-a3df-08959d3030e2",
+                    "destination": {
+                "global_params": {},
+                "call_params": [{
+                    "uuid": "d3dd612f-b634-4aaa-aa25-0794bef046ad",
+                            "dial_string": "user/1001"
+                }]
+            }
+        }
+        }
+
+        */
+        //全局参数
+        JSONObject user2user = new JSONObject();
+        user2user.put("queueName", "111");
+        user2user.put("phoneNum", "111");
+        user2user.put("adsCode", "111");
+        user2user.put("huaweiCallId", "111");
+        JSONObject global_params = new JSONObject();
+        global_params.put("sip_h_X-User-to-User", user2user);
+        //呼叫参数
+        JSONObject call_params = new JSONObject();
+        call_params.put("uuid", IdGenerator.simpleUUID());
+        //https://docs.xswitch.cn/xcc-api/reference/#dial-string
+//        call_params.put("dial_string", "sofia/default/1002@140.143.134.19:22501");
+        //生产转接
+//        call_params.put("dial_string", "sofia/default/4001/10.194.31.200:5060");
+
+        //分机使用user
+        call_params.put("dial_string", "user/1002");
+        //[{},{}]
+        JSONArray callParamArray = new JSONArray();
+        callParamArray.add(call_params);
+
+        JSONObject destination = new JSONObject();
+        destination.put("global_params", global_params);
+        destination.put("call_params", callParamArray);
+
         JSONObject params = new JSONObject();
         //当前channel 的uuid
         String channelId = event.getUuid();
         params.put("uuid", channelId);
         params.put("ctrl_uuid", "chryl-ivvr");
         params.put("flow_control", XCCConstants.ANY);
-        JSONObject destination = new JSONObject();
-        //全局参数
-        JSONObject global_params = new JSONObject();
-        global_params.put("队列名", "");
-        global_params.put("手机号", "");
-        global_params.put("归属地", "");
-        //呼叫参数
-        JSONObject call_params = new JSONObject();
-        call_params.put("uuid", IdGenerator.simpleUUID());
-        call_params.put("dial_string", "sofia/default");
-//        JSONObject associateData = new JSONObject();
-//        call_params.put("params", associateData);
-
-
-        params.put("global_params", global_params);
-        params.put("call_params", call_params);
         params.put("destination", destination);
 
 

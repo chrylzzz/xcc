@@ -18,10 +18,10 @@ public class ExceptionAdvice {
      * @param e
      * @return
      */
-    public static IVREvent handleException(Exception e, IVREvent ivrEvent) {
+    public static IVREvent handleException(String method, Exception e, IVREvent ivrEvent) {
         ivrEvent.setCode(500);
-        ivrEvent.setXccMsg("服务器发生异常:" + e);
-        log.error("服务器发生异常：{}", e);
+        ivrEvent.setXccMsg("服务器发生异常:" + method + e);
+        log.error("服务器发生异常：{} , {}", method, e);
         return ivrEvent;
     }
 
