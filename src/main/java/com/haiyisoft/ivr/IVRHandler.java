@@ -57,10 +57,11 @@ public class IVRHandler {
                     String retValue = XCCConstants.WELCOME_TEXT;
                     //xcc返回数据
                     String xccResMsg = "";
-                    //测试bridge
 
+                    //测试bridge
                     IVREvent bridge = XCCUtil.bridge(ivrEvent, nc, event);
                     log.info("===:{},", bridge);
+
                     while (true) {
                         if (XCCConstants.YYSR.equals(retKey)) {//调用播报收音
                             ivrEvent = XCCUtil.detectSpeechPlayTTSNoDTMF(ivrEvent, nc, event, retValue);
