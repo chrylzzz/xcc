@@ -58,6 +58,7 @@ public class IVRHandler {
                     //xcc返回数据
                     String xccResMsg = "";
                     //测试bridge
+
                     IVREvent bridge = XCCUtil.bridge(ivrEvent, nc, event);
                     log.info("===:{},", bridge);
                     while (true) {
