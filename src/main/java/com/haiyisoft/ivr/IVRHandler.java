@@ -59,8 +59,8 @@ public class IVRHandler {
                     String xccResMsg = "";
 
                     //测试bridge
-                    IVREvent bridge = XCCUtil.bridge(ivrEvent, nc, event);
-                    log.info("===:{},", bridge);
+//                    IVREvent bridge = XCCUtil.bridge(ivrEvent, nc, event);
+//                    log.info("===:{},", bridge);
 
                     while (true) {
                         if (XCCConstants.YYSR.equals(retKey)) {//调用播报收音

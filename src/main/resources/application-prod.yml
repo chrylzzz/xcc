@@ -4,12 +4,13 @@ server:
 
 ####XCC相关变量####
 xcc:
-  #xswitch
+#  xswitch
   natsUrl: nats://hy:h8klu6bRwW@nats.xswitch.cn:4222
   xctrlSubject: cn.xswitch.ctrl
   xnodeSubjectPrefix: cn.xswitch.node.
   ttsEngine: ali
   asrEngine: ali
-  #ngd
+#  ngd
   ngdQueryUrl: https://api-ngd.baidu.com/api/v2/core/query
-  ngdQueryAuthorization: NGD 43b6f0be-4894-466f-a346-08046d935035
+#   boot id
+  ngdQueryAuthorization: NGD ae918134-ae57-4c3d-af07-5b4720f3313f

@@ -2,7 +2,6 @@ package com.haiyisoft.util;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.haiyisoft.anno.SysLog;
 import com.haiyisoft.boot.IVRInit;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
@@ -42,7 +41,7 @@ public class XCCUtil {
         //TTS引擎
         media.put("engine", IVRInit.XCC_CONFIG_PROPERTY.getTtsEngine());//tts-mrcp协议都使用unimrcp
         //嗓音，由TTS引擎决定，默认为default。
-        media.put("voice", "default");//tts科大提供
+        media.put("voice", "default");//TTS Voice-Name
         return media;
     }
 
