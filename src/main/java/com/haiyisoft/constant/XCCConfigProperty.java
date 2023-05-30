@@ -1,5 +1,6 @@
 package com.haiyisoft.constant;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -28,5 +29,8 @@ public class XCCConfigProperty {
     private String ngdQueryUrl;
     // ngd query auth
     private String ngdQueryAuthorization;
+
+    private JSONObject natsMap;
+    private boolean cluster;
 
 }

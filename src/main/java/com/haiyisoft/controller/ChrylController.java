@@ -102,7 +102,6 @@ public class ChrylController {
     }
     */
 
-    @SysLog("chryl")
     @GetMapping("chryl")
     public String show() {
         String json = JSON.toJSONString(IVRInit.XCC_CONFIG_PROPERTY, SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteDateUseDateFormat, SerializerFeature.WriteNullListAsEmpty);

@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
@@ -70,12 +69,12 @@ public class IVRController {
      */
     public void domain() {
         try {
-            log.warn("Ivr Controller tarted");
             //获取nats连接
             Connection nc = Nats.connect(IVRInit.XCC_CONFIG_PROPERTY.getNatsUrl());
 //            log.info("nats connect : {}",nc.getConnectedUrl());
             //从nats获取订阅主题
             Subscription sub = nc.subscribe(IVRInit.XCC_CONFIG_PROPERTY.getXctrlSubject());
+            log.warn("Ivr Controller started");
             while (true) {
                 try {
                     //订阅消息

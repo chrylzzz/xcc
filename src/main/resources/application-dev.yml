@@ -8,9 +8,17 @@ xcc:
   natsUrl: nats://hy:h8klu6bRwW@nats.xswitch.cn:4222
   xctrlSubject: cn.xswitch.ctrl
   xnodeSubjectPrefix: cn.xswitch.node.
+#  若有多台xswitch,开启
+  cluster: false
+  natsMap:
+    node-1: 127.0.0.1
+    nats-1: nats://hy:h8klu6bRwW@nats.xswitch.cn:4222
+    node-2: 10.194.31.203
+    nats-2: nats://hy:h8klu6bRwW@nats.xswitch.cn:4222
+#  Voice-Name
   ttsEngine: ali
   asrEngine: ali
 #  ngd
   ngdQueryUrl: https://api-ngd.baidu.com/api/v2/core/query
 #   boot id
-  ngdQueryAuthorization: NGD ae918134-ae57-4c3d-af07-5b4720f3313f
+  ngdQueryAuthorization: NGD 88f20617-d6b5-4c4e-bf72-fde0c0db1d82

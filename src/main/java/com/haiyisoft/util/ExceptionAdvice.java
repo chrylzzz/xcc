@@ -5,6 +5,7 @@ import com.haiyisoft.entry.IVREvent;
 import lombok.extern.slf4j.Slf4j;
 
 /**
+ * 处理xcc异常
  * Created by Chr.yl on 2023/3/30.
  *
  * @author Chr.yl

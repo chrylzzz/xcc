@@ -29,3 +29,13 @@ XCC API即控制指令。控制指令分类两类：
 
 Channel API：作用于一个Channel，必须有一个uuid参数，uuid即为当前Channel的uuid。
 普通API：普通API没有uuid参数。如对FreeSWITCH的控制，发起外呼等。
+
+
+
+XSwitch：XSwitch软交换平台。
+XNode：XSwitch交换节点，负责SIP信令和媒体交换，可以有多个。有时也简称Node。
+XCtrl：XController，即XSwitch控制器。用于控制呼叫流程，用户自己实现，可以用任何语言编写。有时也简称Ctrl。
+XCC：XSwitch Call Control，即XSwitch呼叫控制。
+NATS：一个消息队列。
+Proxy：代理服务器。SIP Proxy用于SIP用户注册，通话负载分担等。HTTP Proxy用于HTTP以及Websocket负载分担。
+IMS：IP Multimedia Subsystem，即IP多媒体子系统，运营商的系统。

@@ -1,5 +1,6 @@
 package com.haiyisoft.boot;
 
+import com.haiyisoft.config.XCCConfiguration;
 import com.haiyisoft.constant.XCCConfigProperty;
 import com.haiyisoft.ivr.IVRController;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +43,7 @@ public class IVRInit {
     //延迟初始化
     @PostConstruct
     public void initialize() {
+        XCCConfiguration.xccConfig(this.xccConfigProperty);
         XCC_CONFIG_PROPERTY = this.xccConfigProperty;
         log.info("初始化 XCC_CONFIG_PROPERTY 完成");
     }
