@@ -2,10 +2,12 @@ package com.haiyisoft.config;
 
 import com.alibaba.fastjson.JSONObject;
 import com.haiyisoft.constant.XCCConfigProperty;
+import com.haiyisoft.constant.XCCConstants;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.List;
 
 /**
  * 配置多台xswitch
@@ -23,19 +25,17 @@ public class XCCConfiguration {
             String hostAddress = addr.getHostAddress();
             log.warn("Local HostAddress: {} , HostName: {}", hostAddress, hostname);
             if (xccConfigProperty.isCluster()) {
-                JSONObject natsMap = xccConfigProperty.getNatsMap();
-                String node = natsMap.getString("node-1");
-                String natsUrl = "";
-                if (hostAddress.equals(node)) {
-                    natsUrl = natsMap.getString("nats-1");
-                } else {
-//                    String node2 = natsMap.getString("node-2");
-                    natsUrl = natsMap.getString("nats-2");
+                List<JSONObject> natsList = xccConfigProperty.getNatsList();
+                for (JSONObject nodeBean : natsList) {
+                    String node = nodeBean.getString(XCCConstants.NODE);
+                    if (hostAddress.equals(node)) {
+                        String natsUrl = nodeBean.getString(XCCConstants.NATS);
+                        xccConfigProperty.setNatsUrl(natsUrl);
+                        log.warn("装配完成 node: [{}] , nats: [{}]", node, natsUrl);
+                        break;
+                    }
                 }
-                log.warn("加载配置: {}", natsUrl);
-                xccConfigProperty.setNatsUrl(natsUrl);
             }
-            log.info("初始化 XCC_CONFIG_PROPERTY 成功");
         } catch (UnknownHostException e) {
             e.printStackTrace();
             log.info("初始化 XCC_CONFIG_PROPERTY 失败");

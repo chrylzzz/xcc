@@ -2,23 +2,30 @@ server:
   port: 8088
 
 
-####XCC相关变量####
+########XCC相关变量配置########
 xcc:
-#  xswitch
+#  xswitch config
   natsUrl: nats://hy:h8klu6bRwW@nats.xswitch.cn:4222
   xctrlSubject: cn.xswitch.ctrl
   xnodeSubjectPrefix: cn.xswitch.node.
-#  若有多台xswitch,开启
-  cluster: true
-  natsMap:
-    node-1: 10.194.31.200
-    nats-1: nats://hy:h8klu6bRwW@nats.xswitch.cn:4222
-    node-2: 10.194.31.203
-    nats-2: nats://hy:h8klu6bRwW@nats.xswitch.cn:4222
+#  tts engine
+  ttsEngine: unimrcp:tts
 #  Voice-Name
-  ttsEngine: ali
-  asrEngine: ali
+  ttsVoice: yifei
+#  asr engine
+  asrEngine: unimrcp:asr
 #  ngd
-  ngdQueryUrl: https://api-ngd.baidu.com/api/v2/core/query
-#   boot id
-  ngdQueryAuthorization: NGD 88f20617-d6b5-4c4e-bf72-fde0c0db1d82
+  ngdQueryUrl: http://10.100.104.20:8303/api/v2/core/query
+#  ngd boot id
+  ngdQueryAuthorization: NGD 0f0ec9dc-bdcc-4b15-9304-e0d5def75e27
+#
+#
+#  若有多台xswitch,再开启
+  cluster: true
+  #nats多节点
+  natsList:
+  - node: 10.194.31.200
+    nats: nats://10.194.31.200:4222
+  - node: 10.194.31.202
+    nats: nats://10.194.31.202:4222
+########XCC相关变量配置########

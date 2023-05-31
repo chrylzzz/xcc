@@ -40,11 +40,15 @@ public class IVRInit {
     @Autowired
     private XCCConfigProperty xccConfigProperty;
 
-    //延迟初始化
+
+    /**
+     * 延迟初始化
+     * 将初始化变量转为静态
+     */
     @PostConstruct
     public void initialize() {
         XCCConfiguration.xccConfig(this.xccConfigProperty);
         XCC_CONFIG_PROPERTY = this.xccConfigProperty;
-        log.info("初始化 XCC_CONFIG_PROPERTY 完成");
+        log.info("初始化 XCC_CONFIG_PROPERTY 成功");
     }
 }

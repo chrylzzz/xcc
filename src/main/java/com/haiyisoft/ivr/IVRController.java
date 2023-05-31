@@ -71,7 +71,6 @@ public class IVRController {
         try {
             //获取nats连接
             Connection nc = Nats.connect(IVRInit.XCC_CONFIG_PROPERTY.getNatsUrl());
-//            log.info("nats connect : {}",nc.getConnectedUrl());
             //从nats获取订阅主题
             Subscription sub = nc.subscribe(IVRInit.XCC_CONFIG_PROPERTY.getXctrlSubject());
             log.warn("Ivr Controller started");

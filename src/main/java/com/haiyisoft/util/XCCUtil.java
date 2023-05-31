@@ -38,10 +38,10 @@ public class XCCUtil {
          */
         media.put("type", playType);
         media.put("data", content);
-        //TTS引擎
-        media.put("engine", IVRInit.XCC_CONFIG_PROPERTY.getTtsEngine());//tts-mrcp协议都使用unimrcp
-        //嗓音，由TTS引擎决定，默认为default。
-        media.put("voice", "default");//TTS Voice-Name
+        //引擎TTS engine,若使用xswitch配置unimrcp,则为unimrcp:profile
+        media.put("engine", IVRInit.XCC_CONFIG_PROPERTY.getTtsEngine());
+        //嗓音Voice-Name，由TTS引擎决定，默认为default。
+        media.put("voice", IVRInit.XCC_CONFIG_PROPERTY.getTtsVoice());
         return media;
     }
 
@@ -75,7 +75,7 @@ public class XCCUtil {
     public static JSONObject getSpeech() {
         JSONObject speech = new JSONObject();
 //        speech.put("grammar", "default");
-        //ASR引擎
+        //引擎ASR engine,若使用xswitch配置unimrcp,则为unimrcp:profile.
         speech.put("engine", IVRInit.XCC_CONFIG_PROPERTY.getAsrEngine());
         //禁止打断。用户讲话不会打断放音。
         speech.put("nobreak", XCCConstants.NO_BREAK);

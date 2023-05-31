@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.util.List;
+
 /**
  * 可配置
  * XCC和NGD常量
@@ -23,14 +25,18 @@ public class XCCConfigProperty {
     private String xnodeSubjectPrefix;
     // tts engine
     private String ttsEngine;
+    // tts engine
+    private String ttsVoice;
     // asr engine
     private String asrEngine;
     // ngd query url
     private String ngdQueryUrl;
     // ngd query auth
     private String ngdQueryAuthorization;
-
-    private JSONObject natsMap;
+    // cluster true or false
     private boolean cluster;
+    // nats list
+    private List<JSONObject> natsList;
+
 
 }
