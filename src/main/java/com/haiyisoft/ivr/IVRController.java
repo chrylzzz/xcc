@@ -104,18 +104,16 @@ public class IVRController {
                         //event状态,Event.Channel（state=START）
                         String method = eventJson.getString("method");
                         //XNode收到呼叫后，向NATS广播来话消息（Event.Channel（state = START）），Ctrl收到后进行处理。
-                        switch (method) {
-                            case XCCConstants.Event_Channel:
-                                JSONObject params = eventJson.getJSONObject("params");
-                                //convert param
-                                ChannelEvent event = IVRHandler.convertParams(params);
-                                //asr domain
-                                ivrHandler.handlerChannelEvent(nc, event);
-//                                new IVRHandler().handlerChannelEvent(nc, event);
-                            case XCCConstants.Event_DetectedFace:
-                                log.info("事件 event======:{}", "Event.DetectedFace");
-                            case XCCConstants.Event_NativeEvent:
-                                log.info("事件 event======:{}", "Event.NativeEvent");
+                        if (XCCConstants.Event_Channel.equals(method)) {
+                            JSONObject params = eventJson.getJSONObject("params");
+                            //convert param
+                            ChannelEvent event = IVRHandler.convertParams(params);
+                            //asr domain
+                            ivrHandler.handlerChannelEvent(nc, event);
+                        } else if (XCCConstants.Event_DetectedFace.equals(method)) {
+                            log.info("事件 event======:{}", "Event.DetectedFace");
+                        } else if (XCCConstants.Event_NativeEvent.equals(method)) {
+                            log.info("事件 event======:{}", "Event.NativeEvent");
                         }
 
 
@@ -132,6 +130,5 @@ public class IVRController {
             log.error("服务器发生异常：{}", e);
         }
     }
-
 
 }

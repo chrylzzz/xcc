@@ -46,7 +46,7 @@ public class IVRHandler {
             log.info(" start this call channelId: {} , state :{} ", channelId, state);
             switch (state) {
                 case XCCConstants.Channel_START:
-                    //开始接管
+                    //开始接管,第一个指令必须是Accept或Answer
 //                XCCUtil.accept(nc, event);
                     XCCUtil.answer(ivrEvent, nc, event);
 //                XCCUtil.playTTS(nc, event, XCCConstants.WELCOME_TEXT);
@@ -73,7 +73,7 @@ public class IVRHandler {
                         boolean handleXcc = ExceptionAdvice.handleXccAgent(ivrEvent);
                         if (handleXcc) {
                             //转人工
-                            break;
+//                            break;
                         }
                         xccResMsg = ivrEvent.getXccMsg();
                         //调用百度知识库
@@ -85,7 +85,7 @@ public class IVRHandler {
                         if (ivrEvent.isAgent()) {
                             //转人工
                             log.info("ivrEvent agent: {}", ivrEvent);
-                            break;
+//                            break;
                         }
                         retKey = ivrEvent.getRetKey();
                         retValue = ivrEvent.getRetValue();
@@ -93,13 +93,17 @@ public class IVRHandler {
                     }
 
                 case XCCConstants.Channel_CALLING:
+                    log.info("Channel_CALLING this call channelId: {}", channelId);
                 case XCCConstants.Channel_RINGING:
+                    log.info("Channel_RINGING this call channelId: {}", channelId);
                 case XCCConstants.Channel_BRIDGE:
+                    log.info("Channel_BRIDGE this call channelId: {}", channelId);
                 case XCCConstants.Channel_READY:
-//                xcc.Bridge(nc, event);
+                    log.info("Channel_READY this call channelId: {}", channelId);
                 case XCCConstants.Channel_MEDIA:
+                    log.info("Channel_MEDIA this call channelId: {}", channelId);
                 case XCCConstants.CHANNEL_DESTROY:
-                    log.info("destroy this call channelId: {}", channelId);
+                    log.info("CHANNEL_DESTROY this call channelId: {}", channelId);
             }
 
             //挂断双方

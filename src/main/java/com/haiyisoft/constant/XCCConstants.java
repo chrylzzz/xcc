@@ -131,7 +131,7 @@ public class XCCConstants {
     //XCC返回失败话术
     public static final String XCC_MISSING_ANSWER = "您的问题我不理解，请换个问法。如需人工服务，请讲 转人工";
     //NGD识别失败话术
-    public static final String NGD_MISSING_MSG = "我不太理解您的意思";
+    public static final String NGD_MISSING_MSG = "我不太理解您的意思, 请您换个问法。";
     //语音输入
     public static final String YYSR = "YYSR";
     //按键输入
