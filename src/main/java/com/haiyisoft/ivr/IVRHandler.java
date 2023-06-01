@@ -73,7 +73,7 @@ public class IVRHandler {
                         boolean handleXcc = ExceptionAdvice.handleXccAgent(ivrEvent);
                         if (handleXcc) {
                             //转人工
-//                            break;
+                            break;
                         }
                         xccResMsg = ivrEvent.getXccMsg();
                         //调用百度知识库
@@ -85,7 +85,7 @@ public class IVRHandler {
                         if (ivrEvent.isAgent()) {
                             //转人工
                             log.info("ivrEvent agent: {}", ivrEvent);
-//                            break;
+                            break;
                         }
                         retKey = ivrEvent.getRetKey();
                         retValue = ivrEvent.getRetValue();
@@ -139,6 +139,5 @@ public class IVRHandler {
         }
         return event;
     }
-
 
 }

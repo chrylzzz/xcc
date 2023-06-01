@@ -1,7 +1,6 @@
 server:
   port: 8088
 
-
 ########XCC相关变量配置########
 xcc:
 #  xswitch config
@@ -30,3 +29,8 @@ xcc:
   - node: 10.194.31.203
     nats: nats://10.194.31.203:4222
 ########XCC相关变量配置########
+#
+#
+# log
+logging:
+  config: classpath:logback-dev.xml
