@@ -10,7 +10,8 @@
     </parent>
     <groupId>com.haiyisoft</groupId>
     <artifactId>xcc</artifactId>
-    <packaging>war</packaging>
+    <!--<packaging>war</packaging>-->
+    <packaging>jar</packaging>
     <version>0.0.1-SNAPSHOT</version>
     <name>xcc</name>
     <description>XCC</description>

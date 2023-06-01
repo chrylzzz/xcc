@@ -65,10 +65,15 @@ public class XCCConstants {
     public static final String Channel_READY = "READY";
     //MEDIA：媒体建立
     public static final String Channel_MEDIA = "MEDIA";
-    //Channel事件
+    //Channel事件 , XCC-BINDINGS
+    //
     public static final String Event_Channel = "Event.Channel";
+    //
     public static final String Event_NativeEvent = "Event.NativeEvent";
+    //
     public static final String Event_DetectedFace = "Event.DetectedFace";
+    //HEARTBEAT
+    public static final String Event_NodeUpdate = "Event.NodeUpdate";
 
     //不可打断
     public static final boolean NO_BREAK = true;

@@ -49,6 +49,6 @@ public class IVRInit {
     public void initialize() {
         XCCConfiguration.xccConfig(this.xccConfigProperty);
         XCC_CONFIG_PROPERTY = this.xccConfigProperty;
-        log.info("初始化 XCC_CONFIG_PROPERTY 成功");
+        log.info("初始化 XCC_CONFIG_PROPERTY 完成");
     }
 }

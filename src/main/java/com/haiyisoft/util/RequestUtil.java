@@ -94,7 +94,7 @@ public class RequestUtil {
             Future<Message> incoming = con.request(service, request.toString().getBytes(StandardCharsets.UTF_8));
             Message msg = incoming.get(milliSeconds, TimeUnit.MILLISECONDS);
             String response = new String(msg.getData(), StandardCharsets.UTF_8);
-            log.debug("{} 返回信息:{}", method, response);
+            log.info("{} 返回信息:{}", method, response);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -123,7 +123,7 @@ public class RequestUtil {
             Future<Message> incoming = con.request(service, request.toString().getBytes(StandardCharsets.UTF_8));
             Message msg = incoming.get(milliSeconds, TimeUnit.MILLISECONDS);
             String response = new String(msg.getData(), StandardCharsets.UTF_8);
-            log.debug("{} 返回信息:{}", method, response);
+            log.info("{} 返回信息:{}", method, response);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -159,7 +159,7 @@ public class RequestUtil {
             Message msg = incoming.get();
 //            Message msg = incoming.get(milliSeconds, TimeUnit.MILLISECONDS);
             String response = new String(msg.getData(), StandardCharsets.UTF_8);
-            log.debug("{} 返回信息:{}", method, response);
+            log.info("{} 返回信息:{}", method, response);
             JSONObject result = JSONObject.parseObject(response).getJSONObject("result");
 //            log.info("DetectSpeech 返回信息:{}", result);
             Integer code = result.getInteger("code");

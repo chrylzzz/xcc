@@ -44,66 +44,63 @@ public class IVRHandler {
             //ivr event
             IVREvent ivrEvent = new IVREvent(channelId);
             log.info(" start this call channelId: {} , state :{} ", channelId, state);
-            switch (state) {
-                case XCCConstants.Channel_START:
-                    //开始接管,第一个指令必须是Accept或Answer
+            if (XCCConstants.Channel_START.equals(state)) {
+                //开始接管,第一个指令必须是Accept或Answer
 //                XCCUtil.accept(nc, event);
-                    XCCUtil.answer(ivrEvent, nc, event);
+                XCCUtil.answer(ivrEvent, nc, event);
 //                XCCUtil.playTTS(nc, event, XCCConstants.WELCOME_TEXT);
-                    //ngd return msg
-                    String ngdResMsg = "";
-                    //
-                    String retKey = XCCConstants.YYSR;
-                    String retValue = XCCConstants.WELCOME_TEXT;
-                    //xcc返回数据
-                    String xccResMsg = "";
-                    while (true) {
-                        if (XCCConstants.YYSR.equals(retKey)) {//调用播报收音
-                            ivrEvent = XCCUtil.detectSpeechPlayTTSNoDTMF(ivrEvent, nc, event, retValue);
-                        } else if (XCCConstants.AJSR.equals(retKey)) {//调用xcc收集按键方法，多位按键
-                            ivrEvent = XCCUtil.playAndReadDTMF(ivrEvent, nc, event, retValue, 18);
-                        } else if (XCCConstants.YWAJ.equals(retKey)) {//调用xcc收集按键方法，一位按键
-                            ivrEvent = XCCUtil.playAndReadDTMF(ivrEvent, nc, event, retValue, 1);
-                        } else if (XCCConstants.RGYT.equals(retKey)) {//转人工
+                //ngd return msg
+                String ngdResMsg = "";
+                //
+                String retKey = XCCConstants.YYSR;
+                String retValue = XCCConstants.WELCOME_TEXT;
+                //xcc返回数据
+                String xccResMsg = "";
+                while (true) {
+                    if (XCCConstants.YYSR.equals(retKey)) {//调用播报收音
+                        ivrEvent = XCCUtil.detectSpeechPlayTTSNoDTMF(ivrEvent, nc, event, retValue);
+                    } else if (XCCConstants.AJSR.equals(retKey)) {//调用xcc收集按键方法，多位按键
+                        ivrEvent = XCCUtil.playAndReadDTMF(ivrEvent, nc, event, retValue, 18);
+                    } else if (XCCConstants.YWAJ.equals(retKey)) {//调用xcc收集按键方法，一位按键
+                        ivrEvent = XCCUtil.playAndReadDTMF(ivrEvent, nc, event, retValue, 1);
+                    } else if (XCCConstants.RGYT.equals(retKey)) {//转人工
 //                            测试bridge
-//                            IVREvent bridge = XCCUtil.bridge(ivrEvent, nc, event);
-//                            log.info("===:{},", bridge);
-                        }
-                        //handle code agent
-                        boolean handleXcc = ExceptionAdvice.handleXccAgent(ivrEvent);
-                        if (handleXcc) {
-                            //转人工
-                            break;
-                        }
-                        xccResMsg = ivrEvent.getXccMsg();
-                        //调用百度知识库
-                        ngdResMsg = NGDUtil.invokeNGD(xccResMsg, channelId);
-                        //处理指令和话术
-                        ivrEvent = NGDUtil.convertResText(ngdResMsg, ivrEvent);
-                        //handle ngd agent
-                        ivrEvent = ExceptionAdvice.handleNgdAgent(ivrEvent);
-                        if (ivrEvent.isAgent()) {
-                            //转人工
-                            log.info("ivrEvent agent: {}", ivrEvent);
-                            break;
-                        }
-                        retKey = ivrEvent.getRetKey();
-                        retValue = ivrEvent.getRetValue();
-                        log.info("ivrEvent data: {}", ivrEvent);
+                        ivrEvent = XCCUtil.bridge(ivrEvent, nc, event);
                     }
-
-                case XCCConstants.Channel_CALLING:
-                    log.info("Channel_CALLING this call channelId: {}", channelId);
-                case XCCConstants.Channel_RINGING:
-                    log.info("Channel_RINGING this call channelId: {}", channelId);
-                case XCCConstants.Channel_BRIDGE:
-                    log.info("Channel_BRIDGE this call channelId: {}", channelId);
-                case XCCConstants.Channel_READY:
-                    log.info("Channel_READY this call channelId: {}", channelId);
-                case XCCConstants.Channel_MEDIA:
-                    log.info("Channel_MEDIA this call channelId: {}", channelId);
-                case XCCConstants.CHANNEL_DESTROY:
-                    log.info("CHANNEL_DESTROY this call channelId: {}", channelId);
+                    //handle code agent
+                    boolean handleXcc = ExceptionAdvice.handleXccAgent(ivrEvent);
+                    if (handleXcc) {
+                        //转人工
+                        break;
+                    }
+                    xccResMsg = ivrEvent.getXccMsg();
+                    //调用百度知识库
+                    ngdResMsg = NGDUtil.invokeNGD(xccResMsg, channelId);
+                    //处理指令和话术
+                    ivrEvent = NGDUtil.convertResText(ngdResMsg, ivrEvent);
+                    //handle ngd agent
+                    ivrEvent = ExceptionAdvice.handleNgdAgent(ivrEvent);
+                    if (ivrEvent.isAgent()) {
+                        //转人工
+                        log.info("ivrEvent agent: {}", ivrEvent);
+                        break;
+                    }
+                    retKey = ivrEvent.getRetKey();
+                    retValue = ivrEvent.getRetValue();
+                    log.info("ivrEvent data: {}", ivrEvent);
+                }
+            } else if (XCCConstants.Channel_CALLING.equals(state)) {
+                log.info("Channel_CALLING this call channelId: {}", channelId);
+            } else if (XCCConstants.Channel_RINGING.equals(state)) {
+                log.info("Channel_RINGING this call channelId: {}", channelId);
+            } else if (XCCConstants.Channel_BRIDGE.equals(state)) {
+                log.info("Channel_BRIDGE this call channelId: {}", channelId);
+            } else if (XCCConstants.Channel_READY.equals(state)) {
+                log.info("Channel_READY this call channelId: {}", channelId);
+            } else if (XCCConstants.Channel_MEDIA.equals(state)) {
+                log.info("Channel_MEDIA this call channelId: {}", channelId);
+            } else if (XCCConstants.CHANNEL_DESTROY.equals(state)) {
+                log.info("CHANNEL_DESTROY this call channelId: {}", channelId);
             }
 
             //挂断双方

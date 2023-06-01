@@ -6,7 +6,7 @@ xcc:
 #  xswitch config
   natsUrl: nats://hy:h8klu6bRwW@nats.xswitch.cn:4222
   xctrlSubject: cn.xswitch.ctrl
-###  xctrlSubject: cn.xswitch.ctrl.>
+#  xctrlSubject: cn.xswitch.ctrl.>
   xnodeSubjectPrefix: cn.xswitch.node.
 #  tts engine
   ttsEngine: ali

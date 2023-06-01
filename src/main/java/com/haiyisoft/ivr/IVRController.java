@@ -1,9 +1,12 @@
 package com.haiyisoft.ivr;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.protobuf.util.JsonFormat;
 import com.haiyisoft.boot.IVRInit;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
+import com.haiyisoft.util.XCCUtil;
+import com.haiyisoft.xctrl.Xctrl;
 import io.nats.client.Connection;
 import io.nats.client.Message;
 import io.nats.client.Nats;
@@ -75,13 +78,12 @@ public class IVRController {
             Subscription sub = nc.subscribe(IVRInit.XCC_CONFIG_PROPERTY.getXctrlSubject());
             log.warn("Ivr Controller started");
             while (true) {
-                try {
-                    //订阅消息
-                    Message subMsg = sub.nextMessage(Duration.ofMillis(50000));
+                //订阅消息
+                Message subMsg = sub.nextMessage(Duration.ofMillis(50000));
 //                log.info("订阅接收的消息：{}", subMsg);
-                    if (subMsg == null) {
-                        log.info(" this subMsg is null ");
-                    } else {
+                if (subMsg == null) {
+                    log.info(" this subMsg is null ");
+                } else {
 
 
                         /*
@@ -94,33 +96,40 @@ public class IVRController {
 */
 
 
-                        log.info(" subMsg ,{}", subMsg);
-                        //订阅事件
-                        String eventStr = new String(subMsg.getData(), StandardCharsets.UTF_8);
-                        log.info(" eventStr data:{}", eventStr);
+                    log.info(" subMsg ,{}", subMsg);
+                    //订阅事件
+                    String eventStr = new String(subMsg.getData(), StandardCharsets.UTF_8);
+//                    log.info(" eventStr data:{}", eventStr);
 
-                        JSONObject eventJson = JSONObject.parseObject(eventStr);
-                        log.info("订阅事件 json data:{}", eventJson);
-                        //event状态,Event.Channel（state=START）
-                        String method = eventJson.getString("method");
-                        //XNode收到呼叫后，向NATS广播来话消息（Event.Channel（state = START）），Ctrl收到后进行处理。
-                        if (XCCConstants.Event_Channel.equals(method)) {
-                            JSONObject params = eventJson.getJSONObject("params");
-                            //convert param
-                            ChannelEvent event = IVRHandler.convertParams(params);
-                            //asr domain
-                            ivrHandler.handlerChannelEvent(nc, event);
-                        } else if (XCCConstants.Event_DetectedFace.equals(method)) {
-                            log.info("事件 event======:{}", "Event.DetectedFace");
-                        } else if (XCCConstants.Event_NativeEvent.equals(method)) {
-                            log.info("事件 event======:{}", "Event.NativeEvent");
-                        }
-
-
+                    JSONObject eventJson = JSONObject.parseObject(eventStr);
+                    log.info("订阅事件 json data:{}", eventJson);
+                    //event状态,Event.Channel（state=START）
+                    String method = eventJson.getString("method");
+                    //XNode收到呼叫后，向NATS广播来话消息（Event.Channel（state = START）），Ctrl收到后进行处理。
+                    if (XCCConstants.Event_Channel.equals(method)) {
+                        JSONObject params = eventJson.getJSONObject("params");
+                        //convert param
+                        ChannelEvent event = IVRHandler.convertParams(params);
+                        //asr domain
+                        ivrHandler.handlerChannelEvent(nc, event);
+                    } else if (XCCConstants.Event_DetectedFace.equals(method)) {
+                        log.info("事件 event======:{}", "Event.DetectedFace");
+                    } else if (XCCConstants.Event_NativeEvent.equals(method)) {
+//                        log.info("事件 event======:{}", "Event.NativeEvent");
+//                        JSONObject params = eventJson.getJSONObject("params");
+//                        JSONObject event = params.getJSONObject("event");
+//                        String node_uuid = params.getString("node_uuid");
+//                        String name = event.getString("Event-Name");
+//                        String callId = event.getString("Channel-Call-UUID");
+//                        ChannelEvent channelEvent = new ChannelEvent();
+//                        channelEvent.setUuid(callId);
+//                        channelEvent.setNodeUuid(node_uuid);
+//                        XCCUtil.answer(null, nc, channelEvent);
+//                        XCCUtil.playTTS(null, nc, channelEvent, XCCConstants.WELCOME_TEXT);
+//                        log.info("事件 event======Event-Name:{},Channel-Call-UUID:{}", name, callId);
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    log.error("服务器发生异常：{}", e);
+
+
                 }
             }
 
@@ -130,5 +139,4 @@ public class IVRController {
             log.error("服务器发生异常：{}", e);
         }
     }
-
 }

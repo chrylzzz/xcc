@@ -74,7 +74,9 @@ public class XCCUtil {
      */
     public static JSONObject getSpeech() {
         JSONObject speech = new JSONObject();
+        //默认传，default为docker grammar file: /usr/local/freeswitch/grammar/default.gram
 //        speech.put("grammar", "default");
+        speech.put("grammar", "builtin:grammar/boolean?language=zh-CN;y=1;n=2 builtin");
         //引擎ASR engine,若使用xswitch配置unimrcp,则为unimrcp:profile.
         speech.put("engine", IVRInit.XCC_CONFIG_PROPERTY.getAsrEngine());
         //禁止打断。用户讲话不会打断放音。
@@ -322,7 +324,7 @@ public class XCCUtil {
 //        call_params.put("dial_string", "sofia/default/4001/10.194.31.200:5060");
 
         //分机使用user
-        call_params.put("dial_string", "user/1002");
+        call_params.put("dial_string", "user/1001");
         //[{},{}]
         JSONArray callParamArray = new JSONArray();
         callParamArray.add(call_params);
