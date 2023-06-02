@@ -109,6 +109,12 @@ public class IVRHandler {
     }
 
 
+    /**
+     * 获取话务数据
+     *
+     * @param params
+     * @return
+     */
     public static ChannelEvent convertParams(JSONObject params) {
         ChannelEvent event = new ChannelEvent();
         try {

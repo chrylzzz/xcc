@@ -18,7 +18,7 @@ import java.util.List;
 public class XCCConfiguration {
 
     public static void xccConfig(XCCConfigProperty xccConfigProperty) {
-        log.warn("Local HostAddress: {} ", IpUtil.INTERNET_IP);
+        log.warn("Local HostAddress: [{}] ", IpUtil.INTERNET_IP);
         try {
             if (xccConfigProperty.isCluster()) {
                 List<JSONObject> natsList = xccConfigProperty.getNatsList();
@@ -27,7 +27,7 @@ public class XCCConfiguration {
                     if (IpUtil.INTERNET_IP.equals(node)) {
                         String natsUrl = nodeBean.getString(XCCConstants.NATS);
                         xccConfigProperty.setNatsUrl(natsUrl);
-                        log.warn("装配完成 node: [{}] , nats: [{}]", node, natsUrl);
+                        log.warn("多节点装配完成 node: [{}] , nats: [{}]", node, natsUrl);
                         break;
                     }
                 }

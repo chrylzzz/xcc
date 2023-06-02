@@ -1,5 +1,8 @@
 server:
   port: 8088
+  tomcat:
+    threads:
+      max: 300
 
 ########XCC相关变量配置########
 xcc:

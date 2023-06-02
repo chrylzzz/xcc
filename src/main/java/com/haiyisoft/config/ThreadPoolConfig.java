@@ -1,5 +1,6 @@
 package com.haiyisoft.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
@@ -11,6 +12,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * 重写异步线程
  * Created By Chryl on 2023-02-08.
  */
+@Slf4j
 @Component
 public class ThreadPoolConfig implements AsyncConfigurer {
 
@@ -20,8 +22,11 @@ public class ThreadPoolConfig implements AsyncConfigurer {
     @Override
     public Executor getAsyncExecutor() {
         ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
-        taskExecutor.setCorePoolSize(cpuNum);//核心线程大小
-        taskExecutor.setMaxPoolSize(cpuNum * 2);//最大线程大小
+//        taskExecutor.setCorePoolSize(cpuNum);//核心线程大小
+//        taskExecutor.setMaxPoolSize(cpuNum * 2);//最大线程大小
+        taskExecutor.setCorePoolSize(cpuNum * 3);//核心线程大小
+        taskExecutor.setMaxPoolSize(cpuNum * 6);//最大线程大小
+        log.info("------CorePoolSize : {} ", cpuNum);
         taskExecutor.setQueueCapacity(500);//队列最大容量
         //当提交的任务个数大于QueueCapacity，就需要设置该参数，但spring提供的都不太满足业务场景，可以自定义一个，也可以注意不要超过QueueCapacity即可
         taskExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
