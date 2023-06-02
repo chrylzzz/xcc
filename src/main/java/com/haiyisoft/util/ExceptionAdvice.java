@@ -22,7 +22,6 @@ public class ExceptionAdvice {
     public static IVREvent handleException(String method, Exception e, IVREvent ivrEvent) {
         ivrEvent.setCode(500);
         ivrEvent.setXccMsg("服务器发生异常:" + method + e);
-        log.error("服务器发生异常：{} , {}", method, e);
         return ivrEvent;
     }
 

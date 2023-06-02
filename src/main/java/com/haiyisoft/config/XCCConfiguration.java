@@ -6,7 +6,6 @@ import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.util.IpUtil;
 import lombok.extern.slf4j.Slf4j;
 
-import java.net.UnknownHostException;
 import java.util.List;
 
 /**
@@ -35,7 +34,7 @@ public class XCCConfiguration {
             }
             log.info("初始化 XCC_CONFIG_PROPERTY 成功");
         } catch (Exception e) {
-            log.info("初始化 XCC_CONFIG_PROPERTY 失败");
+            log.error("初始化 XCC_CONFIG_PROPERTY 失败");
             e.printStackTrace();
         }
     }

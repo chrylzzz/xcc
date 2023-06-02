@@ -1,5 +1,7 @@
 package com.haiyisoft.util;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -12,6 +14,7 @@ import java.util.Enumeration;
  *
  * @author Chr.yl
  */
+@Slf4j
 public class IpUtil {
 
     public static String INTRANET_IP = getIntranetIp(); // 内网IP
@@ -26,6 +29,7 @@ public class IpUtil {
         try {
             return InetAddress.getLocalHost().getHostAddress();
         } catch (Exception e) {
+            log.error("getIntranetIp 发生异常：{}", e);
             throw new RuntimeException(e);
         }
     }
@@ -56,6 +60,7 @@ public class IpUtil {
             // 如果没有外网IP，就返回内网IP
             return INTRANET_IP;
         } catch (Exception e) {
+            log.error("getInternetIp 发生异常：{}", e);
             throw new RuntimeException(e);
         }
     }

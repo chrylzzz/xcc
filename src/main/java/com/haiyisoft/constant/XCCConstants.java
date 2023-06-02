@@ -159,6 +159,13 @@ public class XCCConstants {
     //多节点配置
     public static final String NODE = "node";
     public static final String NATS = "nats";
+    //换行符
+    public static final String NL = "\\n";
+    //转义符
+    public static final String ESCAPE_CHARACTER = "\\";
+    //input
+    public static final String INPUT = "input";
+
     /********************************************ngd相关********************************************/
 
 }

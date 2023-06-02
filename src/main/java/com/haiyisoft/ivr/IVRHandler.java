@@ -37,7 +37,7 @@ public class IVRHandler {
     public void handlerChannelEvent(Connection nc, ChannelEvent event) {
         String state = event.getState();
         if (state == null) {
-            log.info("state is null ");
+            log.error("state is null ");
         } else {
             //使用channelId作为callId,sessionId
             String channelId = event.getUuid();
@@ -46,9 +46,7 @@ public class IVRHandler {
             log.info(" start this call channelId: {} , state :{} ", channelId, state);
             if (XCCConstants.Channel_START.equals(state)) {
                 //开始接管,第一个指令必须是Accept或Answer
-//                XCCUtil.accept(nc, event);
                 XCCUtil.answer(ivrEvent, nc, event);
-//                XCCUtil.playTTS(nc, event, XCCConstants.WELCOME_TEXT);
                 //ngd return msg
                 String ngdResMsg = "";
                 //
@@ -64,11 +62,11 @@ public class IVRHandler {
                     } else if (XCCConstants.YWAJ.equals(retKey)) {//调用xcc收集按键方法，一位按键
                         ivrEvent = XCCUtil.playAndReadDTMF(ivrEvent, nc, event, retValue, 1);
                     } else if (XCCConstants.RGYT.equals(retKey)) {//转人工
-//                            测试bridge
                         ivrEvent = XCCUtil.bridge(ivrEvent, nc, event);
                     }
                     //handle code agent
                     boolean handleXcc = ExceptionAdvice.handleXccAgent(ivrEvent);
+                    //调用xcc失败处理,404,500处理,xcc失败次数
                     if (handleXcc) {
                         //转人工
                         break;
@@ -80,6 +78,7 @@ public class IVRHandler {
                     ivrEvent = NGDUtil.convertResText(ngdResMsg, ivrEvent);
                     //handle ngd agent
                     ivrEvent = ExceptionAdvice.handleNgdAgent(ivrEvent);
+                    //调用ngd失败处理,和不理解处理,ngd失败次数
                     if (ivrEvent.isAgent()) {
                         //转人工
                         log.info("ivrEvent agent: {}", ivrEvent);
@@ -113,12 +112,12 @@ public class IVRHandler {
     public static ChannelEvent convertParams(JSONObject params) {
         ChannelEvent event = new ChannelEvent();
         try {
-//            we have to serialize the params into a string and parse it again
-//            unless we can find a way to convert JsonElement to protobuf class
-//        Xctrl.ChannelEvent.Builder cevent = Xctrl.ChannelEvent.newBuilder();
-//        JsonFormat.parser().ignoringUnknownFields().merge(params.toString(), cevent);
-//        log.info("订阅事件 cevent :{}", cevent);
-//        String state = cevent.getState();
+//          we have to serialize the params into a string and parse it again
+//          unless we can find a way to convert JsonElement to protobuf class
+//          Xctrl.ChannelEvent.Builder cevent = Xctrl.ChannelEvent.newBuilder();
+//          JsonFormat.parser().ignoringUnknownFields().merge(params.toString(), cevent);
+//          log.info("订阅事件 cevent :{}", cevent);
+//          String state = cevent.getState();
 
 
             String uuid = params.getString("uuid");
@@ -132,7 +131,7 @@ public class IVRHandler {
 
         } catch (Exception e) {
             e.printStackTrace();
-            log.error("服务器发生异常：{}", e);
+            log.error("convertParams 发生异常：{}", e);
         }
         return event;
     }

@@ -8,6 +8,9 @@ import com.haiyisoft.entry.ChannelEvent;
 import com.haiyisoft.entry.IVREvent;
 import io.nats.client.Connection;
 import lombok.extern.slf4j.Slf4j;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.io.SAXReader;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -261,34 +264,6 @@ public class XCCUtil {
      */
     public static IVREvent bridge(IVREvent ivrEvent, Connection nc, ChannelEvent event) {
 /*
-        JSONObject rpc = this.getRpc("Bridge", id);
-        JSONObject params = new JSONObject();
-//        params.put("uuid", uuid);
-        params.put("ctrl_uuid", "ctrl_uuid");
-        params.put("flow_control", "ANY");
-        JSONObject destination = new JSONObject();
-        JSONObject callParam = new JSONObject();
-        JSONArray callArray = new JSONArray();
-        callParam.put("uuid", CommonUtil.getUUID());
-        callParam.put("dial_string", new StringBuilder("sofia/public/sip40").append("15553551792").append("@xyt" +
-                ".xswitch.cn:18880;transport=tcp"));
-        JSONObject cParams = new JSONObject();
-        cParams.put("absolute_codec_string", "PCMA");
-        callParam.put("params", cParams);
-        callArray.add(callParam);
-        destination.put("call_params", callArray);
-        destination.put("global_params", new JSONObject());
-        params.put("destination", destination);
-        rpc.put("params", params);
-        logger.info("Bridge入参：{}", rpc);
-        Future<Message> incoming = nc.request(service, rpc.toString().getBytes(StandardCharsets.UTF_8));
-        Message msg = incoming.get(50000, TimeUnit.MILLISECONDS);
-        String callResponse = new String(msg.getData(), StandardCharsets.UTF_8);
-        JSONObject jsonObject = JSONObject.parseObject(callResponse);
-        logger.info("Bridge：{}", jsonObject);
-*/
-
-/*
         {
             "jsonrpc": "2.0",
                 "method": "XNode.Bridge",
@@ -309,10 +284,10 @@ public class XCCUtil {
         */
         //全局参数
         JSONObject user2user = new JSONObject();
-        user2user.put("queueName", "111");
-        user2user.put("phoneNum", "111");
-        user2user.put("adsCode", "111");
-        user2user.put("huaweiCallId", "111");
+        user2user.put("queueName", "1123123");
+        user2user.put("phoneNum", "11231");
+        user2user.put("adsCode", "11231");
+        user2user.put("huaweiCallId", "123311");
         JSONObject global_params = new JSONObject();
         global_params.put("sip_h_X-User-to-User", user2user);
         //呼叫参数
@@ -347,4 +322,67 @@ public class XCCUtil {
         return ivrEvent;
     }
 
+    /**
+     * 转接分机测试
+     *
+     * @param nc
+     * @param event
+     * @return
+     */
+    public static IVREvent bridgeExtension(IVREvent ivrEvent, Connection nc, ChannelEvent event) {
+        /*
+        {
+            "jsonrpc": "2.0",
+                "method": "XNode.Bridge",
+                "id": "call2",
+                "params": {
+            "ctrl_uuid": "6e68eb16-9272-4ca6-80e2-26253ac29e25",
+                    "uuid": "08a53c50-fbea-413b-a3df-08959d3030e2",
+                    "destination": {
+                "global_params": {},
+                "call_params": [{
+                    "uuid": "d3dd612f-b634-4aaa-aa25-0794bef046ad",
+                            "dial_string": "user/1001"
+                }]
+            }
+        }
+        }
+
+        */
+        //全局参数
+        JSONObject user2user = new JSONObject();
+        user2user.put("queueName", "111");
+        user2user.put("phoneNum", "111");
+        user2user.put("adsCode", "111");
+        user2user.put("huaweiCallId", "111");
+        JSONObject global_params = new JSONObject();
+        global_params.put("sip_h_X-User-to-User", user2user);
+        //呼叫参数
+        JSONObject call_params = new JSONObject();
+        call_params.put("uuid", IdGenerator.simpleUUID());
+        //https://docs.xswitch.cn/xcc-api/reference/#dial-string
+//        call_params.put("dial_string", "sofia/default/1002@140.143.134.19:22501");
+        //生产转接
+//        call_params.put("dial_string", "sofia/default/4001/10.194.31.200:5060");
+        //分机使用user
+        call_params.put("dial_string", "user/1001");
+        //[{},{}]
+        JSONArray callParamArray = new JSONArray();
+        callParamArray.add(call_params);
+
+        JSONObject destination = new JSONObject();
+        destination.put("global_params", global_params);
+        destination.put("call_params", callParamArray);
+
+        JSONObject params = new JSONObject();
+        //当前channel 的uuid
+        String channelId = event.getUuid();
+        params.put("uuid", channelId);
+        params.put("ctrl_uuid", "chryl-ivvr");
+        params.put("flow_control", XCCConstants.ANY);
+        params.put("destination", destination);
+        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + event.getNodeUuid();
+        ivrEvent = RequestUtil.natsRequestFutureByBridge(ivrEvent, nc, service, XCCConstants.BRIDGE, params, 2000);
+        return ivrEvent;
+    }
 }

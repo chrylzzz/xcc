@@ -1,6 +1,7 @@
 package com.haiyisoft.util;
 
 import com.haiyisoft.boot.IVRInit;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -24,6 +25,7 @@ import java.util.Map;
 /**
  * Created By Chryl on 2022-04-29.
  */
+@Slf4j
 public class HttpClientUtil {
 
     public static String doGet(String url, Map<String, String> param) {
@@ -207,7 +209,7 @@ public class HttpClientUtil {
      * @param json
      * @return
      */
-    public static String doPostJsonForGx(String url, String json) {
+    public static String doPostJsonForGxNgd(String url, String json) {
         // 创建Httpclient对象
         CloseableHttpClient httpClient = HttpClients.createDefault();
         CloseableHttpResponse response = null;
@@ -227,7 +229,7 @@ public class HttpClientUtil {
 
                     .setConnectTimeout(3000) //连接超时时间
                     .setConnectionRequestTimeout(3000) //从线程池中获取线程超时时间
-                    .setSocketTimeout(5000) //设置数据超时时间
+                    .setSocketTimeout(3000) //设置数据超时时间
 
                     .setStaleConnectionCheckEnabled(true)//提交请求前检查连接是否可用
                     .build();
@@ -249,7 +251,6 @@ public class HttpClientUtil {
                     response.close();
                 }
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }

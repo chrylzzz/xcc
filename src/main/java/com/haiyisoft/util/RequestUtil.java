@@ -67,6 +67,7 @@ public class RequestUtil {
             con.request(service, request.toString().getBytes(StandardCharsets.UTF_8));
         } catch (Exception e) {
             e.printStackTrace();
+            log.error("handleException 发生异常：{} , {}", method, e);
         }
     }
 
@@ -97,6 +98,8 @@ public class RequestUtil {
             log.info("{} 返回信息:{}", method, response);
         } catch (Exception e) {
             e.printStackTrace();
+            log.error("handleException 发生异常：{} , {}", method, e);
+            ivrEvent = ExceptionAdvice.handleException(method, e, ivrEvent);
         }
         log.info("{} 执行结束", method);
     }
@@ -127,6 +130,7 @@ public class RequestUtil {
 
         } catch (Exception e) {
             e.printStackTrace();
+            log.error("handleException 发生异常：{} , {}", method, e);
         }
         log.info("{} 执行结束", method);
 
@@ -171,6 +175,7 @@ public class RequestUtil {
             ivrEvent.setXccMsg(utterance);
         } catch (Exception e) {
             e.printStackTrace();
+            log.error("handleException 发生异常：{} , {}", method, e);
             ivrEvent = ExceptionAdvice.handleException(method, e, ivrEvent);
         }
         log.info("{} 识别返回数据 utterance: {}", method, utterance);
@@ -219,6 +224,7 @@ public class RequestUtil {
             ivrEvent.setXccMsg(dtmf);
         } catch (Exception e) {
             e.printStackTrace();
+            log.error("handleException 发生异常：{} , {}", method, e);
             ivrEvent = ExceptionAdvice.handleException(method, e, ivrEvent);
         }
         log.info("{} 识别返回数据 dtmf: {}", method, dtmf);
@@ -262,6 +268,7 @@ public class RequestUtil {
             ivrEvent.setCode(code);
         } catch (Exception e) {
             e.printStackTrace();
+            log.error("handleException 发生异常：{} , {}", method, e);
             ivrEvent = ExceptionAdvice.handleException(method, e, ivrEvent);
         }
         log.info("{} ivrEvent: {}", method, ivrEvent);
