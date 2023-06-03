@@ -54,7 +54,7 @@ public class Dom4jUtil {
                     //<input></input>里就是识别结果
                     if (XCCConstants.INPUT.equals(name)) {
                         parseText = e.getTextTrim();
-                        log.info("解析 XML 成功:{}", parseText);
+                        log.info("parseAsrResXml 解析 XML 成功:{}", parseText);
                         break a;
                     }
                 }
@@ -67,7 +67,9 @@ public class Dom4jUtil {
     }
 
     public static void main(String[] args) {
-        String str = "<?xml version=\\\"1.0\\\"?>\\n<result>\\n <interpretation grammar=\\\"builtin:grammar/boolean?language=zh-CN;y=1;n=2 builtin\\\" confidence=\\\"1.0\\\">\\n    <instance>广西</instance>\\n    <input mode=\\\"speech\\\">广西</input>\\n  </interpretation>\\n</result>";
+//        String str = "<?xml version=\\\"1.0\\\"?>\\n<result>\\n <interpretation grammar=\\\"builtin:grammar/boolean?language=zh-CN;y=1;n=2 builtin\\\" confidence=\\\"1.0\\\">\\n    <instance>广西</instance>\\n    <input mode=\\\"speech\\\">广西</input>\\n  </interpretation>\\n</result>";
+        String str = "<?xml version=\\\"1.0\\\"?>\\n<result>\\n <interpretation grammar=\\\"builtin:grammar/boolean?language=zh-CN;y=1;n=2 builtin\\\" confidence=\\\"1.0\\\">\\n    <instance></instance>\\n    <input mode=\\\"speech\\\"></input>\\n  </interpretation>\\n</result>";
+
         String s = parseAsrResXml(str);
         System.out.println(s);
 

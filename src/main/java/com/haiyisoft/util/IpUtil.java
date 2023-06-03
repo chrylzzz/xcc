@@ -6,7 +6,9 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 
 /**
  * 获取本机IP 地址
@@ -65,21 +67,32 @@ public class IpUtil {
         }
     }
 
-    public static void getAllIp() throws SocketException {
+    /**
+     * 获取所有ip , 去除 127.0.0.1
+     *
+     * @return
+     * @throws SocketException
+     */
+    public static List<String> getHostAddressList() throws SocketException {
+        List<String> addressList = new ArrayList<>();
         Enumeration allNetInterfaces = NetworkInterface.getNetworkInterfaces();
         InetAddress ip = null;
         while (allNetInterfaces.hasMoreElements()) {
             NetworkInterface netInterface = (NetworkInterface) allNetInterfaces.nextElement();
-            System.out.println(netInterface.getName());
+            System.out.println("网卡名称 :" + netInterface.getName());
             Enumeration addresses = netInterface.getInetAddresses();
             while (addresses.hasMoreElements()) {
                 ip = (InetAddress) addresses.nextElement();
                 if (ip != null && ip instanceof Inet4Address) {
-                    System.out.println("本机的IP = " + ip.getHostAddress());
+                    String hostAddress = ip.getHostAddress();
+                    addressList.add(hostAddress);
                 }
             }
         }
+        addressList.remove(INTRANET_IP);
+        return addressList;
     }
+
 }
 
 

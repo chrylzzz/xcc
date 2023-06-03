@@ -23,6 +23,11 @@ public class XCCConfigProperty {
     private String xctrlSubject;
     // node subject prefix
     private String xnodeSubjectPrefix;
+
+    public void setXnodeSubjectPrefix(String xnodeSubjectPrefix) {
+        this.xnodeSubjectPrefix = xnodeSubjectPrefix + ".";
+    }
+
     // tts engine
     private String ttsEngine;
     // tts engine
@@ -35,6 +40,8 @@ public class XCCConfigProperty {
     private String ngdQueryAuthorization;
     // cluster true or false
     private boolean cluster;
+    // parse engine xml data
+    private boolean handleEngineData;
     // nats list
     private List<JSONObject> natsList;
 

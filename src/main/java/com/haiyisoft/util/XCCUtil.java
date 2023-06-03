@@ -5,13 +5,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.haiyisoft.boot.IVRInit;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
-import com.haiyisoft.entry.IVREvent;
+import com.haiyisoft.entry.XCCEvent;
 import io.nats.client.Connection;
 import lombok.extern.slf4j.Slf4j;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.io.SAXReader;
-import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,8 +17,40 @@ import java.util.Map;
  * Created By Chryl on 2023-02-08.
  **/
 @Slf4j
-@Component
 public class XCCUtil {
+
+    /**
+     * 获取话务数据
+     *
+     * @param params
+     * @return
+     */
+    public static ChannelEvent convertParams(JSONObject params) {
+        ChannelEvent event = new ChannelEvent();
+        try {
+//          we have to serialize the params into a string and parse it again
+//          unless we can find a way to convert JsonElement to protobuf class
+//          Xctrl.ChannelEvent.Builder cevent = Xctrl.ChannelEvent.newBuilder();
+//          JsonFormat.parser().ignoringUnknownFields().merge(params.toString(), cevent);
+//          log.info("订阅事件 cevent :{}", cevent);
+//          String state = cevent.getState();
+
+
+            String uuid = params.getString("uuid");
+            String node_uuid = params.getString("node_uuid");
+            //当前Channel的状态,如START--Event.Channel（state=START）
+            String state = params.getString("state");
+
+            event.setUuid(uuid);
+            event.setNodeUuid(node_uuid);
+            event.setState(state);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("convertParams 发生异常：{}", e);
+        }
+        return event;
+    }
 
     /**
      * 获取媒体对象
@@ -69,7 +97,6 @@ public class XCCUtil {
         return dtmf;
     }
 
-
     /**
      * 获取语音识别对象
      *
@@ -96,117 +123,118 @@ public class XCCUtil {
     }
 
 
-    public void setVar(IVREvent ivrEvent, Connection nc, ChannelEvent event) {
+    public void setVar(Connection nc, ChannelEvent channelEvent) {
         RequestUtil request = new RequestUtil();
         JSONObject params = new JSONObject();
         Map<String, String> data = new HashMap<>();
         data.put("disable_img_fit", "true");
         params.put("ctrl_uuid", "chryl-ivvr");
-        params.put("uuid", event.getUuid());
+        params.put("uuid", channelEvent.getUuid());
         params.put("data", data);
-        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + event.getNodeUuid();
-        RequestUtil.natsRequestTimeOut(ivrEvent, nc, service, XCCConstants.SET_VAR, params, 1000);
+        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
+//        RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.SET_VAR, params, 1000);
     }
 
 
     //获取当前通道状态
-    public void getState(IVREvent ivrEvent, Connection nc, ChannelEvent event) {
+    public void getState(Connection nc, ChannelEvent channelEvent) {
         RequestUtil request = new RequestUtil();
         JSONObject params = new JSONObject();
         params.put("ctrl_uuid", "chryl-ivvr");
-        params.put("uuid", event.getUuid());
-        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + event.getNodeUuid();
-        RequestUtil.natsRequestTimeOut(ivrEvent, nc, service, XCCConstants.GET_STATE, params, 10000);
+        params.put("uuid", channelEvent.getUuid());
+        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
+//        RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.GET_STATE, params, 10000);
     }
 
 
     //接管话务
-    public static void accept(IVREvent ivrEvent, Connection nc, ChannelEvent event) {
+    public static void accept(Connection nc, ChannelEvent channelEvent) {
         JSONObject params = new JSONObject();
         params.put("ctrl_uuid", "chryl-ivvr");
         //当前channel 的uuid
-        String channelUuid = event.getUuid();
+        String channelUuid = channelEvent.getUuid();
         params.put("uuid", channelUuid);
-        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + event.getNodeUuid();
-        RequestUtil.natsRequestTimeOut(ivrEvent, nc, service, XCCConstants.ACCEPT, params, 10000);
+        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
+//        RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.ACCEPT, params, 10000);
     }
 
     //应答
-    public static void answer(IVREvent ivrEvent, Connection nc, ChannelEvent event) {
+    public static XCCEvent answer(Connection nc, ChannelEvent channelEvent) {
         JSONObject params = new JSONObject();
         params.put("ctrl_uuid", "chryl-ivvr");
         //当前channel 的uuid
-        String channelId = event.getUuid();
+        String channelId = channelEvent.getUuid();
         params.put("uuid", channelId);
-        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + event.getNodeUuid();
-        RequestUtil.natsRequestTimeOut(ivrEvent, nc, service, XCCConstants.ANSWER, params, 5000);
+        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
+        XCCEvent xccEvent = RequestUtil.natsRequestFutureByAnswer(nc, service, XCCConstants.ANSWER, params, 1000);
+        return xccEvent;
     }
 
     //挂断
-    public static void hangup(IVREvent ivrEvent, Connection nc, ChannelEvent event) {
+    public static void hangup(Connection nc, ChannelEvent channelEvent) {
         JSONObject params = new JSONObject();
         params.put("ctrl_uuid", "chryl-ivvr");
         //当前channel 的uuid
-        params.put("uuid", event.getUuid());
+        params.put("uuid", channelEvent.getUuid());
         //flag integer 值为,0：挂断自己,1：挂断对方,2：挂断双方
         params.put("flag", 2);
-        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + event.getNodeUuid();
-        RequestUtil.natsRequestTimeOut(ivrEvent, nc, service, XCCConstants.HANGUP, params, 5000);
+        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
+        RequestUtil.natsRequestFutureByHangup(nc, service, XCCConstants.HANGUP, params, 3000);
     }
 
     /**
      * 播放text
      *
      * @param nc
-     * @param event
-     * @param ttsContent 内容
+     * @param channelEvent
+     * @param ttsContent   内容
      */
-    public static void playTTS(IVREvent ivrEvent, Connection nc, ChannelEvent event, String ttsContent) {
+    public static XCCEvent playTTS(Connection nc, ChannelEvent channelEvent, String ttsContent) {
         JSONObject params = new JSONObject();
         params.put("ctrl_uuid", "chryl-ivvr");
         //当前channel 的uuid
-        String channelId = event.getUuid();
+        String channelId = channelEvent.getUuid();
         params.put("uuid", channelId);
         log.info("TTS播报内容为:{}", ttsContent);
         JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
         params.put("media", media);
-        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + event.getNodeUuid();
-        RequestUtil.natsRequestTimeOut(ivrEvent, nc, service, XCCConstants.PLAY, params, 10000);
+        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
+        XCCEvent xccEvent = RequestUtil.natsRequestFutureByPlayTTS(nc, service, XCCConstants.PLAY, params, 1000);
+        return xccEvent;
     }
-
 
     /**
      * 播放file
      *
      * @param nc
-     * @param event
-     * @param file  file_path/png_file
+     * @param channelEvent
+     * @param file         file_path/png_file
      */
-    public void playFILE(IVREvent ivrEvent, Connection nc, ChannelEvent event, String file) {
+    public void playFILE(Connection nc, ChannelEvent channelEvent, String file) {
         JSONObject params = new JSONObject();
         params.put("ctrl_uuid", "chryl-ivvr");
         //当前channel 的uuid
-        String channelUuid = event.getUuid();
+        String channelUuid = channelEvent.getUuid();
         params.put("uuid", channelUuid);
         JSONObject media = getPlayMedia(XCCConstants.PLAY_FILE, file);
         params.put("media", media);
-        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + event.getNodeUuid();
-        RequestUtil.natsRequestTimeOut(ivrEvent, nc, service, XCCConstants.PLAY, params, 1000);
+        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
+        RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.PLAY, params, 1000);
     }
 
     /**
      * 语音识别,播放语音,收集语音(不收集按键)
      *
      * @param nc
-     * @param event
+     * @param channelEvent
      * @return
      */
-    public static IVREvent detectSpeechPlayTTSNoDTMF(IVREvent ivrEvent, Connection nc, ChannelEvent event, String ttsContent) {
+    public static XCCEvent detectSpeechPlayTTSNoDTMF(Connection nc, ChannelEvent channelEvent, String ttsContent) {
         JSONObject params = new JSONObject();
         //ctrl_uuid:ctrl_uuid
         params.put("ctrl_uuid", "chryl-ivvr");
         //当前channel 的uuid
-        String channelId = event.getUuid();
+        String channelId = channelEvent.getUuid();
         params.put("uuid", channelId);
         log.info("TTS播报内容为:{}", ttsContent);
         JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
@@ -215,23 +243,21 @@ public class XCCUtil {
 //        params.put("dtmf", null);
         JSONObject speech = getSpeech();
         params.put("speech", speech);
-        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + event.getNodeUuid();
-        ivrEvent = RequestUtil.natsRequestFutureByDetectSpeech(ivrEvent, nc, service, XCCConstants.DETECT_SPEECH, params, 0);
-//        RequestUtil requestUtil = new RequestUtil();
-//        IVREvent ivrEvent = requestUtil.natsRequestFutureByDetectSpeech(nc, service, XCCConstants.DETECT_SPEECH, params, 20000);
-        return ivrEvent;
+        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
+        XCCEvent xccEvent = RequestUtil.natsRequestFutureByDetectSpeech(nc, service, XCCConstants.DETECT_SPEECH, params, 0);
+        return xccEvent;
     }
 
     /**
      * 播报并收集按键
      *
      * @param nc
-     * @param event
-     * @param ttsContent 播报内容
-     * @param maxDigits  最大位长
+     * @param channelEvent
+     * @param ttsContent   播报内容
+     * @param maxDigits    最大位长
      * @return
      */
-    public static IVREvent playAndReadDTMF(IVREvent ivrEvent, Connection nc, ChannelEvent event, String ttsContent, int maxDigits) {
+    public static XCCEvent playAndReadDTMF(Connection nc, ChannelEvent channelEvent, String ttsContent, int maxDigits) {
 //        播放一个语音并获取用户按键信息，将在收到满足条件的按键后返回。
 //        data：播放的媒体，可以是语音文件或TTS。
 //        返回结果：
@@ -243,26 +269,27 @@ public class XCCUtil {
         JSONObject params = new JSONObject();
         params.put("ctrl_uuid", "chryl-ivvr");
         //当前channel 的uuid
-        String channelId = event.getUuid();
+        String channelId = channelEvent.getUuid();
         params.put("uuid", channelId);
         JSONObject dtmf = getDtmf(maxDigits);
         params.put("dtmf", dtmf);
         JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
 //        params.put("data", media);
         params.put("media", media);
-        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + event.getNodeUuid();
-        ivrEvent = RequestUtil.natsRequestFutureByReadDTMF(ivrEvent, nc, service, XCCConstants.READ_DTMF, params, 2000);
-        return ivrEvent;
+        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
+        XCCEvent xccEvent = RequestUtil.natsRequestFutureByReadDTMF(nc, service, XCCConstants.READ_DTMF, params, 5000);
+        return xccEvent;
     }
 
     /**
      * 转接
      *
      * @param nc
-     * @param event
+     * @param channelEvent
+     * @param ttsContent
      * @return
      */
-    public static IVREvent bridge(IVREvent ivrEvent, Connection nc, ChannelEvent event) {
+    public static XCCEvent bridge(Connection nc, ChannelEvent channelEvent, String ttsContent) {
 /*
         {
             "jsonrpc": "2.0",
@@ -282,6 +309,8 @@ public class XCCUtil {
         }
 
         */
+        //正在转接人工坐席,请稍后
+        XCCUtil.playTTS(nc, channelEvent, ttsContent);
         //全局参数
         JSONObject user2user = new JSONObject();
         user2user.put("queueName", "1123123");
@@ -310,26 +339,27 @@ public class XCCUtil {
 
         JSONObject params = new JSONObject();
         //当前channel 的uuid
-        String channelId = event.getUuid();
+        String channelId = channelEvent.getUuid();
         params.put("uuid", channelId);
         params.put("ctrl_uuid", "chryl-ivvr");
         params.put("flow_control", XCCConstants.ANY);
         params.put("destination", destination);
 
 
-        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + event.getNodeUuid();
-        ivrEvent = RequestUtil.natsRequestFutureByBridge(ivrEvent, nc, service, XCCConstants.BRIDGE, params, 2000);
-        return ivrEvent;
+        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
+        XCCEvent xccEvent = RequestUtil.natsRequestFutureByBridge(nc, service, XCCConstants.BRIDGE, params, 2000);
+        return xccEvent;
     }
 
     /**
      * 转接分机测试
      *
      * @param nc
-     * @param event
+     * @param channelEvent
+     * @param ttsContent
      * @return
      */
-    public static IVREvent bridgeExtension(IVREvent ivrEvent, Connection nc, ChannelEvent event) {
+    public static XCCEvent bridgeExtension(Connection nc, ChannelEvent channelEvent, String ttsContent) {
         /*
         {
             "jsonrpc": "2.0",
@@ -349,6 +379,8 @@ public class XCCUtil {
         }
 
         */
+        //正在转接人工坐席,请稍后
+        playTTS(nc, channelEvent, ttsContent);
         //全局参数
         JSONObject user2user = new JSONObject();
         user2user.put("queueName", "111");
@@ -376,13 +408,13 @@ public class XCCUtil {
 
         JSONObject params = new JSONObject();
         //当前channel 的uuid
-        String channelId = event.getUuid();
+        String channelId = channelEvent.getUuid();
         params.put("uuid", channelId);
         params.put("ctrl_uuid", "chryl-ivvr");
         params.put("flow_control", XCCConstants.ANY);
         params.put("destination", destination);
-        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + event.getNodeUuid();
-        ivrEvent = RequestUtil.natsRequestFutureByBridge(ivrEvent, nc, service, XCCConstants.BRIDGE, params, 2000);
-        return ivrEvent;
+        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
+        XCCEvent xccEvent = RequestUtil.natsRequestFutureByBridge(nc, service, XCCConstants.BRIDGE, params, 2000);
+        return xccEvent;
     }
 }

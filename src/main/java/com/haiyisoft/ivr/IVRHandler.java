@@ -4,7 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
 import com.haiyisoft.entry.IVREvent;
-import com.haiyisoft.util.ExceptionAdvice;
+import com.haiyisoft.entry.NGDEvent;
+import com.haiyisoft.entry.XCCEvent;
 import com.haiyisoft.util.IdGenerator;
 import com.haiyisoft.util.NGDUtil;
 import com.haiyisoft.util.XCCUtil;
@@ -34,21 +35,23 @@ public class IVRHandler {
 
 
     @Async
-    public void handlerChannelEvent(Connection nc, ChannelEvent event) {
-        String state = event.getState();
+    public void handlerChannelEvent(Connection nc, ChannelEvent channelEvent) {
+        String state = channelEvent.getState();
         if (state == null) {
             log.error("state is null ");
         } else {
             //使用channelId作为callId,sessionId
-            String channelId = event.getUuid();
+            String channelId = channelEvent.getUuid();
             //ivr event
             IVREvent ivrEvent = new IVREvent(channelId);
+            XCCEvent xccEvent = new XCCEvent();
+            NGDEvent ngdEvent = new NGDEvent();
             log.info(" start this call channelId: {} , state :{} ", channelId, state);
             if (XCCConstants.Channel_START.equals(state)) {
                 //开始接管,第一个指令必须是Accept或Answer
-                XCCUtil.answer(ivrEvent, nc, event);
+                XCCUtil.answer(nc, channelEvent);
                 //ngd return msg
-                String ngdResMsg = "";
+                String xccRecognitionResult = "";
                 //
                 String retKey = XCCConstants.YYSR;
                 String retValue = XCCConstants.WELCOME_TEXT;
@@ -56,38 +59,50 @@ public class IVRHandler {
                 String xccResMsg = "";
                 while (true) {
                     if (XCCConstants.YYSR.equals(retKey)) {//调用播报收音
-                        ivrEvent = XCCUtil.detectSpeechPlayTTSNoDTMF(ivrEvent, nc, event, retValue);
+                        xccEvent = XCCUtil.detectSpeechPlayTTSNoDTMF(nc, channelEvent, retValue);
                     } else if (XCCConstants.AJSR.equals(retKey)) {//调用xcc收集按键方法，多位按键
-                        ivrEvent = XCCUtil.playAndReadDTMF(ivrEvent, nc, event, retValue, 18);
+                        xccEvent = XCCUtil.playAndReadDTMF(nc, channelEvent, retValue, 18);
                     } else if (XCCConstants.YWAJ.equals(retKey)) {//调用xcc收集按键方法，一位按键
-                        ivrEvent = XCCUtil.playAndReadDTMF(ivrEvent, nc, event, retValue, 1);
+                        xccEvent = XCCUtil.playAndReadDTMF(nc, channelEvent, retValue, 1);
                     } else if (XCCConstants.RGYT.equals(retKey)) {//转人工
-                        ivrEvent = XCCUtil.bridge(ivrEvent, nc, event);
+                        /**
+                         * 转到华为座席,然后挂断
+                         */
+                        xccEvent = XCCUtil.bridgeExtension(nc, channelEvent, retValue);
                     }
+                    /**
+                     * 处理xcc 返回的code,包括no_input,异常的
+                     */
                     //handle code agent
-                    boolean handleXcc = ExceptionAdvice.handleXccAgent(ivrEvent);
-                    //调用xcc失败处理,404,500处理,xcc失败次数
-                    if (handleXcc) {
+                    boolean handleXcc = IVRHandlerAdvice.handleXccAgent(xccEvent, ivrEvent, channelEvent, nc);
+                    if (handleXcc) {//xcc处理失败
                         //转人工
                         break;
+//                        continue;
+                    } else {//xcc 处理正常
+
                     }
-                    xccResMsg = ivrEvent.getXccMsg();
-                    //调用百度知识库
-                    ngdResMsg = NGDUtil.invokeNGD(xccResMsg, channelId);
-                    //处理指令和话术
-                    ivrEvent = NGDUtil.convertResText(ngdResMsg, ivrEvent);
+
+
+                    //xcc识别数据
+                    xccRecognitionResult = xccEvent.getXccRecognitionResult();
+                    //获取指令和话术
+                    ngdEvent = NGDUtil.ngdHandler(xccRecognitionResult, channelId, ngdEvent);
                     //handle ngd agent
-                    ivrEvent = ExceptionAdvice.handleNgdAgent(ivrEvent);
-                    //调用ngd失败处理,和不理解处理,ngd失败次数
-                    if (ivrEvent.isAgent()) {
-                        //转人工
-                        log.info("ivrEvent agent: {}", ivrEvent);
-                        break;
-                    }
-                    retKey = ivrEvent.getRetKey();
-                    retValue = ivrEvent.getRetValue();
+//                        ngdEvent = IVRHandlerAdvice.handleNgdAgent(ngdEvent);
+                    /**
+                     * 处理ngd 返回 包括 不理解处理,ngd不理解次数
+                     */
+//                        if (ivrEvent.isAgent()) {
+//                            //转人工
+//                            log.info("ivrEvent agent: {}", ivrEvent);
+//                            break;
+//                        }
+                    retKey = ngdEvent.getRetKey();
+                    retValue = ngdEvent.getRetValue();
                     log.info("ivrEvent data: {}", ivrEvent);
                 }
+
             } else if (XCCConstants.Channel_CALLING.equals(state)) {
                 log.info("Channel_CALLING this call channelId: {}", channelId);
             } else if (XCCConstants.Channel_RINGING.equals(state)) {
@@ -103,43 +118,10 @@ public class IVRHandler {
             }
 
             //挂断双方
-            XCCUtil.hangup(ivrEvent, nc, event);
+            XCCUtil.hangup(nc, channelEvent);
             log.info("hangup this call channelId: {} ", channelId);
         }
     }
 
-
-    /**
-     * 获取话务数据
-     *
-     * @param params
-     * @return
-     */
-    public static ChannelEvent convertParams(JSONObject params) {
-        ChannelEvent event = new ChannelEvent();
-        try {
-//          we have to serialize the params into a string and parse it again
-//          unless we can find a way to convert JsonElement to protobuf class
-//          Xctrl.ChannelEvent.Builder cevent = Xctrl.ChannelEvent.newBuilder();
-//          JsonFormat.parser().ignoringUnknownFields().merge(params.toString(), cevent);
-//          log.info("订阅事件 cevent :{}", cevent);
-//          String state = cevent.getState();
-
-
-            String uuid = params.getString("uuid");
-            String node_uuid = params.getString("node_uuid");
-            //当前Channel的状态,如START--Event.Channel（state=START）
-            String state = params.getString("state");
-
-            event.setUuid(uuid);
-            event.setNodeUuid(node_uuid);
-            event.setState(state);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.error("convertParams 发生异常：{}", e);
-        }
-        return event;
-    }
 
 }

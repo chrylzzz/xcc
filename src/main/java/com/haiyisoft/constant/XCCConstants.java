@@ -109,16 +109,36 @@ public class XCCConstants {
     //ANY：互不控制，任一方挂机后另一方也挂机
     public static final String ANY = "ANY";
 
-    //success
-    public static final int JSONRPC_OK = 200;
-    //NOTIFY
+    //--------------------xcc识别返回的 code
+    //100：临时响应，实际的响应消息将在后续以异步的方式返回。
+    public static final int JSONRPC_TEMP = 100;
+    //200：成功。
+    public static final int OK = 200;
+    //202：请求已成功收到，但尚不知道结果，后续的结果将以事件（NOTIFY）的形式发出。
     public static final int JSONRPC_NOTIFY = 202;
-    //
+    //400：客户端错误，多发生在参数不全或不合法的情况。
     public static final int JSONRPC_CLIENT_ERROR = 400;
-    //cannot locate session by uuid
+    //404: uuid错误或者用户挂机时调用xcc (cannot locate session by uuid)
     public static final int JSONRPC_CANNOT_LOCATE_SESSION_BY_UUID = 404;
-    //error
+    //410：Gone。发生在放音或ASR检测过程中用户侧挂机的情况。
+    public static final int JSONRPC_CANNOT_USER_HUGUP = 410;
+    //500：内部错误。
     public static final int JSONRPC_SERVER_ERROR = 500;
+    //555: 自定义错误码
+    public static final int CODE_CHRYL_ERROR = 555;
+    //6xx: 系统错误，如发生在关机或即将关机的情况下，拒绝呼叫。
+    public static final int JSONRPC_CODE_SYSTEM_ERROR = 6;
+    //--------------------xcc识别返回 code
+
+    //--------------------xcc识别返回的type error
+    //xcc返回type
+    //语音识别完成 : 当 type = Speech.End 时无error字段
+    public static final String RECOGNITION_TYPE_SPEECH_END = "Speech.End";
+    //识别错误 : 当 type = ERROR 时 ,error=no_input
+    public static final String RECOGNITION_TYPE_ERROR = "ERROR";
+    //    public static final String RECOGNITION_ERROR_SPEECH_TIMEOUT = "speech_timeout";
+    public static final String RECOGNITION_ERROR_NO_INPUT = "no_input";
+    //--------------------xcc识别返回的type error
 
 
     /********************************************xswitch相关********************************************/
@@ -131,6 +151,8 @@ public class XCCConstants {
     public static final String NGD_QUERY_AUTHORIZATION = "NGD 43b6f0be-4894-466f-a346-08046d935035";
     //欢迎语
     public static final String WELCOME_TEXT = "我是智能美美, 您要咨询什么问题, 您请说";
+    //转人工话术
+    public static final String ARTIFICIAL_TEXT = "正在为您转接人工坐席, 请稍后";
     //XCC返回失败话术
     public static final String XCC_MISSING_MSG = "YYSR#您的问题我不理解，请换个问法。如需人工服务，请讲 转人工";
     //XCC返回失败话术
@@ -151,11 +173,28 @@ public class XCCConstants {
     public static final String CHANNEL_IVR = "智能IVR";
     //ngd话术分隔符
     public static final String NGD_SEPARATOR = "#";
+    //unMatch : 百度知识库接口未匹配: 返回抱歉,我不太理解您的意思
+    public static final String NGD_QUERY_UNMATCH = "unMatch";
 
+    /**
+     * source:为知识库返回问题来源
+     * faq : faq回复
+     * system: 机器回复
+     * task_based :流程恢复
+     * clarify: 未明确意图,需要再次询问的
+     */
+    public static final String SOURCE_FAQ = "faq";
+    public static final String SOURCE_SYSTEM = "system";
+    public static final String SOURCE_TASK_BASED = "task_based";
+    public static final String SOURCE_CLARIFY = "clarify";
 
+    //ngd 用户请求过于频繁，请稍后再试
+    public static final int NGD_REQUEST_TO_MUCH = 4000019;
+    //bot token错误
+    public static final int NGD_BOT_TOKEN_ERREO = 4002409;
     /********************************************ngd相关********************************************/
 
-    /********************************************ngd相关********************************************/
+    /********************************************其他配置相关********************************************/
     //多节点配置
     public static final String NODE = "node";
     public static final String NATS = "nats";
@@ -166,6 +205,6 @@ public class XCCConstants {
     //input
     public static final String INPUT = "input";
 
-    /********************************************ngd相关********************************************/
+    /********************************************其他配置相关********************************************/
 
 }

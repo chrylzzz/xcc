@@ -1,12 +1,10 @@
 package com.haiyisoft.ivr;
 
 import com.alibaba.fastjson.JSONObject;
-import com.google.protobuf.util.JsonFormat;
 import com.haiyisoft.boot.IVRInit;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
 import com.haiyisoft.util.XCCUtil;
-import com.haiyisoft.xctrl.Xctrl;
 import io.nats.client.Connection;
 import io.nats.client.Message;
 import io.nats.client.Nats;
@@ -109,7 +107,7 @@ public class IVRController {
                     if (XCCConstants.Event_Channel.equals(method)) {
                         JSONObject params = eventJson.getJSONObject("params");
                         //convert param
-                        ChannelEvent event = IVRHandler.convertParams(params);
+                        ChannelEvent event = XCCUtil.convertParams(params);
                         //asr domain
                         ivrHandler.handlerChannelEvent(nc, event);
                     } else if (XCCConstants.Event_DetectedFace.equals(method)) {

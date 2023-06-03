@@ -7,7 +7,7 @@ xcc:
   natsUrl: nats://hy:h8klu6bRwW@nats.xswitch.cn:4222
   xctrlSubject: cn.xswitch.ctrl
 #  xctrlSubject: cn.xswitch.ctrl.>
-  xnodeSubjectPrefix: cn.xswitch.node.
+  xnodeSubjectPrefix: cn.xswitch.node
 #  tts engine
   ttsEngine: ali
 #  Voice-Name
@@ -19,7 +19,8 @@ xcc:
 #  ngd boot id
   ngdQueryAuthorization: NGD 88f20617-d6b5-4c4e-bf72-fde0c0db1d82
 #
-#
+# XML数据需要自己处理, JSON数据XSwitch已深度解析
+  handleEngineData: false
 #  若有多台xswitch,再开启
   cluster: false
   #配置多节点
