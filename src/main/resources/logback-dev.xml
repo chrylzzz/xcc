@@ -7,9 +7,6 @@
     <!-- 控制台输出 -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50}:%L - %msg%n</pattern>
-            <!-- 本地控制台输出的时候，可以使用彩色打印日志 -->
             <pattern>${CONSOLE_LOG_PATTERN}</pattern>
         </encoder>
     </appender>
@@ -24,8 +21,7 @@
             <MaxFileSize>20MB</MaxFileSize>
         </rollingPolicy>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50}:%L - %msg%n</pattern>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
         </encoder>
     </appender>
 

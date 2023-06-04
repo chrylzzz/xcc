@@ -1,136 +1,93 @@
 package com.haiyisoft.handler;
 
+import com.alibaba.fastjson.JSONObject;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
 import com.haiyisoft.entry.IVREvent;
-import com.haiyisoft.entry.NGDEvent;
-import com.haiyisoft.entry.XCCEvent;
 import com.haiyisoft.util.XCCUtil;
 import io.nats.client.Connection;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 
 /**
- * Created by Chr.yl on 2023/3/30.
+ * Created by Chr.yl on 2023/6/4.
  *
  * @author Chr.yl
  */
 @Slf4j
 public class IVRHandler {
 
+    //用户意图直接转人工规则
+
     /**
-     * 处理xcc code
-     * 200 成功
-     * 202
-     * 400
-     * 404
-     * 410
-     * 500
-     * 555
-     * 6xx
-     *
-     * @param xccEvent
-     * @return true xcc返回异常,false xcc返回正常
+     * 触发转人工规则
+     * ngd: 机器回复一次+1,连续两次机器回复转人工
+     * xcc: 未识别一次+1,连续两次未识别转人工
      */
-    public static boolean handleXccAgent(XCCEvent xccEvent, IVREvent ivrEvent, ChannelEvent channelEvent, Connection nc) {
-        Integer code = xccEvent.getCode();
-        String type = xccEvent.getType();
-        String error = xccEvent.getError();
-        String xccRecognitionResult = xccEvent.getXccRecognitionResult();
-        boolean handleXcc;
-        log.info("handleXccAgent code : {}  , xccRecognitionResult : {} , type : {} , error : {}", code, xccRecognitionResult, type, error);
-        if (StringUtils.isBlank(xccRecognitionResult)) {
-            if (XCCConstants.OK == code) {//200
-                //Speech.End,continue;
-//                if (XCCConstants.RECOGNITION_TYPE_SPEECH_END.equals(type)) {
-//                    handleXcc = false;
-//                }
-                //当 type = ERROR 时 , error = no_input
-                if (XCCConstants.RECOGNITION_TYPE_ERROR.equals(type)) {//ERROR
-                    //没说话,话术需要修改
-
-                }
-                handleXcc = false;
-            } else if (XCCConstants.JSONRPC_TEMP == code) {//100
-                handleXcc = true;
-            } else if (XCCConstants.JSONRPC_NOTIFY == code) {//202
-                //没按键
-
-                handleXcc = false;
-            } else if (XCCConstants.JSONRPC_CLIENT_ERROR == code) {//400
-                handleXcc = true;
-            } else if (XCCConstants.JSONRPC_CANNOT_LOCATE_SESSION_BY_UUID == code) {//404
-                //uuid参数错误或者用户主动挂机时调用xswitch
-                //挂断双方
-                log.info("hangup this call channelId: {} , because 410 ", ivrEvent.getChannelId());
-                handleXcc = true;
-            } else if (XCCConstants.JSONRPC_CANNOT_USER_HUGUP == code) {//410
-                //发生在放音或ASR检测过程中用户侧挂机的情况
-                XCCUtil.hangup(nc, channelEvent);
-                handleXcc = true;
-            } else if (XCCConstants.JSONRPC_SERVER_ERROR == code) {//500
-                //xswitch出错
-                handleXcc = true;
-            } else if (XCCConstants.CODE_CHRYL_ERROR == code) {//555
-                //自定义错误码
-                handleXcc = true;
-            } else if (XCCConstants.JSONRPC_CODE_SYSTEM_ERROR == code) {//6xx
-                //系统错误
-                handleXcc = true;
-            } else {
-                handleXcc = true;
-            }
+    public static IVREvent transferRule(IVREvent ivrEvent, ChannelEvent channelEvent, Connection nc) {
+        boolean transferFlag = ivrEvent.isTransferFlag();
+        if (transferFlag) {//转人工
+            XCCUtil.handleTransferArtificial(nc, channelEvent, XCCConstants.ARTIFICIAL_TEXT);
         } else {
-            handleXcc = false;
+            //累加次数
+            int transferTime = ivrEvent.getTransferTime();
+            int newTransferTime = transferTime + 1;
+            if (newTransferTime >= XCCConstants.TRANSFER_ARTIFICIAL_TIME) {
+                ivrEvent.setTransferFlag(true);
+                log.info("transferRule 次数 {} 已累加至 {} , 转人工 channelId : {}", XCCConstants.DEFAULT_TRANSFER_TIME, XCCConstants.TRANSFER_ARTIFICIAL_TIME, ivrEvent.getChannelId());
+                XCCUtil.handleTransferArtificial(nc, channelEvent, XCCConstants.ARTIFICIAL_TEXT);
+            } else {
+                log.info("transferRule 已累加 channelId : {} , transferTime : {} ,newTransferTime : {}", ivrEvent.getChannelId(), transferTime, newTransferTime);
+                ivrEvent.setTransferTime(newTransferTime);
+            }
         }
-        return handleXcc;
+        return ivrEvent;
     }
 
-
-    //连续两次xcc no_input 转换人工
-    public static void handleArtificial() {
-
-    }
 
     /**
-     * 两次识别失败转人工
+     * 转人工规则清零
      *
      * @param ivrEvent
      * @return
      */
-    public static IVREvent handleNgdAgent(IVREvent ivrEvent) {
-//        String retValue = ivrEvent.getRetValue();
-//        if (retValue.contains(XCCConstants.NGD_MISSING_MSG)) {
-//            int agentTime = ivrEvent.getAgentTime();
-//            ivrEvent.setAgentTime(agentTime + 1);
-//            if (agentTime >= 2) {
-//                log.info("转人工:{}", ivrEvent);
-//                ivrEvent.setAgent(true);
-//            }
-//        }
+    public static IVREvent transferRuleClean(IVREvent ivrEvent) {
+        ivrEvent.setTransferTime(1);
+        ivrEvent.setTransferFlag(false);
+        log.info("transferRuleClean 已重置 channelId : {} , transferTime : {}", ivrEvent.getChannelId(), ivrEvent.getTransferTime());
         return ivrEvent;
-
     }
+
 
     /**
-     * 赋值xcc返回数据
+     * 获取话务数据
      *
-     * @param code
-     * @param message
-     * @param xccRecognitionResult
+     * @param params
      * @return
      */
-    public static XCCEvent xccEventSetVar(Integer code, String message, String xccRecognitionResult, String type, String error, String xccMethod) {
-        log.info("xccEventSetVar code : {} , message : {} , xccRecognitionResult : {} , type : {} , error : {} , xccMethod : {}", code, message, xccRecognitionResult, type, error, xccMethod);
-        XCCEvent xccEvent = new XCCEvent();
-        xccEvent.setCode(code);
-        xccEvent.setMessage(message);
-        xccEvent.setXccRecognitionResult(xccRecognitionResult);
-        xccEvent.setType(type);
-        xccEvent.setError(error);
-        xccEvent.setXccMethod(xccMethod);
+    public static ChannelEvent convertParams(JSONObject params) {
+        ChannelEvent event = new ChannelEvent();
+        try {
+//          we have to serialize the params into a string and parse it again
+//          unless we can find a way to convert JsonElement to protobuf class
+//          Xctrl.ChannelEvent.Builder cevent = Xctrl.ChannelEvent.newBuilder();
+//          JsonFormat.parser().ignoringUnknownFields().merge(params.toString(), cevent);
+//          log.info("订阅事件 cevent :{}", cevent);
+//          String state = cevent.getState();
 
-        return xccEvent;
+
+            String uuid = params.getString("uuid");
+            String node_uuid = params.getString("node_uuid");
+            //当前Channel的状态,如START--Event.Channel（state=START）
+            String state = params.getString("state");
+
+            event.setUuid(uuid);
+            event.setNodeUuid(node_uuid);
+            event.setState(state);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("convertParams 发生异常：{}", e);
+        }
+        return event;
     }
-
 }

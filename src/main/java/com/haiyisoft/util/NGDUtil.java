@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.haiyisoft.boot.IVRInit;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.NGDEvent;
-import com.haiyisoft.handler.IVRHandler;
 import com.haiyisoft.handler.NGDHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -36,7 +35,7 @@ public class NGDUtil {
         ext.put("exact", "true");
         param.put("ext", ext);//ext
         param.put("context", context);//渠道标识，智能IVR为广西智能ivr标识
-        log.info("开始调用,百度知识库接口入参:{}", param.toJSONString());
+        log.info("开始调用,百度知识库接口入参:{}", JSON.toJSONString(param, true));
         //invoke
         String jsonStrResult = HttpClientUtil.doPostJsonForGxNgd(IVRInit.XCC_CONFIG_PROPERTY.getNgdQueryUrl(), param.toJSONString());
         //百度知识库返回的数据信息
@@ -46,16 +45,18 @@ public class NGDUtil {
 //        String sessionId = dataJson.getString("sessionId");
         Integer code = parse.getIntValue("code");
         String msg = parse.getString("msg");
+        String source = jsonData.getString("source");
         String answer = "";
         if (XCCConstants.OK == code) {
             answer = convertAnswer(jsonData);
         } else {
             answer = XCCConstants.XCC_MISSING_MSG;
         }
-        NGDEvent ngdEvent = NGDHandler.ngdEventSetVar(code, msg, answer);
+        NGDEvent ngdEvent = NGDHandler.ngdEventSetVar(code, msg, answer, source);
         log.info("百度知识库返回 code: {} , answer: {}", code, answer);
         return ngdEvent;
     }
+
 
     /**
      * 根据百度知识库返回的数据取到合理的回复

@@ -121,7 +121,7 @@ public class XCCConstants {
     //404: uuid错误或者用户挂机时调用xcc (cannot locate session by uuid)
     public static final int JSONRPC_CANNOT_LOCATE_SESSION_BY_UUID = 404;
     //410：Gone。发生在放音或ASR检测过程中用户侧挂机的情况。
-    public static final int JSONRPC_CANNOT_USER_HUGUP = 410;
+    public static final int JSONRPC_USER_HANGUP = 410;
     //500：内部错误。
     public static final int JSONRPC_SERVER_ERROR = 500;
     //555: 自定义错误码
@@ -141,11 +141,15 @@ public class XCCConstants {
     //--------------------xcc识别返回的type error
 
 
-    //xcc识别方式
-    //SPEECH
-    public static final String XCCRECOGNITIONTYPE_SPEECH = "SPEECH";
-    //DTMF
-    public static final String XCCRECOGNITIONTYPE_DTMF = "DTMF";
+    //外呼(Dial)/挂断(Hangup)的结果中cause为成功或失败原因，列表如下：
+    //SUCCESS：成功，可以进行下一步操作。
+    public static final String SUCCESS = "SUCCESS";
+    //USER_BUDY：被叫忙。
+    public static final String USER_BUDY = "USER_BUDY";
+    //CALL_REJECTED：被叫拒接。
+    public static final String CALL_REJECTED = "CALL_REJECTED";
+    //NO_ROUTE_DESTINATION：找不到路由。
+    public static final String NO_ROUTE_DESTINATION = "NO_ROUTE_DESTINATION";
 
     /********************************************xswitch相关********************************************/
 
@@ -163,8 +167,6 @@ public class XCCConstants {
     public static final String XCC_MISSING_MSG = "YYSR#您的问题我不理解，请换个问法。如需人工服务，请讲 转人工";
     //XCC返回失败话术
     public static final String XCC_MISSING_ANSWER = "您的问题我不理解，请换个问法。如需人工服务，请讲 转人工";
-    //NGD识别失败话术
-    public static final String NGD_MISSING_MSG = "我不太理解您的意思, 请您换个问法。";
     //语音输入
     public static final String YYSR = "YYSR";
     //按键输入
@@ -193,14 +195,18 @@ public class XCCConstants {
     public static final String SOURCE_SYSTEM = "system";
     public static final String SOURCE_TASK_BASED = "task_based";
     public static final String SOURCE_CLARIFY = "clarify";
-
+    //ngd未触发答案
+    //NGD识别失败话术 "source":"task_based"
+    public static final String NGD_MISSING_MSG = "这个家伙很懒,没留下答案就跑了";
+    //"source": "system"
+    public static final String NGD_UNDERSTAND_MSG = "抱歉,我不太理解您的意思";
     //ngd 用户请求过于频繁，请稍后再试
     public static final int NGD_REQUEST_TO_MUCH = 4000019;
     //bot token错误
     public static final int NGD_BOT_TOKEN_ERREO = 4002409;
     /********************************************ngd相关********************************************/
 
-    /********************************************其他配置相关********************************************/
+    /********************************************IVR相关********************************************/
     //多节点配置
     public static final String NODE = "node";
     public static final String NATS = "nats";
@@ -210,7 +216,11 @@ public class XCCConstants {
     public static final String ESCAPE_CHARACTER = "\\";
     //input
     public static final String INPUT = "input";
+    //IVR失败转人工次数
+    public static final int DEFAULT_TRANSFER_TIME = 1;
+    public static final int TRANSFER_ARTIFICIAL_TIME = 4;
 
-    /********************************************其他配置相关********************************************/
+
+    /********************************************IVR相关********************************************/
 
 }

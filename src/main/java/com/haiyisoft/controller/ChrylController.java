@@ -3,10 +3,14 @@ package com.haiyisoft.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.haiyisoft.boot.IVRInit;
+import com.haiyisoft.ivr.IVRService;
 import com.haiyisoft.util.HttpClientUtil;
 import com.haiyisoft.util.IdGenerator;
 import com.haiyisoft.util.NGDUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,6 +53,22 @@ public class ChrylController {
 
     }
 
+    @Autowired
+    private ApplicationContext applicationContext;
+    @Autowired
+    private IVRService ivrService;
+    @Autowired
+    private IVRService ivrService2;
+
+    @GetMapping("c")
+    public void show() {
+        System.out.println(applicationContext);
+        AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext(IVRService.class);
+        IVRService person = ac.getBean(IVRService.class);
+        System.out.println("p:" + person);
+        System.out.println(ivrService);
+        System.out.println(ivrService2);
+    }
 
     //----------------------------测试http client
     @GetMapping("/timeout")

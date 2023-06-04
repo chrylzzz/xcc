@@ -6,6 +6,7 @@ import com.haiyisoft.boot.IVRInit;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
 import com.haiyisoft.entry.XCCEvent;
+import com.haiyisoft.handler.XCCHandler;
 import io.nats.client.Connection;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,38 +20,6 @@ import java.util.Map;
 @Slf4j
 public class XCCUtil {
 
-    /**
-     * 获取话务数据
-     *
-     * @param params
-     * @return
-     */
-    public static ChannelEvent convertParams(JSONObject params) {
-        ChannelEvent event = new ChannelEvent();
-        try {
-//          we have to serialize the params into a string and parse it again
-//          unless we can find a way to convert JsonElement to protobuf class
-//          Xctrl.ChannelEvent.Builder cevent = Xctrl.ChannelEvent.newBuilder();
-//          JsonFormat.parser().ignoringUnknownFields().merge(params.toString(), cevent);
-//          log.info("订阅事件 cevent :{}", cevent);
-//          String state = cevent.getState();
-
-
-            String uuid = params.getString("uuid");
-            String node_uuid = params.getString("node_uuid");
-            //当前Channel的状态,如START--Event.Channel（state=START）
-            String state = params.getString("state");
-
-            event.setUuid(uuid);
-            event.setNodeUuid(node_uuid);
-            event.setState(state);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.error("convertParams 发生异常：{}", e);
-        }
-        return event;
-    }
 
     /**
      * 获取媒体对象
@@ -91,8 +60,8 @@ public class XCCUtil {
         JSONObject dtmf = new JSONObject();
         dtmf.put("min_digits", 1);
         dtmf.put("max_digits", maxDigits);
-        dtmf.put("timeout", 15000);
-        dtmf.put("digit_timeout", 2000);
+        dtmf.put("timeout", 6 * 1000);
+        dtmf.put("digit_timeout", 3 * 1000);
         dtmf.put("terminators", XCCConstants.DTMF_TERMINATORS);
         return dtmf;
     }
@@ -114,7 +83,9 @@ public class XCCUtil {
         //正整数，未检测到语音超时，默认为5000ms
         speech.put("no_input_timeout", 5 * 1000);
         //语音超时，即如果对方讲话一直不停超时，最大只能设置成6000ms，默认为6000ms。
-        speech.put("speech_timeout", 6 * 1000);
+//        speech.put("speech_timeout", 6 * 1000);
+        //正整数，语音最大超时，和参数speech_timeout作用相同，如果max_speech_timeout的值大于speech_timeout，则以max_speech_timeout为主，用于一些特殊场景的语音时长设置。
+        speech.put("max_speech_timeout", 10 * 1000);
         //是否返回中间结果
         speech.put("partial_event", true);
         //默认会发送Event.DetectedData事件，如果为true则不发送。
@@ -137,13 +108,13 @@ public class XCCUtil {
 
 
     //获取当前通道状态
-    public void getState(Connection nc, ChannelEvent channelEvent) {
+    public static void getState(Connection nc, ChannelEvent channelEvent) {
         RequestUtil request = new RequestUtil();
         JSONObject params = new JSONObject();
         params.put("ctrl_uuid", "chryl-ivvr");
         params.put("uuid", channelEvent.getUuid());
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
-//        RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.GET_STATE, params, 10000);
+        RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.GET_STATE, params, 10000);
     }
 
 
@@ -176,7 +147,7 @@ public class XCCUtil {
         params.put("ctrl_uuid", "chryl-ivvr");
         //当前channel 的uuid
         params.put("uuid", channelEvent.getUuid());
-        //flag integer 值为,0：挂断自己,1：挂断对方,2：挂断双方
+        //flag integer 值为: 0 挂断自己 , 1 挂断对方 , 2 挂断双方
         params.put("flag", 2);
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
         RequestUtil.natsRequestFutureByHangup(nc, service, XCCConstants.HANGUP, params, 3000);
@@ -195,7 +166,7 @@ public class XCCUtil {
         //当前channel 的uuid
         String channelId = channelEvent.getUuid();
         params.put("uuid", channelId);
-        log.info("TTS播报内容为:{}", ttsContent);
+        log.info("TTS播报内容为 : {}", ttsContent);
         JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
         params.put("media", media);
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
@@ -236,7 +207,7 @@ public class XCCUtil {
         //当前channel 的uuid
         String channelId = channelEvent.getUuid();
         params.put("uuid", channelId);
-        log.info("TTS播报内容为:{}", ttsContent);
+        log.info("TTS播报内容为 : {}", ttsContent);
         JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
         params.put("media", media);
         //如果不需要同时检测DTMF，可以不传该参数。
@@ -349,6 +320,23 @@ public class XCCUtil {
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
         XCCEvent xccEvent = RequestUtil.natsRequestFutureByBridge(nc, service, XCCConstants.BRIDGE, params, 2000);
         return xccEvent;
+    }
+
+    /**
+     * 转人工
+     * Transfer Artificial
+     * 待处理500,目前测试转人工未接听,返回500
+     *
+     * @param nc
+     * @param channelEvent
+     * @param ttsContent
+     */
+    public static void handleTransferArtificial(Connection nc, ChannelEvent channelEvent, String ttsContent) {
+        XCCEvent xccEvent = XCCUtil.bridgeExtension(nc, channelEvent, ttsContent);
+        boolean someHangup = XCCHandler.handleSomeHangup(xccEvent, channelEvent.getUuid());
+        if (someHangup) {
+            hangup(nc, channelEvent);
+        }
     }
 
     /**

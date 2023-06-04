@@ -6,10 +6,11 @@ import com.haiyisoft.advice.IVRExceptionAdvice;
 import com.haiyisoft.boot.IVRInit;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.XCCEvent;
-import com.haiyisoft.handler.IVRHandler;
+import com.haiyisoft.handler.XCCHandler;
 import io.nats.client.Connection;
 import io.nats.client.Message;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
@@ -147,8 +148,7 @@ public class RequestUtil {
         JSONObject jsonRpc = getJsonRpc(method, params);
         StringWriter request = new StringWriter();
         jsonRpc.writeJSONString(request);
-        String json = JSON.toJSONString(jsonRpc, true);
-        log.info("{} 请求信息 service:[{}], Serializer json:{}", method, service, json);
+        log.info("{} 请求信息 service:[{}], Serializer json:{}", method, service, JSON.toJSONString(jsonRpc, true));
         XCCEvent xccEvent;
         try {
             Future<Message> incoming = con.request(service, request.toString().getBytes(StandardCharsets.UTF_8));
@@ -160,12 +160,15 @@ public class RequestUtil {
             String message = result.getString("message");//统一返回
             String type = "";//type=ERROR时才有
             String error = "";//type=ERROR时才有
-            xccEvent = IVRHandler.xccEventSetVar(code, message, "", type, error, method);
-            log.info("{} 执行结束", method);
+            String cause = result.getString("cause");
+            xccEvent = XCCHandler.xccEventSetVar(code, message, type, error, method, cause);
+            log.info("{} xccEvent: {}", method, xccEvent);
         } catch (Exception e) {
             log.error("xcc handleException 发生异常：{} , {}", method, e);
             xccEvent = IVRExceptionAdvice.handleException(method, e);
         }
+
+        log.info("{} 执行结束", method);
         return xccEvent;
     }
 
@@ -185,9 +188,7 @@ public class RequestUtil {
         JSONObject jsonRpc = getJsonRpc(method, params);
         StringWriter request = new StringWriter();
         jsonRpc.writeJSONString(request);
-//        String json = JSON.toJSONString(jsonRpc, SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteDateUseDateFormat, SerializerFeature.WriteNullListAsEmpty);
-        String json = JSON.toJSONString(jsonRpc, true);
-        log.info("{} 请求信息 service:[{}], Serializer json:{}", method, service, json);
+        log.info("{} 请求信息 service:[{}], Serializer json:{}", method, service, JSON.toJSONString(jsonRpc, true));
         //识别返回数据,调用失败默认为""
         String utterance = "";
         XCCEvent xccEvent;
@@ -202,12 +203,17 @@ public class RequestUtil {
             String message = result.getString("message");//统一返回
             String type = "";//type=ERROR时才有
             String error = "";//type=ERROR时才有
-            if (code == XCCConstants.OK) {
+            String cause = result.getString("cause");
+            if (XCCConstants.OK == code) {
                 JSONObject jsonData = result.getJSONObject("data");
+                /**
+                 * 待测试
+                 */
                 if (IVRInit.XCC_CONFIG_PROPERTY.isHandleEngineData()) {//手动解析
                     String xmlStr = jsonData.getString("engine_data");
                     utterance = Dom4jUtil.parseAsrResXml(xmlStr);
-                    if (utterance == null) {//未识别话术,参考深度解析返回event
+                    if (StringUtils.isBlank(utterance)) {
+                        //未识别话术,参考深度解析返回event
                         type = XCCConstants.RECOGNITION_TYPE_ERROR;
                         error = XCCConstants.RECOGNITION_ERROR_NO_INPUT;
                     }
@@ -217,16 +223,20 @@ public class RequestUtil {
                     error = jsonData.getString("error");
                 }
             } else {//调用失败, 这里不作处理
-
+                if (XCCConstants.JSONRPC_USER_HANGUP == code) {//410为客户主动挂机,有信息返回
+                    JSONObject jsonData = result.getJSONObject("data");
+                    type = jsonData.getString("type");
+                    error = jsonData.getString("error");
+                }
             }
-            xccEvent = IVRHandler.xccEventSetVar(code, message, utterance, type, error, method);
+            xccEvent = XCCHandler.xccEventSetVar(code, message, utterance, type, error, method, cause);
             log.info("{} 识别返回数据 utterance: {}", method, utterance);
             log.info("{} xccEvent: {}", method, xccEvent);
-            log.info("{} 执行结束", method);
         } catch (Exception e) {
             log.error("xcc handleException 发生异常：{} , {}", method, e);
             xccEvent = IVRExceptionAdvice.handleException(method, e);
         }
+        log.info("{} 执行结束", method);
         return xccEvent;
     }
 
@@ -246,8 +256,7 @@ public class RequestUtil {
         JSONObject jsonRpc = getJsonRpc(method, params);
         StringWriter request = new StringWriter();
         jsonRpc.writeJSONString(request);
-        String json = JSON.toJSONString(jsonRpc, true);
-        log.info("{} 请求信息 service:[{}], Serializer json:{}", method, service, json);
+        log.info("{} 请求信息 service:[{}], Serializer json:{}", method, service, JSON.toJSONString(jsonRpc, true));
         //识别返回数据,调用失败默认为""
         String dtmf = "";
         XCCEvent xccEvent;
@@ -262,6 +271,7 @@ public class RequestUtil {
             String message = result.getString("message");//统一返回
             String type = "";//type=ERROR时才有
             String error = "";//type=ERROR时才有
+            String cause = result.getString("cause");
             if (code == XCCConstants.OK) {
                 dtmf = result.getString("dtmf");
             } else if (code == XCCConstants.JSONRPC_NOTIFY) {
@@ -273,14 +283,14 @@ public class RequestUtil {
             } else {//调用失败
 
             }
-            xccEvent = IVRHandler.xccEventSetVar(code, message, dtmf, type, error, method);
+            xccEvent = XCCHandler.xccEventSetVar(code, message, dtmf, type, error, method, cause);
             log.info("{} 识别返回数据 dtmf: {}", method, dtmf);
             log.info("{} xccEvent: {}", method, xccEvent);
-            log.info("{} 执行结束", method);
         } catch (Exception e) {
             log.error("xcc handleException 发生异常：{} , {}", method, e);
             xccEvent = IVRExceptionAdvice.handleException(method, e);
         }
+        log.info("{} 执行结束", method);
 
         return xccEvent;
     }
@@ -300,8 +310,7 @@ public class RequestUtil {
         JSONObject jsonRpc = getJsonRpc(method, params);
         StringWriter request = new StringWriter();
         jsonRpc.writeJSONString(request);
-        String json = JSON.toJSONString(jsonRpc, true);
-        log.info("{} 请求信息 service:[{}], Serializer json:{}", method, service, json);
+        log.info("{} 请求信息 service:[{}], Serializer json:{}", method, service, JSON.toJSONString(jsonRpc, true));
         XCCEvent xccEvent;
         try {
             Future<Message> incoming = con.request(service, request.toString().getBytes(StandardCharsets.UTF_8));
@@ -314,18 +323,18 @@ public class RequestUtil {
             String message = result.getString("message");//统一返回
             String type = "";//type=ERROR时才有
             String error = "";//type=ERROR时才有
-            if (code == XCCConstants.OK) {
-            } else if (code == XCCConstants.JSONRPC_NOTIFY) {
-            } else {//调用失败
-            }
-            xccEvent = IVRHandler.xccEventSetVar(code, message, "", type, error, method);
+            String cause = result.getString("cause");
+//            if (code == XCCConstants.OK) {
+//            } else if (code == XCCConstants.JSONRPC_NOTIFY) {
+//            } else {//调用失败
+//            }
+            xccEvent = XCCHandler.xccEventSetVar(code, message, type, error, method, cause);
             log.info("{} xccEvent: {}", method, xccEvent);
-            log.info("{} 识别返回数据: {}", method, "===================");
-            log.info("{} 执行结束", method);
         } catch (Exception e) {
             log.error("xcc handleException 发生异常：{} , {}", method, e);
             xccEvent = IVRExceptionAdvice.handleException(method, e);
         }
+        log.info("{} 执行结束", method);
 
         return xccEvent;
     }

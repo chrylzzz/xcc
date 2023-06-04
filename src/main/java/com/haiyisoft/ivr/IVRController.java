@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.haiyisoft.boot.IVRInit;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
-import com.haiyisoft.util.XCCUtil;
+import com.haiyisoft.handler.IVRHandler;
 import io.nats.client.Connection;
 import io.nats.client.Message;
 import io.nats.client.Nats;
@@ -34,7 +34,7 @@ public class IVRController {
         CountDownLatch countDownLatch = new CountDownLatch(1000);
         countDownLatch.countDown();
         for (int i = 0; i < 500; i++) {
-//            new IVRHandler().ivrDomain(null, null);
+//            new XCCHandler().ivrDomain(null, null);
             ivrService.ivrDomain(null, null);
             countDownLatch.countDown();
         }
@@ -90,7 +90,7 @@ public class IVRController {
 //                        new IvrThread(nc, params).start();
 //                        new Ivr().ivrDomain(nc, params);
 //                        ivrService.ivrDomain();
-                        new IVRHandler().ivrDomain();
+                        new XCCHandler().ivrDomain();
 */
 
 
@@ -107,9 +107,10 @@ public class IVRController {
                     if (XCCConstants.Event_Channel.equals(method)) {
                         JSONObject params = eventJson.getJSONObject("params");
                         //convert param
-                        ChannelEvent event = XCCUtil.convertParams(params);
+                        ChannelEvent event = IVRHandler.convertParams(params);
                         //asr domain
                         ivrService.handlerChannelEvent(nc, event);
+
                     } else if (XCCConstants.Event_DetectedFace.equals(method)) {
                         log.info("事件 event======:{}", "Event.DetectedFace");
                     } else if (XCCConstants.Event_NativeEvent.equals(method)) {

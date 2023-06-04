@@ -1,5 +1,6 @@
 package com.haiyisoft.handler;
 
+import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.NGDEvent;
 import com.haiyisoft.util.NGDUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -24,8 +25,23 @@ public class NGDHandler {
         NGDEvent ngdEvent = NGDUtil.coreQueryNGD(xccRecognitionResult, channelId);
         //处理指令和话术
         ngdEvent = NGDUtil.convertText(ngdEvent);
-        log.info("ngdHandler ngdEvent :{}", ngdEvent);
+        log.info("handlerNlu ngdEvent :{}", ngdEvent);
         return ngdEvent;
+    }
+
+    /**
+     * 校验数据来源
+     * 是否为system/task_based/faq/clarify
+     *
+     * @param ngdEvent
+     * @return
+     */
+    public static boolean handleSource(NGDEvent ngdEvent) {
+        boolean systemAnswer = ngdEvent.isSystemAnswer();
+        if (systemAnswer) {
+            return true;
+        }
+        return false;
     }
 
 
@@ -37,12 +53,19 @@ public class NGDHandler {
      * @param answer
      * @return
      */
-    public static NGDEvent ngdEventSetVar(Integer code, String msg, String answer) {
-        log.info("ngdEventSetVar code : {} , msg : {} , answer : {} ", code, msg, answer);
+    public static NGDEvent ngdEventSetVar(Integer code, String msg, String answer, String source) {
+        log.info("ngdEventSetVar 入参 code : [{}] , msg : [{}] , answer : [{}] , source : [{}]", code, msg, answer, source);
         NGDEvent ngdEvent = new NGDEvent();
         ngdEvent.setCode(code);
         ngdEvent.setMsg(msg);
         ngdEvent.setAnswer(answer);
+        ngdEvent.setSource(source);
+        if (XCCConstants.SOURCE_SYSTEM.equals(source)) {
+            ngdEvent.setSystemAnswer(true);
+        } else {
+            ngdEvent.setSystemAnswer(false);
+        }
+        log.info("ngdEventSetVar 出参 ngdEvent : {}", ngdEvent);
         return ngdEvent;
     }
 
