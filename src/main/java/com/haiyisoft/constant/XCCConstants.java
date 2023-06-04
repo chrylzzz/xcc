@@ -141,6 +141,12 @@ public class XCCConstants {
     //--------------------xcc识别返回的type error
 
 
+    //xcc识别方式
+    //SPEECH
+    public static final String XCCRECOGNITIONTYPE_SPEECH = "SPEECH";
+    //DTMF
+    public static final String XCCRECOGNITIONTYPE_DTMF = "DTMF";
+
     /********************************************xswitch相关********************************************/
 
     /********************************************ngd相关********************************************/

@@ -1,13 +1,13 @@
 package com.haiyisoft.ivr;
 
-import com.alibaba.fastjson.JSONObject;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
 import com.haiyisoft.entry.IVREvent;
 import com.haiyisoft.entry.NGDEvent;
 import com.haiyisoft.entry.XCCEvent;
+import com.haiyisoft.handler.IVRHandler;
+import com.haiyisoft.handler.NGDHandler;
 import com.haiyisoft.util.IdGenerator;
-import com.haiyisoft.util.NGDUtil;
 import com.haiyisoft.util.XCCUtil;
 import io.nats.client.Connection;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-public class IVRHandler {
+public class IVRService {
 
     /**
      * 一定要交给spring管理,哪怕是此方法被调用
@@ -74,7 +74,7 @@ public class IVRHandler {
                      * 处理xcc 返回的code,包括no_input,异常的
                      */
                     //handle code agent
-                    boolean handleXcc = IVRHandlerAdvice.handleXccAgent(xccEvent, ivrEvent, channelEvent, nc);
+                    boolean handleXcc = IVRHandler.handleXccAgent(xccEvent, ivrEvent, channelEvent, nc);
                     if (handleXcc) {//xcc处理失败
                         //转人工
                         break;
@@ -87,9 +87,9 @@ public class IVRHandler {
                     //xcc识别数据
                     xccRecognitionResult = xccEvent.getXccRecognitionResult();
                     //获取指令和话术
-                    ngdEvent = NGDUtil.ngdHandler(xccRecognitionResult, channelId, ngdEvent);
+                    ngdEvent = NGDHandler.handlerNlu(xccRecognitionResult, channelId);
                     //handle ngd agent
-//                        ngdEvent = IVRHandlerAdvice.handleNgdAgent(ngdEvent);
+//                        ngdEvent = IVRHandler.handleNgdAgent(ngdEvent);
                     /**
                      * 处理ngd 返回 包括 不理解处理,ngd不理解次数
                      */

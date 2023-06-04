@@ -24,7 +24,7 @@ import java.time.Duration;
 @Component
 public class IVRController {
     @Autowired
-    private IVRHandler ivrHandler;
+    private IVRService ivrService;
 
     //测试xswitch能否支持线程池
     //    @Async
@@ -35,7 +35,7 @@ public class IVRController {
         countDownLatch.countDown();
         for (int i = 0; i < 500; i++) {
 //            new IVRHandler().ivrDomain(null, null);
-            ivrHandler.ivrDomain(null, null);
+            ivrService.ivrDomain(null, null);
             countDownLatch.countDown();
         }
         try {
@@ -54,7 +54,7 @@ public class IVRController {
                 //订阅接收的消息
                 Message subMsg = sub.nextMessage(Duration.ofMillis(500000));
                 for (int i = 0; i < 500; i++) {
-                    ivrHandler.ivrDomain();
+                    ivrService.ivrDomain();
                 }
 
             }
@@ -89,7 +89,7 @@ public class IVRController {
                         // handle this call in a new thread so we can continue to listen for other calls
 //                        new IvrThread(nc, params).start();
 //                        new Ivr().ivrDomain(nc, params);
-//                        ivrHandler.ivrDomain();
+//                        ivrService.ivrDomain();
                         new IVRHandler().ivrDomain();
 */
 
@@ -109,7 +109,7 @@ public class IVRController {
                         //convert param
                         ChannelEvent event = XCCUtil.convertParams(params);
                         //asr domain
-                        ivrHandler.handlerChannelEvent(nc, event);
+                        ivrService.handlerChannelEvent(nc, event);
                     } else if (XCCConstants.Event_DetectedFace.equals(method)) {
                         log.info("事件 event======:{}", "Event.DetectedFace");
                     } else if (XCCConstants.Event_NativeEvent.equals(method)) {

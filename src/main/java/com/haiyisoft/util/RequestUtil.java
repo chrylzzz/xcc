@@ -6,7 +6,7 @@ import com.haiyisoft.advice.IVRExceptionAdvice;
 import com.haiyisoft.boot.IVRInit;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.XCCEvent;
-import com.haiyisoft.ivr.IVRHandlerAdvice;
+import com.haiyisoft.handler.IVRHandler;
 import io.nats.client.Connection;
 import io.nats.client.Message;
 import lombok.extern.slf4j.Slf4j;
@@ -160,7 +160,7 @@ public class RequestUtil {
             String message = result.getString("message");//统一返回
             String type = "";//type=ERROR时才有
             String error = "";//type=ERROR时才有
-            xccEvent = IVRHandlerAdvice.xccEventSetVar(code, message, "", type, error);
+            xccEvent = IVRHandler.xccEventSetVar(code, message, "", type, error, method);
             log.info("{} 执行结束", method);
         } catch (Exception e) {
             log.error("xcc handleException 发生异常：{} , {}", method, e);
@@ -219,7 +219,7 @@ public class RequestUtil {
             } else {//调用失败, 这里不作处理
 
             }
-            xccEvent = IVRHandlerAdvice.xccEventSetVar(code, message, utterance, type, error);
+            xccEvent = IVRHandler.xccEventSetVar(code, message, utterance, type, error, method);
             log.info("{} 识别返回数据 utterance: {}", method, utterance);
             log.info("{} xccEvent: {}", method, xccEvent);
             log.info("{} 执行结束", method);
@@ -273,7 +273,7 @@ public class RequestUtil {
             } else {//调用失败
 
             }
-            xccEvent = IVRHandlerAdvice.xccEventSetVar(code, message, dtmf, type, error);
+            xccEvent = IVRHandler.xccEventSetVar(code, message, dtmf, type, error, method);
             log.info("{} 识别返回数据 dtmf: {}", method, dtmf);
             log.info("{} xccEvent: {}", method, xccEvent);
             log.info("{} 执行结束", method);
@@ -318,7 +318,7 @@ public class RequestUtil {
             } else if (code == XCCConstants.JSONRPC_NOTIFY) {
             } else {//调用失败
             }
-            xccEvent = IVRHandlerAdvice.xccEventSetVar(code, message, "", type, error);
+            xccEvent = IVRHandler.xccEventSetVar(code, message, "", type, error, method);
             log.info("{} xccEvent: {}", method, xccEvent);
             log.info("{} 识别返回数据: {}", method, "===================");
             log.info("{} 执行结束", method);

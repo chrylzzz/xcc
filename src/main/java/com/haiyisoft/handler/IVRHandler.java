@@ -1,4 +1,4 @@
-package com.haiyisoft.ivr;
+package com.haiyisoft.handler;
 
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
@@ -11,13 +11,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * 处理xcc异常
  * Created by Chr.yl on 2023/3/30.
  *
  * @author Chr.yl
  */
 @Slf4j
-public class IVRHandlerAdvice {
+public class IVRHandler {
 
     /**
      * 处理xcc code
@@ -42,10 +41,12 @@ public class IVRHandlerAdvice {
         log.info("handleXccAgent code : {}  , xccRecognitionResult : {} , type : {} , error : {}", code, xccRecognitionResult, type, error);
         if (StringUtils.isBlank(xccRecognitionResult)) {
             if (XCCConstants.OK == code) {//200
+                //Speech.End,continue;
+//                if (XCCConstants.RECOGNITION_TYPE_SPEECH_END.equals(type)) {
+//                    handleXcc = false;
+//                }
                 //当 type = ERROR 时 , error = no_input
-                if (XCCConstants.RECOGNITION_TYPE_SPEECH_END.equals(type)) {//Speech.End,continue;
-                    handleXcc = false;
-                } else if (XCCConstants.RECOGNITION_TYPE_ERROR.equals(type)) {//ERROR
+                if (XCCConstants.RECOGNITION_TYPE_ERROR.equals(type)) {//ERROR
                     //没说话,话术需要修改
 
                 }
@@ -53,6 +54,7 @@ public class IVRHandlerAdvice {
             } else if (XCCConstants.JSONRPC_TEMP == code) {//100
                 handleXcc = true;
             } else if (XCCConstants.JSONRPC_NOTIFY == code) {//202
+                //没按键
 
                 handleXcc = false;
             } else if (XCCConstants.JSONRPC_CLIENT_ERROR == code) {//400
@@ -118,37 +120,17 @@ public class IVRHandlerAdvice {
      * @param xccRecognitionResult
      * @return
      */
-    public static XCCEvent xccEventSetVar(Integer code, String message, String xccRecognitionResult, String type, String error) {
-        log.info("xccEventSetVar code : {} , message : {} , xccRecognitionResult : {} , type : {} , error : {}", code, message, xccRecognitionResult, type, error);
+    public static XCCEvent xccEventSetVar(Integer code, String message, String xccRecognitionResult, String type, String error, String xccMethod) {
+        log.info("xccEventSetVar code : {} , message : {} , xccRecognitionResult : {} , type : {} , error : {} , xccMethod : {}", code, message, xccRecognitionResult, type, error, xccMethod);
         XCCEvent xccEvent = new XCCEvent();
         xccEvent.setCode(code);
         xccEvent.setMessage(message);
         xccEvent.setXccRecognitionResult(xccRecognitionResult);
         xccEvent.setType(type);
         xccEvent.setError(error);
+        xccEvent.setXccMethod(xccMethod);
 
         return xccEvent;
-    }
-
-    /**
-     * 赋值ngd返回数据
-     *
-     * @param ngdEvent
-     * @param code
-     * @param msg
-     * @param answer
-     * @return
-     */
-    public static NGDEvent ngdEventSetVar(NGDEvent ngdEvent, Integer code, String msg, String answer) {
-        log.info("ngdEventSetVar code : {} , msg : {} , answer : {} ", code, msg, answer);
-        ngdEvent.setCode(0);
-        ngdEvent.setMsg("");
-        ngdEvent.setAnswer("");
-
-        ngdEvent.setCode(code);
-        ngdEvent.setMsg(msg);
-        ngdEvent.setAnswer(answer);
-        return ngdEvent;
     }
 
 }

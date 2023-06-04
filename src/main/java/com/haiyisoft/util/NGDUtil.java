@@ -5,7 +5,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.haiyisoft.boot.IVRInit;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.NGDEvent;
-import com.haiyisoft.ivr.IVRHandlerAdvice;
+import com.haiyisoft.handler.IVRHandler;
+import com.haiyisoft.handler.NGDHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -18,24 +19,6 @@ import org.apache.commons.lang3.StringUtils;
 @Slf4j
 public class NGDUtil {
 
-
-    /**
-     * xcc识别的数据送到ngd处理
-     *
-     * @param xccRecognitionResult xcc识别数据
-     * @param channelId            call id
-     * @param ngdEvent
-     * @return
-     */
-    public static NGDEvent ngdHandler(String xccRecognitionResult, String channelId, NGDEvent ngdEvent) {
-        //调用百度知识库
-        ngdEvent = coreQueryNGD(xccRecognitionResult, channelId, ngdEvent);
-        //处理指令和话术
-        ngdEvent = convertText(ngdEvent);
-        log.info("ngdHandler ngdEvent :{}", ngdEvent);
-        return ngdEvent;
-    }
-
     /**
      * 广西知识库接口
      *
@@ -43,7 +26,7 @@ public class NGDUtil {
      * @param sessionId call id
      * @return
      */
-    public static NGDEvent coreQueryNGD(String queryText, String sessionId, NGDEvent ngdEvent) {
+    public static NGDEvent coreQueryNGD(String queryText, String sessionId) {
         JSONObject param = new JSONObject();
         JSONObject context = new JSONObject();
         JSONObject ext = new JSONObject();
@@ -69,7 +52,7 @@ public class NGDUtil {
         } else {
             answer = XCCConstants.XCC_MISSING_MSG;
         }
-        ngdEvent = IVRHandlerAdvice.ngdEventSetVar(ngdEvent, code, msg, answer);
+        NGDEvent ngdEvent = NGDHandler.ngdEventSetVar(code, msg, answer);
         log.info("百度知识库返回 code: {} , answer: {}", code, answer);
         return ngdEvent;
     }

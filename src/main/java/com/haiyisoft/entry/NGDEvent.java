@@ -3,7 +3,7 @@ package com.haiyisoft.entry;
 import lombok.Data;
 
 /**
- * 每一次NGD接收业务实体
+ * 每次调用NGD接收业务实体
  * Created by Chr.yl on 2023/6/3.
  *
  * @author Chr.yl

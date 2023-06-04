@@ -3,7 +3,7 @@ package com.haiyisoft.entry;
 import lombok.Data;
 
 /**
- * 每一次XCC接收业务实体
+ * 每次调用XCC接收业务实体
  * Created by Chr.yl on 2023/6/3.
  *
  * @author Chr.yl
@@ -21,5 +21,7 @@ public class XCCEvent {
     private String error;
     //xcc识别返回结果(语音和按键),包括 utterance/dtmf
     private String xccRecognitionResult;
+    //xcc method
+    private String xccMethod;
 
 }
