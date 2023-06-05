@@ -1,6 +1,6 @@
 server:
   port: 8088
-
+#
 ########XCC相关变量配置########
 xcc:
 #  xswitch config
@@ -21,7 +21,7 @@ xcc:
 #
 # XML数据需要自己处理, JSON数据XSwitch已深度解析
   handleEngineData: false
-#  若有多台xswitch,再开启
+#  若有多台XSwitch,再开启
   cluster: false
   #配置多节点
   natsList:
@@ -31,7 +31,7 @@ xcc:
     nats: nats://10.194.31.203:4222
 ########XCC相关变量配置########
 #
-#
-# log
-logging:
-  config: classpath:logback-dev.xml
+# log path
+logback:
+  path: /Users/chryl/logs/xcc/
+

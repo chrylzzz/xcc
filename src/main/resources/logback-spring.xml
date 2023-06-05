@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="false">
+    <!-- 引入spring boot配置文件属性 -->
+    <springProperty scope="context" name="LOG_DIR" source="logback.path"/>
     <!--定义日志文件的存储地址 -->
-    <property name="LOG_HOME" value="/Users/chryl/logs/xcc"/>
-    <!-- spring boot 内置logback日志配置 -->
+    <property name="LOG_HOME" value="${LOG_DIR}"/>
+    <!-- 引入spring boot 内置日志配置 -->
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
     <!-- 控制台输出 -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
