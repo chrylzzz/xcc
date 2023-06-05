@@ -195,6 +195,7 @@ public class XCCConstants {
     public static final String SOURCE_SYSTEM = "system";
     public static final String SOURCE_TASK_BASED = "task_based";
     public static final String SOURCE_CLARIFY = "clarify";
+    public static final String SOURCE_NONE = "none";//系统返回
     //ngd未触发答案
     //NGD识别失败话术 "source":"task_based"
     public static final String NGD_MISSING_MSG = "这个家伙很懒,没留下答案就跑了";

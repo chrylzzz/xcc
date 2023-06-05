@@ -172,7 +172,6 @@ public class RequestUtil {
         return xccEvent;
     }
 
-
     /**
      * DetectSpeech
      *
@@ -189,8 +188,6 @@ public class RequestUtil {
         StringWriter request = new StringWriter();
         jsonRpc.writeJSONString(request);
         log.info("{} 请求信息 service:[{}], Serializer json:{}", method, service, JSON.toJSONString(jsonRpc, true));
-        //识别返回数据,调用失败默认为""
-        String utterance = "";
         XCCEvent xccEvent;
         try {
             Future<Message> incoming = con.request(service, request.toString().getBytes(StandardCharsets.UTF_8));
@@ -204,29 +201,31 @@ public class RequestUtil {
             String type = "";//type=ERROR时才有
             String error = "";//type=ERROR时才有
             String cause = result.getString("cause");
-            if (XCCConstants.OK == code) {
-                JSONObject jsonData = result.getJSONObject("data");
-                /**
-                 * 待测试
-                 */
-                if (IVRInit.XCC_CONFIG_PROPERTY.isHandleEngineData()) {//手动解析
-                    String xmlStr = jsonData.getString("engine_data");
-                    utterance = Dom4jUtil.parseAsrResXml(xmlStr);
-                    if (StringUtils.isBlank(utterance)) {
-                        //未识别话术,参考深度解析返回event
-                        type = XCCConstants.RECOGNITION_TYPE_ERROR;
-                        error = XCCConstants.RECOGNITION_ERROR_NO_INPUT;
+            //识别返回数据,调用失败默认为""
+            String utterance = "";
+            JSONObject jsonData = result.getJSONObject("data");
+            if (jsonData == null) {
+
+            } else {
+                if (XCCConstants.OK == code) {//200
+                    if (IVRInit.XCC_CONFIG_PROPERTY.isHandleEngineData()) {//手动解析
+                        String xmlStr = jsonData.getString("engine_data");
+                        utterance = Dom4jUtil.parseAsrResXml(xmlStr);
+                        if (StringUtils.isBlank(utterance)) {
+                            //未识别话术,参考深度解析
+                            type = XCCConstants.RECOGNITION_TYPE_ERROR;
+                            error = XCCConstants.RECOGNITION_ERROR_NO_INPUT;
+                        }
+                    } else {//已深度解析
+                        utterance = jsonData.getString("text");
+                        type = jsonData.getString("type");
+                        error = jsonData.getString("error");
                     }
-                } else {//已深度解析
-                    utterance = jsonData.getString("text");
+                } else if (XCCConstants.JSONRPC_USER_HANGUP == code) {//410为客户主动挂机,有信息返回
                     type = jsonData.getString("type");
                     error = jsonData.getString("error");
-                }
-            } else {//调用失败, 这里不作处理
-                if (XCCConstants.JSONRPC_USER_HANGUP == code) {//410为客户主动挂机,有信息返回
-                    JSONObject jsonData = result.getJSONObject("data");
-                    type = jsonData.getString("type");
-                    error = jsonData.getString("error");
+                } else {//其他编码, 这里不作处理
+
                 }
             }
             xccEvent = XCCHandler.xccEventSetVar(code, message, utterance, type, error, method, cause);
@@ -257,8 +256,6 @@ public class RequestUtil {
         StringWriter request = new StringWriter();
         jsonRpc.writeJSONString(request);
         log.info("{} 请求信息 service:[{}], Serializer json:{}", method, service, JSON.toJSONString(jsonRpc, true));
-        //识别返回数据,调用失败默认为""
-        String dtmf = "";
         XCCEvent xccEvent;
         try {
             Future<Message> incoming = con.request(service, request.toString().getBytes(StandardCharsets.UTF_8));
@@ -272,6 +269,8 @@ public class RequestUtil {
             String type = "";//type=ERROR时才有
             String error = "";//type=ERROR时才有
             String cause = result.getString("cause");
+            //识别返回数据,调用失败默认为""
+            String dtmf = "";
             if (code == XCCConstants.OK) {
                 dtmf = result.getString("dtmf");
             } else if (code == XCCConstants.JSONRPC_NOTIFY) {
@@ -280,7 +279,7 @@ public class RequestUtil {
                     type = XCCConstants.RECOGNITION_TYPE_ERROR;
                     error = XCCConstants.RECOGNITION_ERROR_NO_INPUT;
                 }
-            } else {//调用失败
+            } else {//其他编码, 这里不作处理
 
             }
             xccEvent = XCCHandler.xccEventSetVar(code, message, dtmf, type, error, method, cause);

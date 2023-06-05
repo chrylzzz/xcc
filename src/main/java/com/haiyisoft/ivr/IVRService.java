@@ -57,6 +57,7 @@ public class IVRService {
                 String retKey = XCCConstants.YYSR;
                 String retValue = XCCConstants.WELCOME_TEXT;
                 while (true) {
+
                     if (XCCConstants.YYSR.equals(retKey)) {//调用播报收音
                         xccEvent = XCCHandler.detectSpeechPlayTTSNoDTMF(nc, channelEvent, retValue);
                     } else if (XCCConstants.AJSR.equals(retKey)) {//调用xcc收集按键方法，多位按键
@@ -74,12 +75,15 @@ public class IVRService {
                     //处理是否挂机
                     boolean handleHangup = XCCHandler.handleSomeHangup(xccEvent, channelId);
                     if (handleHangup) {//挂机
+                        log.info("挂断部分");
                         break;
                     } else {//正常通话
+                        log.info("正常通话");
                         //处理是否识别
                         boolean xccInput = XCCHandler.handleXccInput(xccEvent);
                         //判断是否识别到(dtmf/speech)
                         if (xccInput) {//xcc已识别
+                            log.info("已识别到数据");
                             //xcc识别数据
                             String xccRecognitionResult = xccEvent.getXccRecognitionResult();
                             //获取指令和话术
@@ -88,24 +92,30 @@ public class IVRService {
                             boolean handleSource = NGDHandler.handleSource(ngdEvent);
                             //判断是否为机器回复
                             if (handleSource) {//system
+                                log.info("机器回复");
                                 //触发转人工规则
+                                /*
                                 ivrEvent = IVRHandler.transferRule(ivrEvent, channelEvent, nc);
                                 if (ivrEvent.isTransferFlag()) {
                                     //转人工
                                     break;
                                 }
+                                */
                             } else {
+                                log.info("人为回复");
                                 ivrEvent = IVRHandler.transferRuleClean(ivrEvent);
                             }
                             retKey = ngdEvent.getRetKey();
                             retValue = ngdEvent.getRetValue();
                         } else {//xcc未识别
+                            log.info("未识别到数据");
                             //触发转人工规则
+                            /*
                             ivrEvent = IVRHandler.transferRule(ivrEvent, channelEvent, nc);
                             if (ivrEvent.isTransferFlag()) {
                                 //转人工
                                 break;
-                            }
+                            }*/
                             if (XCCConstants.DETECT_SPEECH.equals(xccEvent.getXccMethod())) {
                                 retKey = "YYSR";
                                 retValue = "已检测到您没说话, 您请说";
@@ -115,7 +125,7 @@ public class IVRService {
                             }
 
                         }
-                        log.info("ivrEvent data: {}", ivrEvent);
+                        log.info("revert ivrEvent data: {}", ivrEvent);
                     }
 
                 }

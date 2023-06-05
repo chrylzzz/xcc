@@ -2,6 +2,7 @@ package com.haiyisoft.util;
 
 import com.haiyisoft.constant.XCCConstants;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -16,7 +17,6 @@ import java.util.List;
  */
 @Slf4j
 public class Dom4jUtil {
-
 
     /**
      * 广西智能IVR专用
@@ -36,8 +36,11 @@ public class Dom4jUtil {
              </interpretation>
          </result>
        */
-        String parseText = "";
         log.info("parseAsrResXml 解析 xmlStr 开始:{}", xmlStr);
+        String parseText = "";
+        if (StringUtils.isBlank(xmlStr)) {
+            return parseText;
+        }
         try {
             xmlStr = xmlStr.replace(XCCConstants.NL, "");
             System.out.println(xmlStr);
