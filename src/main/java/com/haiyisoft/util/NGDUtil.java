@@ -88,7 +88,6 @@ public class NGDUtil {
 
     }
 
-
     /**
      * 将百度返回的文本字段处理为 指令和播报的内容
      *
@@ -110,7 +109,7 @@ public class NGDUtil {
             } else {//带#的话术
                 String[] split = todoText.split(XCCConstants.NGD_SEPARATOR);
                 retKey = split[0];//指令
-                if (XCCConstants.RET_KEY_STR.contains(retKey)) {//有指令
+                if (StringUtils.containsAny(retKey, XCCConstants.RET_KEY_STR_ARR)) {//有指令
                     retValue = split[1];//内容
                 } else {//无指令
                     retKey = XCCConstants.YYSR;

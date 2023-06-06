@@ -175,8 +175,8 @@ public class XCCConstants {
     public static final String YWAJ = "YWAJ";
     //人工意图
     public static final String RGYT = "RGYT";
-    //指令集合
-    public static final String RET_KEY_STR = "YYSR;AJSR;RGYT;YWAJ;";
+    //指令集合数组
+    public static final String[] RET_KEY_STR_ARR = {"YYSR", "AJSR", "RGYT", "YWAJ"};
     //智能ivr渠道
     public static final String CHANNEL_IVR = "智能IVR";
     //ngd话术分隔符
