@@ -185,17 +185,21 @@ public class XCCConstants {
     public static final String NGD_QUERY_UNMATCH = "unMatch";
 
     /**
+     * "solved": true
      * source:为知识库返回问题来源
      * faq : faq回复
-     * system: 机器回复
      * task_based :流程恢复
      * clarify: 未明确意图,需要再次询问的
+     * <p>
+     * "solved": false
+     * system: 机器回复
+     * none: 无
      */
     public static final String SOURCE_FAQ = "faq";
-    public static final String SOURCE_SYSTEM = "system";
     public static final String SOURCE_TASK_BASED = "task_based";
     public static final String SOURCE_CLARIFY = "clarify";
-    public static final String SOURCE_NONE = "none";//系统返回
+    public static final String SOURCE_SYSTEM = "system";
+    public static final String SOURCE_NONE = "none";
     //ngd未触发答案
     //NGD识别失败话术 "source":"task_based"
     public static final String NGD_MISSING_MSG = "这个家伙很懒,没留下答案就跑了";

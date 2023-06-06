@@ -89,9 +89,12 @@ public class IVRService {
                             //获取指令和话术
                             NGDEvent ngdEvent = NGDHandler.handlerNlu(xccRecognitionResult, channelId);
                             //handle ngd agent
-                            boolean handleSource = NGDHandler.handleSource(ngdEvent);
+                            boolean handleSolved = NGDHandler.handleSolved(ngdEvent);
                             //判断是否为机器回复
-                            if (handleSource) {//system
+                            if (handleSolved) {
+                                log.info("人为回复");
+                                ivrEvent = IVRHandler.transferRuleClean(ivrEvent);
+                            } else {
                                 log.info("机器回复");
                                 //触发转人工规则
                                 /*
@@ -101,9 +104,6 @@ public class IVRService {
                                     break;
                                 }
                                 */
-                            } else {
-                                log.info("人为回复");
-                                ivrEvent = IVRHandler.transferRuleClean(ivrEvent);
                             }
                             retKey = ngdEvent.getRetKey();
                             retValue = ngdEvent.getRetValue();

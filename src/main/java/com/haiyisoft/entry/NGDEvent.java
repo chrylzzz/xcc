@@ -1,6 +1,8 @@
 package com.haiyisoft.entry;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 每次调用NGD接收业务实体
@@ -9,6 +11,8 @@ import lombok.Data;
  * @author Chr.yl
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class NGDEvent {
 
     //ngd返回code
@@ -17,11 +21,10 @@ public class NGDEvent {
     private String msg;
     // answer 来源
     private String source;
-    // 是否系统答复 : true 系统答复
-    //连续两次系统回复转人工
-    private boolean systemAnswer;
     //ngd返回的数据, 此字段根据百度api获取的最优answer
     private String answer;
+    //ngd返回solved 是否解决
+    private boolean solved;
 
 
     //----------------

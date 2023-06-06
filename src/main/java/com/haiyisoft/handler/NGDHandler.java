@@ -21,27 +21,26 @@ public class NGDHandler {
      * @return
      */
     public static NGDEvent handlerNlu(String xccRecognitionResult, String channelId) {
-        //调用百度知识库
+        //调用百度知识库,获取answer
         NGDEvent ngdEvent = NGDUtil.coreQueryNGD(xccRecognitionResult, channelId);
-        //处理指令和话术
+        //处理指令和话术,处理成retKey/retValue
         ngdEvent = NGDUtil.convertText(ngdEvent);
         log.info("handlerNlu ngdEvent :{}", ngdEvent);
         return ngdEvent;
     }
 
+
     /**
-     * 校验数据来源
-     * 是否为system/task_based/faq/clarify
+     * 校验机器回复
+     * system/none/
+     * task_based/faq/clarify/
      *
      * @param ngdEvent
      * @return
      */
-    public static boolean handleSource(NGDEvent ngdEvent) {
-        boolean systemAnswer = ngdEvent.isSystemAnswer();
-        if (systemAnswer) {
-            return true;
-        }
-        return false;
+    public static boolean handleSolved(NGDEvent ngdEvent) {
+        return ngdEvent.isSolved();
+
     }
 
 
@@ -53,18 +52,9 @@ public class NGDHandler {
      * @param answer
      * @return
      */
-    public static NGDEvent ngdEventSetVar(Integer code, String msg, String answer, String source) {
+    public static NGDEvent ngdEventSetVar(Integer code, String msg, String answer, String source, boolean solved) {
         log.info("ngdEventSetVar 入参 code : [{}] , msg : [{}] , answer : [{}] , source : [{}]", code, msg, answer, source);
-        NGDEvent ngdEvent = new NGDEvent();
-        ngdEvent.setCode(code);
-        ngdEvent.setMsg(msg);
-        ngdEvent.setAnswer(answer);
-        ngdEvent.setSource(source);
-        if (XCCConstants.SOURCE_SYSTEM.equals(source)) {
-            ngdEvent.setSystemAnswer(true);
-        } else {
-            ngdEvent.setSystemAnswer(false);
-        }
+        NGDEvent ngdEvent = new NGDEvent(code, msg, source, answer, solved, "", "");
         log.info("ngdEventSetVar 出参 ngdEvent : {}", ngdEvent);
         return ngdEvent;
     }

@@ -41,19 +41,25 @@ public class NGDUtil {
         //百度知识库返回的数据信息
         JSONObject parse = JSON.parseObject(jsonStrResult);
         log.info("结束调用,百度知识库接口返回: {}", parse);
-        JSONObject jsonData = parse.getJSONObject("data");
-//        String sessionId = dataJson.getString("sessionId");
-        Integer code = parse.getIntValue("code");
-        String msg = parse.getString("msg");
-        String source = jsonData.getString("source");
+
+        Integer code = parse.getIntValue("code");//统一返回
+        String msg = parse.getString("msg");//统一返回
+        NGDEvent ngdEvent;
         String answer = "";
         if (XCCConstants.OK == code) {
+            JSONObject jsonData = parse.getJSONObject("data");
+            //答复来源
+            String source = jsonData.getString("source");
+            //是否解决:系统答复未解决
+            boolean solved = jsonData.getBooleanValue("solved");
             answer = convertAnswer(jsonData);
+            ngdEvent = NGDHandler.ngdEventSetVar(code, msg, answer, source, solved);
+            log.info("百度知识库返回 code: {} , msg: {} , answer: {}", code, msg, answer);
         } else {
+            log.error("百度知识调用异常 code: {} , msg: {}", code, msg);
             answer = XCCConstants.XCC_MISSING_MSG;
+            ngdEvent = NGDHandler.ngdEventSetVar(code, msg, answer, "", false);
         }
-        NGDEvent ngdEvent = NGDHandler.ngdEventSetVar(code, msg, answer, source);
-        log.info("百度知识库返回 code: {} , answer: {}", code, answer);
         return ngdEvent;
     }
 
@@ -68,21 +74,41 @@ public class NGDUtil {
         String answer = "";
         //根据 source 判断
         String source = jsonData.getString("source");
-        log.info("百度知识库命中 source: {}", source);
+        //是否解决
+        boolean solved = jsonData.getBooleanValue("solved");
+        log.info("百度知识库命中 solved : {} source : {}", solved, source);
+        if (solved) {
+            if (XCCConstants.SOURCE_TASK_BASED.equals(source)) {//流程
+                answer = jsonData.getString("suggestAnswer");
+            } else if (XCCConstants.SOURCE_FAQ.equals(source)) {//faq
+                answer = jsonData.getString("suggestAnswer");
+            } else if (XCCConstants.SOURCE_CLARIFY.equals(source)) {//clarify
+                answer = jsonData.getJSONObject("clarifyQuestions")
+                        .getJSONObject("voice")
+                        .getJSONArray("questions")
+                        .getString(0);
+            }
+        } else {
+            answer = XCCConstants.XCC_MISSING_MSG;
+        }
+/*
         if (XCCConstants.SOURCE_TASK_BASED.equals(source)) {//流程
             answer = jsonData.getString("suggestAnswer");
         } else if (XCCConstants.SOURCE_FAQ.equals(source)) {//faq
             answer = jsonData.getString("suggestAnswer");
-        } else if (XCCConstants.SOURCE_SYSTEM.equals(source)) {//system
-            answer = XCCConstants.XCC_MISSING_MSG;
         } else if (XCCConstants.SOURCE_CLARIFY.equals(source)) {//clarify
             answer = jsonData.getJSONObject("clarifyQuestions")
                     .getJSONObject("voice")
                     .getJSONArray("questions")
                     .getString(0);
+        } else if (XCCConstants.SOURCE_SYSTEM.equals(source)) {//system
+            answer = XCCConstants.XCC_MISSING_MSG;
+        } else if (XCCConstants.SOURCE_NONE.equals(source)) {//none
+            answer = jsonData.getString("suggestAnswer");
         } else {
             answer = XCCConstants.XCC_MISSING_MSG;
         }
+*/
         log.info("百度知识库命中 answer: {}", answer);
         return answer;
 
@@ -94,6 +120,7 @@ public class NGDUtil {
      * @param ngdEvent
      * @return
      */
+
     public static NGDEvent convertText(NGDEvent ngdEvent) {
         String retKey = "";//指令
         String retValue = "";//播报内容
