@@ -3,6 +3,7 @@ package com.haiyisoft.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.haiyisoft.boot.IVRInit;
+import com.haiyisoft.config.ThreadPoolConfig;
 import com.haiyisoft.ivr.IVRService;
 import com.haiyisoft.util.HttpClientUtil;
 import com.haiyisoft.util.IdGenerator;
@@ -29,6 +30,13 @@ import java.io.IOException;
 @RequestMapping("xcc")
 public class ChrylController {
 
+    /**
+     * 查看配置信息
+     *
+     * @param response
+     * @throws InterruptedException
+     * @throws IOException
+     */
     @GetMapping("chryl")
     public void chryl(HttpServletResponse response) throws InterruptedException, IOException {
         String loadYml = JSON.toJSONString(IVRInit.XCC_CONFIG_PROPERTY, true);
@@ -36,12 +44,32 @@ public class ChrylController {
         response.getWriter().write(loadYml);
         response.flushBuffer();
         response.getWriter().flush();
+        response.getWriter().close();
     }
 
-    @GetMapping("yml")
-    public String yml(HttpServletResponse response) throws InterruptedException, IOException {
+    /**
+     * 查看配置
+     *
+     * @return
+     * @throws InterruptedException
+     * @throws IOException
+     */
+    @GetMapping("chryl2")
+    public String yml() throws InterruptedException, IOException {
         String loadYml = JSON.toJSONString(IVRInit.XCC_CONFIG_PROPERTY, true);
         return loadYml;
+    }
+
+    /**
+     * 查看 cpu
+     *
+     * @return
+     * @throws InterruptedException
+     * @throws IOException
+     */
+    @GetMapping("cpu")
+    public int cpu() throws InterruptedException, IOException {
+        return ThreadPoolConfig.CPU_NUM;
     }
 
     @GetMapping("/test/{queryText}")

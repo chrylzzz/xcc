@@ -35,9 +35,11 @@ public class XCCConfigProperty {
     // asr engine
     private String asrEngine;
     // ngd query url
-    private String ngdQueryUrl;
-    // ngd query auth
-    private String ngdQueryAuthorization;
+    private String ngdCoreQueryUrl;
+    // ngd boot token auth
+    private String ngdBootToken;
+    // convert solved
+    private boolean convertSolved;
     // cluster true or false
     private boolean cluster;
     // parse engine xml data

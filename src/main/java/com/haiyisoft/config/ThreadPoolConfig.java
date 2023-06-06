@@ -17,16 +17,18 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class ThreadPoolConfig implements AsyncConfigurer {
 
     //获取当前机器的核数
-    public static final int cpuNum = Runtime.getRuntime().availableProcessors();
+    public static final int CPU_NUM = Runtime.getRuntime().availableProcessors();
 
     @Override
     public Executor getAsyncExecutor() {
         ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
-//        taskExecutor.setCorePoolSize(cpuNum);//核心线程大小
-//        taskExecutor.setMaxPoolSize(cpuNum * 2);//最大线程大小
-        taskExecutor.setCorePoolSize(cpuNum * 3);//核心线程大小
-        taskExecutor.setMaxPoolSize(cpuNum * 6);//最大线程大小
-        log.info("------CorePoolSize : {} ", cpuNum);
+//        taskExecutor.setCorePoolSize(CPU_NUM);//核心线程大小
+//        taskExecutor.setMaxPoolSize(CPU_NUM * 2);//最大线程大小
+//        taskExecutor.setCorePoolSize(CPU_NUM * 3);//核心线程大小
+//        taskExecutor.setMaxPoolSize(CPU_NUM * 6);//最大线程大小
+        taskExecutor.setCorePoolSize(CPU_NUM * 5);//核心线程大小
+        taskExecutor.setMaxPoolSize(CPU_NUM * 10);//最大线程大小
+        log.info("------CorePoolSize : {} ", CPU_NUM);
         taskExecutor.setQueueCapacity(500);//队列最大容量
         //当提交的任务个数大于QueueCapacity，就需要设置该参数，但spring提供的都不太满足业务场景，可以自定义一个，也可以注意不要超过QueueCapacity即可
         taskExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
@@ -40,6 +42,6 @@ public class ThreadPoolConfig implements AsyncConfigurer {
 
     public static void main(String[] args) {
 
-        System.out.println(cpuNum);
+        System.out.println(CPU_NUM);
     }
 }

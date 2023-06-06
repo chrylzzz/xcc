@@ -17,9 +17,11 @@ xcc:
 #  asr engine
   asrEngine: unimrcp:asr
 #  ngd
-  ngdQueryUrl: http://10.100.104.20:8303/api/v2/core/query
+  ngdCoreQueryUrl: http://10.100.104.20:8303/api/v2/core/query
 #  ngd boot id
-  ngdQueryAuthorization: NGD 0f0ec9dc-bdcc-4b15-9304-e0d5def75e27
+  ngdBootToken: NGD 0f0ec9dc-bdcc-4b15-9304-e0d5def75e27
+# convert solved
+  convertSolved: true
 #
 # XML数据需要自己处理, JSON数据XSwitch已深度解析
   handleEngineData: true

@@ -1,6 +1,5 @@
 package com.haiyisoft.handler;
 
-import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.NGDEvent;
 import com.haiyisoft.util.NGDUtil;
 import lombok.extern.slf4j.Slf4j;
