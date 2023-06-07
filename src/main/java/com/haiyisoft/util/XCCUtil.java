@@ -83,9 +83,9 @@ public class XCCUtil {
         //正整数，未检测到语音超时，默认为5000ms
         speech.put("no_input_timeout", 5 * 1000);
         //语音超时，即如果对方讲话一直不停超时，最大只能设置成6000ms，默认为6000ms。
-//        speech.put("speech_timeout", 6 * 1000);
+        speech.put("speech_timeout", 6 * 1000);
         //正整数，语音最大超时，和参数speech_timeout作用相同，如果max_speech_timeout的值大于speech_timeout，则以max_speech_timeout为主，用于一些特殊场景的语音时长设置。
-        speech.put("max_speech_timeout", 10 * 1000);
+        speech.put("max_speech_timeout", 8 * 1000);
         //是否返回中间结果
         speech.put("partial_event", true);
         //默认会发送Event.DetectedData事件，如果为true则不发送。
@@ -215,7 +215,7 @@ public class XCCUtil {
         JSONObject speech = getSpeech();
         params.put("speech", speech);
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
-        XCCEvent xccEvent = RequestUtil.natsRequestFutureByDetectSpeech(nc, service, XCCConstants.DETECT_SPEECH, params, 0);
+        XCCEvent xccEvent = RequestUtil.natsRequestFutureByDetectSpeech(nc, service, XCCConstants.DETECT_SPEECH, params, 10000);
         return xccEvent;
     }
 

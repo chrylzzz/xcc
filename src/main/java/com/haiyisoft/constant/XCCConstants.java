@@ -134,9 +134,9 @@ public class XCCConstants {
     //xcc返回type
     //语音识别完成 : 当 type = Speech.End 时无error字段
     public static final String RECOGNITION_TYPE_SPEECH_END = "Speech.End";
-    //识别错误 : 当 type = ERROR 时 ,error=no_input
+    //识别错误 : 当 type = ERROR 时 ,error=no_input,speech_timeout
     public static final String RECOGNITION_TYPE_ERROR = "ERROR";
-    //    public static final String RECOGNITION_ERROR_SPEECH_TIMEOUT = "speech_timeout";
+    public static final String RECOGNITION_ERROR_SPEECH_TIMEOUT = "speech_timeout";
     public static final String RECOGNITION_ERROR_NO_INPUT = "no_input";
     //--------------------xcc识别返回的type error
 
@@ -189,7 +189,7 @@ public class XCCConstants {
      * source:为知识库返回问题来源
      * faq : faq回复
      * task_based :流程恢复
-     * clarify: 未明确意图,需要再次询问的
+     * clarify: 澄清
      * <p>
      * "solved": false
      * system: 机器回复

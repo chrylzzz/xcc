@@ -23,8 +23,11 @@ import java.time.Duration;
 @Slf4j
 @Component
 public class IVRController {
+
     @Autowired
     private IVRService ivrService;
+    @Autowired
+    private IVRServiceV2 ivrServiceV2;
 
     //测试xswitch能否支持线程池
     //    @Async
@@ -100,7 +103,8 @@ public class IVRController {
 //                    log.info(" eventStr data:{}", eventStr);
 
                     JSONObject eventJson = JSONObject.parseObject(eventStr);
-                    log.info("订阅事件 json data:{}", eventJson);
+//                    log.info("订阅事件 json data:{}", eventJson);
+                    log.info("订阅事件 json data:{}", eventJson.getString("method"));
                     //event状态,Event.Channel（state=START）
                     String method = eventJson.getString("method");
                     //XNode收到呼叫后，向NATS广播来话消息（Event.Channel（state = START）），Ctrl收到后进行处理。
@@ -109,11 +113,13 @@ public class IVRController {
                         //convert param
                         ChannelEvent event = IVRHandler.convertParams(params);
                         //asr domain
-                        ivrService.handlerChannelEvent(nc, event);
+//                        ivrService.handlerChannelEvent(nc, event);
+                        ivrServiceV2.handlerChannelEvent(nc, event);
 
                     } else if (XCCConstants.Event_DetectedFace.equals(method)) {
-                        log.info("事件 event======:{}", "Event.DetectedFace");
+                        log.info("事件 event======Event-Name : {}", "Event.DetectedFace");
                     } else if (XCCConstants.Event_NativeEvent.equals(method)) {
+                        log.info("事件 event======Event-Name : {}", "Event_NativeEvent");
 //                        log.info("事件 event======:{}", "Event.NativeEvent");
 //                        JSONObject params = eventJson.getJSONObject("params");
 //                        JSONObject event = params.getJSONObject("event");

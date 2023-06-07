@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
 import com.haiyisoft.entry.IVREvent;
+import com.haiyisoft.entry.XCCEvent;
 import com.haiyisoft.util.XCCUtil;
 import io.nats.client.Connection;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +17,36 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class IVRHandler {
 
-    //用户意图直接转人工规则
+
+    /**
+     * IVR INVOKE
+     *
+     * @param nc
+     * @param channelEvent
+     * @param retKey
+     * @param retValue
+     * @return
+     */
+    public static XCCEvent domain(Connection nc, ChannelEvent channelEvent, String retKey, String retValue) {
+        XCCEvent xccEvent;
+        if (XCCConstants.YYSR.equals(retKey)) {//调用播报收音
+            xccEvent = XCCHandler.detectSpeechPlayTTSNoDTMF(nc, channelEvent, retValue);
+        } else if (XCCConstants.AJSR.equals(retKey)) {//调用xcc收集按键方法，多位按键
+            xccEvent = XCCHandler.playAndReadDTMF(nc, channelEvent, retValue, 18);
+        } else if (XCCConstants.YWAJ.equals(retKey)) {//调用xcc收集按键方法，一位按键
+            xccEvent = XCCHandler.playAndReadDTMF(nc, channelEvent, retValue, 1);
+        } else if (XCCConstants.RGYT.equals(retKey)) {//转人工
+            /**
+             * 需要设计转人工流程,不直接转
+             * 转到华为座席,然后挂断
+             */
+            xccEvent = XCCHandler.bridgeExtension(nc, channelEvent, retValue);
+        } else {
+            log.error("严格根据配置的指令开发");
+            xccEvent = new XCCEvent();
+        }
+        return xccEvent;
+    }
 
     /**
      * 触发转人工规则

@@ -19,7 +19,7 @@ xcc:
 #  ngd boot token
   ngdBootToken: NGD 88f20617-d6b5-4c4e-bf72-fde0c0db1d82
 # convert solved
-  convertSolved: true
+  convertSolved: false
 #
 # XML数据需要自己处理, JSON数据XSwitch已深度解析
   handleEngineData: false

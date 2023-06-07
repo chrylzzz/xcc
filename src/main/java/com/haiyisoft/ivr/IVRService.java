@@ -17,11 +17,14 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 /**
+ * V1版本:
+ * 可不依托于百度知识库配置,全部手动处理
+ * 流程做复杂处理
+ * <p>
  * Created By Chryl on 2023-02-08.
  */
 @Slf4j
 @Component
-@Scope(value = "prototype")
 public class IVRService {
 
     /**
@@ -48,7 +51,7 @@ public class IVRService {
             //ivr event
             IVREvent ivrEvent = new IVREvent(channelId);
             XCCEvent xccEvent = new XCCEvent();
-//            NGDEvent ngdEvent1 = new NGDEvent();
+            NGDEvent ngdEvent = new NGDEvent();
             log.info(" start this call channelId: {} , state :{} ", channelId, state);
             if (XCCConstants.Channel_START.equals(state)) {
                 //开始接管,第一个指令必须是Accept或Answer
@@ -58,19 +61,7 @@ public class IVRService {
                 String retValue = XCCConstants.WELCOME_TEXT;
                 while (true) {
 
-                    if (XCCConstants.YYSR.equals(retKey)) {//调用播报收音
-                        xccEvent = XCCHandler.detectSpeechPlayTTSNoDTMF(nc, channelEvent, retValue);
-                    } else if (XCCConstants.AJSR.equals(retKey)) {//调用xcc收集按键方法，多位按键
-                        xccEvent = XCCHandler.playAndReadDTMF(nc, channelEvent, retValue, 18);
-                    } else if (XCCConstants.YWAJ.equals(retKey)) {//调用xcc收集按键方法，一位按键
-                        xccEvent = XCCHandler.playAndReadDTMF(nc, channelEvent, retValue, 1);
-                    } else if (XCCConstants.RGYT.equals(retKey)) {//转人工
-                        /**
-                         * 需要设计转人工流程,不直接转
-                         * 转到华为座席,然后挂断
-                         */
-                        xccEvent = XCCHandler.bridgeExtension(nc, channelEvent, retValue);
-                    }
+                    xccEvent = IVRHandler.domain(nc, channelEvent, retKey, retValue);
 
                     //处理是否挂机
                     boolean handleHangup = XCCHandler.handleSomeHangup(xccEvent, channelId);
@@ -87,7 +78,8 @@ public class IVRService {
                             //xcc识别数据
                             String xccRecognitionResult = xccEvent.getXccRecognitionResult();
                             //获取指令和话术
-                            NGDEvent ngdEvent = NGDHandler.handlerNlu(xccRecognitionResult, channelId);
+                            ngdEvent = NGDHandler.handlerNlu(xccRecognitionResult, channelId);
+
                             //handle ngd agent
                             boolean handleSolved = NGDHandler.handleSolved(ngdEvent);
                             //判断是否为机器回复
@@ -97,14 +89,15 @@ public class IVRService {
                             } else {
                                 log.info("机器回复");
                                 //触发转人工规则
-                                /*
+/*
                                 ivrEvent = IVRHandler.transferRule(ivrEvent, channelEvent, nc);
                                 if (ivrEvent.isTransferFlag()) {
                                     //转人工
                                     break;
                                 }
-                                */
+*/
                             }
+
                             retKey = ngdEvent.getRetKey();
                             retValue = ngdEvent.getRetValue();
                         } else {//xcc未识别
