@@ -40,7 +40,12 @@ public class IVRHandler {
              * 需要设计转人工流程,不直接转
              * 转到华为座席,然后挂断
              */
-            xccEvent = XCCHandler.bridgeExtension(nc, channelEvent, retValue);
+            //分机
+//            xccEvent = XCCHandler.bridgeExtension(nc, channelEvent, retValue);
+            //外部
+//            xccEvent = XCCHandler.bridgeExternalExtension(nc, channelEvent, retValue);
+            //转人工
+            xccEvent = XCCHandler.bridgeArtificial(nc, channelEvent, retValue);
         } else {
             log.error("严格根据配置的指令开发");
             xccEvent = new XCCEvent();
@@ -99,9 +104,9 @@ public class IVRHandler {
         try {
 //          we have to serialize the params into a string and parse it again
 //          unless we can find a way to convert JsonElement to protobuf class
-//          Xctrl.ChannelEvent.Builder cevent = Xctrl.ChannelEvent.newBuilder();
-//          JsonFormat.parser().ignoringUnknownFields().merge(params.toString(), cevent);
-//          log.info("订阅事件 cevent :{}", cevent);
+//            Xctrl.ChannelEvent.Builder xccEvent = Xctrl.ChannelEvent.newBuilder();
+//            JsonFormat.parser().ignoringUnknownFields().merge(params.toString(), xccEvent);
+//            log.info("Xctrl convert xcc event :{}", xccEvent);
 //          String state = cevent.getState();
 
 

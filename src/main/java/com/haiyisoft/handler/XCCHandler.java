@@ -200,9 +200,19 @@ public class XCCHandler {
         return XCCUtil.playAndReadDTMF(nc, channelEvent, retValue, maxDigits);
     }
 
-
+    //分机
     public static XCCEvent bridgeExtension(Connection nc, ChannelEvent channelEvent, String retValue) {
         return XCCUtil.bridgeExtension(nc, channelEvent, retValue);
+    }
+
+    //外部话机
+    public static XCCEvent bridgeExternalExtension(Connection nc, ChannelEvent channelEvent, String retValue) {
+        return XCCUtil.bridgeExternalExtension(nc, channelEvent, retValue);
+    }
+
+    //转人工
+    public static XCCEvent bridgeArtificial(Connection nc, ChannelEvent channelEvent, String retValue) {
+        return XCCUtil.bridgeArtificial(nc, channelEvent, retValue);
     }
 
     public static XCCEvent playTTS(Connection nc, ChannelEvent channelEvent, String ttsContent) {

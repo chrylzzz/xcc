@@ -332,7 +332,12 @@ public class XCCUtil {
      * @param ttsContent
      */
     public static void handleTransferArtificial(Connection nc, ChannelEvent channelEvent, String ttsContent) {
+        //转分机
         XCCEvent xccEvent = XCCUtil.bridgeExtension(nc, channelEvent, ttsContent);
+        //转外部分机
+//        XCCEvent xccEvent = XCCUtil.bridgeExternalExtension(nc, channelEvent, ttsContent);
+        //转人工
+//        XCCEvent xccEvent = XCCUtil.bridgeArtificial(nc, channelEvent, ttsContent);
         boolean someHangup = XCCHandler.handleSomeHangup(xccEvent, channelEvent.getUuid());
         if (someHangup) {
             hangup(nc, channelEvent);
@@ -340,7 +345,7 @@ public class XCCUtil {
     }
 
     /**
-     * 转接分机测试
+     * 转接内部分机测试
      *
      * @param nc
      * @param channelEvent
@@ -384,8 +389,115 @@ public class XCCUtil {
 //        call_params.put("dial_string", "sofia/default/1002@140.143.134.19:22501");
         //生产转接
 //        call_params.put("dial_string", "sofia/default/4001/10.194.31.200:5060");
+//        originate [origination_caller_id_number=9000]sofia/default/1001@10.194.38.38:5060 &echo
         //分机使用user
         call_params.put("dial_string", "user/1001");
+        //[{},{}]
+        JSONArray callParamArray = new JSONArray();
+        callParamArray.add(call_params);
+
+        JSONObject destination = new JSONObject();
+        destination.put("global_params", global_params);
+        destination.put("call_params", callParamArray);
+
+        JSONObject params = new JSONObject();
+        //当前channel 的uuid
+        String channelId = channelEvent.getUuid();
+        params.put("uuid", channelId);
+        params.put("ctrl_uuid", "chryl-ivvr");
+        params.put("flow_control", XCCConstants.ANY);
+        params.put("destination", destination);
+        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
+        XCCEvent xccEvent = RequestUtil.natsRequestFutureByBridge(nc, service, XCCConstants.BRIDGE, params, 2000);
+        return xccEvent;
+    }
+
+    /**
+     * 通过网关转接外部话机测试
+     *
+     * @param nc
+     * @param channelEvent
+     * @param ttsContent
+     * @return
+     */
+    public static XCCEvent bridgeExternalExtension(Connection nc, ChannelEvent channelEvent, String ttsContent) {
+
+        //正在转接人工坐席,请稍后
+        playTTS(nc, channelEvent, ttsContent);
+        //全局参数
+        JSONObject user2user = new JSONObject();
+        /**
+         * 必填 phone number
+         * 可填 user id
+         */
+        user2user.put("phone", "120");
+        user2user.put("user_id", "110");
+
+        JSONObject global_params = new JSONObject();
+        global_params.put("sip_h_X-User-to-User", user2user);
+        //呼叫参数
+        JSONObject call_params = new JSONObject();
+        call_params.put("uuid", IdGenerator.simpleUUID());
+        //https://docs.xswitch.cn/xcc-api/reference/#dial-string
+//        call_params.put("dial_string", "sofia/default/1002@140.143.134.19:22501");
+        //生产转接
+//        call_params.put("dial_string", "sofia/default/4001/10.194.31.200:5060");
+//        originate [origination_caller_id_number=9000]sofia/default/1001@10.194.38.38:5060 &echo
+        call_params.put("dial_string", new StringBuilder("sofia/default/1001").append("@10.194.38.38:5060"));
+
+        //[{},{}]
+        JSONArray callParamArray = new JSONArray();
+        callParamArray.add(call_params);
+
+        JSONObject destination = new JSONObject();
+        destination.put("global_params", global_params);
+        destination.put("call_params", callParamArray);
+
+        JSONObject params = new JSONObject();
+        //当前channel 的uuid
+        String channelId = channelEvent.getUuid();
+        params.put("uuid", channelId);
+        params.put("ctrl_uuid", "chryl-ivvr");
+        params.put("flow_control", XCCConstants.ANY);
+        params.put("destination", destination);
+        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
+        XCCEvent xccEvent = RequestUtil.natsRequestFutureByBridge(nc, service, XCCConstants.BRIDGE, params, 2000);
+        return xccEvent;
+    }
+
+    /**
+     * 通过网关转接外部测试
+     *
+     * @param nc
+     * @param channelEvent
+     * @param ttsContent
+     * @return
+     */
+    public static XCCEvent bridgeArtificial(Connection nc, ChannelEvent channelEvent, String ttsContent) {
+
+        //正在转接人工坐席,请稍后
+        playTTS(nc, channelEvent, ttsContent);
+        //全局参数
+        JSONObject user2user = new JSONObject();
+        /**
+         * 必填 phone number
+         * 可填 user id
+         */
+        user2user.put("phone", "120");
+        user2user.put("user_id", "110");
+
+        JSONObject global_params = new JSONObject();
+        global_params.put("sip_h_X-User-to-User", user2user);
+        //呼叫参数
+        JSONObject call_params = new JSONObject();
+        call_params.put("uuid", IdGenerator.simpleUUID());
+        //https://docs.xswitch.cn/xcc-api/reference/#dial-string
+        //生产转接
+//        originate [origination_caller_id_number=9000]sofia/default/1001@10.194.38.38:5060 &echo
+//        call_params.put("dial_string", "sofia/default/4001/10.194.31.200:5060");
+        call_params.put("dial_string", new StringBuilder("sofia/default/4001").append("@10.194.31.92:5060"));
+//        call_params.put("dial_string", new StringBuilder("sofia/default/4001").append("@10.194.31.102:5060"));
+
         //[{},{}]
         JSONArray callParamArray = new JSONArray();
         callParamArray.add(call_params);
