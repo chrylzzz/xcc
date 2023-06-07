@@ -103,8 +103,8 @@ public class IVRController {
 //                    log.info(" eventStr data:{}", eventStr);
 
                     JSONObject eventJson = JSONObject.parseObject(eventStr);
-//                    log.info("订阅事件 json data:{}", eventJson);
-                    log.info("订阅事件 json data:{}", eventJson.getString("method"));
+                    log.info("订阅事件 json data:{}", eventJson);
+//                    log.info("订阅事件 json data:{}", eventJson.getString("method"));
                     //event状态,Event.Channel（state=START）
                     String method = eventJson.getString("method");
                     //XNode收到呼叫后，向NATS广播来话消息（Event.Channel（state = START）），Ctrl收到后进行处理。
