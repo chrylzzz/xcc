@@ -34,6 +34,8 @@ public class IVREvent {
     private String phoneAddressCode;
     //来电手机号码
     private String phone;
+    //用户编号,可为null,若流程有则不为null
+    private String uid;
     //对话日志
     private List<JSONObject> conversation;
 

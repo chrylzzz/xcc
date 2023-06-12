@@ -42,8 +42,13 @@ public class NGDUtil {
         JSONObject parse = JSON.parseObject(jsonStrResult);
         log.info("结束调用,百度知识库接口返回: {}", parse);
 
+
         Integer code = parse.getIntValue("code");//统一返回
         String msg = parse.getString("msg");//统一返回
+        JSONObject resContext = parse.getJSONObject("data").getJSONObject("context");//context
+        if (resContext != null) {
+            String znivr_uid = resContext.getString("znivr_uid");
+        }
         NGDEvent ngdEvent;
         String answer = "";
         if (XCCConstants.OK == code) {

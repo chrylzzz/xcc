@@ -248,78 +248,9 @@ public class XCCUtil {
         return xccEvent;
     }
 
-    /**
-     * 转接
-     *
-     * @param nc
-     * @param channelEvent
-     * @param ttsContent
-     * @return
-     */
-    public static XCCEvent bridge(Connection nc, ChannelEvent channelEvent, String ttsContent) {
-/*
-        {
-            "jsonrpc": "2.0",
-                "method": "XNode.Bridge",
-                "id": "call2",
-                "params": {
-            "ctrl_uuid": "6e68eb16-9272-4ca6-80e2-26253ac29e25",
-                    "uuid": "08a53c50-fbea-413b-a3df-08959d3030e2",
-                    "destination": {
-                "global_params": {},
-                "call_params": [{
-                    "uuid": "d3dd612f-b634-4aaa-aa25-0794bef046ad",
-                            "dial_string": "user/1001"
-                }]
-            }
-        }
-        }
-
-        */
-        //正在转接人工坐席,请稍后
-        XCCUtil.playTTS(nc, channelEvent, ttsContent);
-        //全局参数
-        JSONObject user2user = new JSONObject();
-        user2user.put("queueName", "1123123");
-        user2user.put("phoneNum", "11231");
-        user2user.put("adsCode", "11231");
-        user2user.put("huaweiCallId", "123311");
-        JSONObject global_params = new JSONObject();
-        global_params.put("sip_h_X-User-to-User", user2user);
-        //呼叫参数
-        JSONObject call_params = new JSONObject();
-        call_params.put("uuid", IdGenerator.simpleUUID());
-        //https://docs.xswitch.cn/xcc-api/reference/#dial-string
-//        call_params.put("dial_string", "sofia/default/1002@140.143.134.19:22501");
-        //生产转接
-//        call_params.put("dial_string", "sofia/default/4001/10.194.31.200:5060");
-
-        //分机使用user
-        call_params.put("dial_string", "user/1001");
-        //[{},{}]
-        JSONArray callParamArray = new JSONArray();
-        callParamArray.add(call_params);
-
-        JSONObject destination = new JSONObject();
-        destination.put("global_params", global_params);
-        destination.put("call_params", callParamArray);
-
-        JSONObject params = new JSONObject();
-        //当前channel 的uuid
-        String channelId = channelEvent.getUuid();
-        params.put("uuid", channelId);
-        params.put("ctrl_uuid", "chryl-ivvr");
-        params.put("flow_control", XCCConstants.ANY);
-        params.put("destination", destination);
-
-
-        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
-        XCCEvent xccEvent = RequestUtil.natsRequestFutureByBridge(nc, service, XCCConstants.BRIDGE, params, 2000);
-        return xccEvent;
-    }
 
     /**
-     * 转人工
+     * 转人工测试
      * Transfer Artificial
      * 待处理500,目前测试转人工未接听,返回500
      *
@@ -334,10 +265,11 @@ public class XCCUtil {
 //        XCCEvent xccEvent = XCCUtil.bridgeExternalExtension(nc, channelEvent, ttsContent);
         //转人工
 //        XCCEvent xccEvent = XCCUtil.bridgeArtificial(nc, channelEvent, ttsContent);
-        boolean someHangup = XCCHandler.handleSomeHangup(xccEvent, channelEvent.getUuid());
-        if (someHangup) {
-            hangup(nc, channelEvent);
-        }
+        //挂机
+//        boolean someHangup = XCCHandler.handleSomeHangup(xccEvent, channelEvent.getUuid());
+//        if (someHangup) {
+//            hangup(nc, channelEvent);
+//        }
     }
 
     /**
@@ -462,7 +394,7 @@ public class XCCUtil {
     }
 
     /**
-     * 通过网关转接外部测试
+     * 转人工：转到华为平台座席
      *
      * @param nc
      * @param channelEvent
@@ -519,7 +451,7 @@ public class XCCUtil {
     }
 
     /**
-     * 转接到精准ivr
+     * 转接到华为平台精准IVR
      *
      * @param nc
      * @param channelEvent
