@@ -175,6 +175,8 @@ public class XCCConstants {
     public static final String YWAJ = "YWAJ";
     //人工意图
     public static final String RGYT = "RGYT";
+    //精准IVR流程
+    public static final String JZLC = "JZLC";
     //指令集合数组
     public static final String[] RET_KEY_STR_ARR = {"YYSR", "AJSR", "RGYT", "YWAJ"};
     //智能ivr渠道
@@ -209,6 +211,7 @@ public class XCCConstants {
     public static final int NGD_REQUEST_TO_MUCH = 4000019;
     //bot token错误
     public static final int NGD_BOT_TOKEN_ERREO = 4002409;
+
     /********************************************ngd相关********************************************/
 
     /********************************************IVR相关********************************************/
@@ -225,7 +228,18 @@ public class XCCConstants {
     public static final int DEFAULT_TRANSFER_TIME = 1;
     public static final int TRANSFER_ARTIFICIAL_TIME = 4;
 
-
+    //软交换服务器
+    public static final String IP_200 = "10.194.31.200";
+    public static final String IP_201 = "10.194.31.201";
+    public static final String IP_202 = "10.194.31.202";
+    public static final String IP_203 = "10.194.31.203";
+    //华为排队机
+    public static final String IP_92 = "10.194.31.92:5060";
+    public static final String IP_102 = "10.194.31.102:5060";
+    //转人工号
+    public static final String IVR_NUMBER_4001 = "4001";
+    //转ivr号
+    public static final String IVR_NUMBER_4002 = "4002";
     /********************************************IVR相关********************************************/
 
 }

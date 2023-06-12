@@ -218,4 +218,9 @@ public class XCCHandler {
     public static XCCEvent playTTS(Connection nc, ChannelEvent channelEvent, String ttsContent) {
         return XCCUtil.playTTS(nc, channelEvent, ttsContent);
     }
+
+    //转接到精准ivr
+    public static XCCEvent bridgeIVR(Connection nc, ChannelEvent channelEvent, String retValue) {
+        return XCCUtil.bridgeIVR(nc, channelEvent, retValue);
+    }
 }

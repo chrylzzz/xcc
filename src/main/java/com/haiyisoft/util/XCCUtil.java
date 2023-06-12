@@ -491,8 +491,12 @@ public class XCCUtil {
         //生产转接
 //        originate [origination_caller_id_number=9000]sofia/default/1001@10.194.38.38:5060 &echo
 //        call_params.put("dial_string", "sofia/default/4001/10.194.31.200:5060");
-        call_params.put("dial_string", new StringBuilder("sofia/default/4001").append("@10.194.31.92:5060"));
+//        call_params.put("dial_string", new StringBuilder("sofia/default/4001").append("@10.194.31.92:5060"));
 //        call_params.put("dial_string", new StringBuilder("sofia/default/4001").append("@10.194.31.102:5060"));
+
+
+        String dialStr = convertDialStr(XCCConstants.IVR_NUMBER_4001);
+        call_params.put("dial_string", dialStr);
 
         //[{},{}]
         JSONArray callParamArray = new JSONArray();
@@ -513,4 +517,84 @@ public class XCCUtil {
         XCCEvent xccEvent = RequestUtil.natsRequestFutureByBridge(nc, service, XCCConstants.BRIDGE, params, 2000);
         return xccEvent;
     }
+
+    /**
+     * 转接到精准ivr
+     *
+     * @param nc
+     * @param channelEvent
+     * @param retValue
+     * @return
+     */
+    public static XCCEvent bridgeIVR(Connection nc, ChannelEvent channelEvent, String retValue) {
+        //正在转接人工坐席,请稍后
+//        playTTS(nc, channelEvent, ttsContent);
+        //全局参数
+        JSONObject user2user = new JSONObject();
+        /**
+         * 必填 phone number
+         * 可填 user id
+         */
+        user2user.put("phone", "120");
+        user2user.put("user_id", "110");
+
+        JSONObject global_params = new JSONObject();
+        global_params.put("sip_h_X-User-to-User", user2user);
+        //呼叫参数
+        JSONObject call_params = new JSONObject();
+        call_params.put("uuid", IdGenerator.simpleUUID());
+        //https://docs.xswitch.cn/xcc-api/reference/#dial-string
+        //生产转接
+//        originate [origination_caller_id_number=9000]sofia/default/1001@10.194.38.38:5060 &echo
+//        call_params.put("dial_string", "sofia/default/4001/10.194.31.200:5060");
+//        call_params.put("dial_string", new StringBuilder("sofia/default/4002").append("@10.194.31.92:5060"));
+//        call_params.put("dial_string", new StringBuilder("sofia/default/4001").append("@10.194.31.102:5060"));
+
+        String dialStr = convertDialStr(XCCConstants.IVR_NUMBER_4002);
+        call_params.put("dial_string", dialStr);
+
+
+        //[{},{}]
+        JSONArray callParamArray = new JSONArray();
+        callParamArray.add(call_params);
+
+        JSONObject destination = new JSONObject();
+        destination.put("global_params", global_params);
+        destination.put("call_params", callParamArray);
+
+        JSONObject params = new JSONObject();
+        //当前channel 的uuid
+        String channelId = channelEvent.getUuid();
+        params.put("uuid", channelId);
+        params.put("ctrl_uuid", "chryl-ivvr");
+        params.put("flow_control", XCCConstants.ANY);
+        params.put("destination", destination);
+        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
+        XCCEvent xccEvent = RequestUtil.natsRequestFutureByBridge(nc, service, XCCConstants.BRIDGE, params, 2000);
+        return xccEvent;
+    }
+
+    /**
+     * 转人工和转精准ivr
+     * sofia/default/1001@10.194.38.38:5060
+     *
+     * @param number 转接号
+     * @return
+     */
+    public static String convertDialStr(String number) {
+        StringBuilder append = new StringBuilder("sofia/default/").append(number).append("@");
+        String sipIp = "";
+        if (IpUtil.INTERNET_IP.equals(XCCConstants.IP_201)) {
+            sipIp = XCCConstants.IP_92;
+        } else if (IpUtil.INTERNET_IP.equals(XCCConstants.IP_203)) {
+            sipIp = XCCConstants.IP_102;
+        } else {
+            sipIp = XCCConstants.IP_92;
+        }
+        String toString = append.append(sipIp).toString();
+        log.info("转接 dial_string : {}", toString);
+        return toString;
+    }
+
+
 }
