@@ -52,17 +52,12 @@ public class XCCUtil {
      * @return
      */
     public static JSONObject getDtmf(int maxDigits) {
-//        min_digits：最小位长。
-//        max_digits：最大位长。
-//        timeout：超时，默认5000ms。
-//        digit_timeout：位间超时，默认2000ms。
-//        terminators：结束符，如#。
         JSONObject dtmf = new JSONObject();
-        dtmf.put("min_digits", 1);
-        dtmf.put("max_digits", maxDigits);
-        dtmf.put("timeout", 6 * 1000);
-        dtmf.put("digit_timeout", 3 * 1000);
-        dtmf.put("terminators", XCCConstants.DTMF_TERMINATORS);
+        dtmf.put("min_digits", 1);//min_digits：最小位长。
+        dtmf.put("max_digits", maxDigits);//max_digits：最大位长。
+        dtmf.put("timeout", 8 * 1000);//timeout：超时，默认5000ms。
+        dtmf.put("digit_timeout", 3 * 1000);//digit_timeout：位间超时，默认2000ms。
+        dtmf.put("terminators", XCCConstants.DTMF_TERMINATORS);//terminators：结束符，如#。
         return dtmf;
     }
 
@@ -237,13 +232,14 @@ public class XCCUtil {
 //        terminator：结束符，如果有的话。
 //        本接口将在收到第一个DTMF按键后打断当前的播放。
 //
-        JSONObject params = new JSONObject();
+//        JSONObject params = new JSONObject();
+        JSONObject params = getDtmf(maxDigits);
         params.put("ctrl_uuid", "chryl-ivvr");
         //当前channel 的uuid
         String channelId = channelEvent.getUuid();
         params.put("uuid", channelId);
-        JSONObject dtmf = getDtmf(maxDigits);
-        params.put("dtmf", dtmf);
+//        JSONObject dtmf = getDtmf(maxDigits);
+//        params.put("dtmf", dtmf);
         JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
 //        params.put("data", media);
         params.put("media", media);
