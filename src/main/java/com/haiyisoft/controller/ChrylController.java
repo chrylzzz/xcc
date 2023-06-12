@@ -7,6 +7,7 @@ import com.haiyisoft.config.ThreadPoolConfig;
 import com.haiyisoft.ivr.IVRService;
 import com.haiyisoft.util.HttpClientUtil;
 import com.haiyisoft.util.IdGenerator;
+import com.haiyisoft.util.IpUtil;
 import com.haiyisoft.util.NGDUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,21 +56,24 @@ public class ChrylController {
      * @throws IOException
      */
     @GetMapping("chryl2")
-    public String yml() throws InterruptedException, IOException {
+    public String loadYml() throws InterruptedException, IOException {
         String loadYml = JSON.toJSONString(IVRInit.XCC_CONFIG_PROPERTY, true);
         return loadYml;
     }
 
     /**
-     * 查看 cpu
+     * info
      *
      * @return
      * @throws InterruptedException
      * @throws IOException
      */
-    @GetMapping("cpu")
-    public int cpu() throws InterruptedException, IOException {
-        return ThreadPoolConfig.CPU_NUM;
+    @GetMapping("info")
+    public JSONObject info() throws InterruptedException, IOException {
+        JSONObject a = new JSONObject();
+        a.put("cpu", ThreadPoolConfig.CPU_NUM);
+        a.put("ip", IpUtil.INTERNET_IP);
+        return a;
     }
 
     @GetMapping("/test/{queryText}")
