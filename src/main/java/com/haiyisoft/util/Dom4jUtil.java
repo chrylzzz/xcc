@@ -36,41 +36,44 @@ public class Dom4jUtil {
              </interpretation>
          </result>
        */
-        log.info("parseAsrResXml 解析 xmlStr 开始:{}", xmlStr);
+
         String parseText = "";
         if (StringUtils.isBlank(xmlStr)) {
-            return parseText;
-        }
-        try {
-            xmlStr = xmlStr.replace(XCCConstants.NL, "");
-            System.out.println(xmlStr);
-            xmlStr = xmlStr.replace(XCCConstants.ESCAPE_CHARACTER, "");
-            System.out.println(xmlStr);
-            Document document = DocumentHelper.parseText(xmlStr);
-            Element root = document.getRootElement();
-            List<Element> elements = root.elements();
-            a:
-            for (Element element : elements) {
-                for (Iterator<Element> it = element.elementIterator(); it.hasNext(); ) {
-                    Element e = it.next();
-                    String name = e.getName();
-                    //<input></input>里就是识别结果
-                    if (XCCConstants.INPUT.equals(name)) {
-                        parseText = e.getTextTrim();
-                        break a;
+            log.info("parseAsrResXml 解析 xmlStr 数据为空");
+        } else {
+            log.info("parseAsrResXml 解析 xmlStr 开始:{}", xmlStr);
+            try {
+                xmlStr = xmlStr.replace(XCCConstants.NL, "");
+                System.out.println(xmlStr);
+                xmlStr = xmlStr.replace(XCCConstants.ESCAPE_CHARACTER, "");
+                System.out.println(xmlStr);
+                Document document = DocumentHelper.parseText(xmlStr);
+                Element root = document.getRootElement();
+                List<Element> elements = root.elements();
+                a:
+                for (Element element : elements) {
+                    for (Iterator<Element> it = element.elementIterator(); it.hasNext(); ) {
+                        Element e = it.next();
+                        String name = e.getName();
+                        //<input></input>里就是识别结果
+                        if (XCCConstants.INPUT.equals(name)) {
+                            parseText = e.getTextTrim();
+                            break a;
+                        }
                     }
                 }
+                log.info("parseAsrResXml 解析 XML 完成:{}", parseText);
+            } catch (Exception e) {
+                log.error("解析 XML 失败:{}" + e);
+                e.printStackTrace();
             }
-            log.info("parseAsrResXml 解析 XML 完成:{}", parseText);
-        } catch (Exception e) {
-            log.error("解析 XML 失败:{}" + e);
-            e.printStackTrace();
         }
         return parseText;
     }
 
     public static void main(String[] args) {
-        String str = "<?xml version=\\\"1.0\\\"?>\\n<result>\\n <interpretation grammar=\\\"builtin:grammar/boolean?language=zh-CN;y=1;n=2 builtin\\\" confidence=\\\"1.0\\\">\\n    <instance>广西</instance>\\n    <input mode=\\\"speech\\\">广西</input>\\n  </interpretation>\\n</result>";
+        String str = null;
+//        String str = "<?xml version=\\\"1.0\\\"?>\\n<result>\\n <interpretation grammar=\\\"builtin:grammar/boolean?language=zh-CN;y=1;n=2 builtin\\\" confidence=\\\"1.0\\\">\\n    <instance>广西</instance>\\n    <input mode=\\\"speech\\\">广西</input>\\n  </interpretation>\\n</result>";
 //        String str = "<?xml version=\\\"1.0\\\"?>\\n<result>\\n <interpretation grammar=\\\"builtin:grammar/boolean?language=zh-CN;y=1;n=2 builtin\\\" confidence=\\\"1.0\\\">\\n    <instance></instance>\\n    <input mode=\\\"speech\\\"></input>\\n  </interpretation>\\n</result>";
 
         String s = parseAsrResXml(str);

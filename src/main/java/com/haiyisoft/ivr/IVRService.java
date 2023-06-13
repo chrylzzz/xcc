@@ -46,9 +46,11 @@ public class IVRService {
         if (state == null) {
             log.error("state is null ");
         } else {
+
             //使用channelId作为callId,sessionId
             String channelId = channelEvent.getUuid();
-            //ivr event
+            //event
+//            IVREvent ivrEvent = IVRHandler.convertIVREvent(channelEvent);
             IVREvent ivrEvent = new IVREvent(channelId);
             XCCEvent xccEvent = new XCCEvent();
             NGDEvent ngdEvent = new NGDEvent();

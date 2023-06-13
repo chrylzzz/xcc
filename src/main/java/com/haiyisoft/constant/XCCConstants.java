@@ -178,7 +178,7 @@ public class XCCConstants {
     //精准IVR流程
     public static final String JZLC = "JZLC";
     //指令集合数组
-    public static final String[] RET_KEY_STR_ARR = {"YYSR", "AJSR", "RGYT", "YWAJ"};
+    public static final String[] RET_KEY_STR_ARR = {YYSR, AJSR, RGYT, YWAJ, JZLC};
     //智能ivr渠道
     public static final String CHANNEL_IVR = "智能IVR";
     //ngd话术分隔符
@@ -240,6 +240,12 @@ public class XCCConstants {
     public static final String IVR_NUMBER_4001 = "4001";
     //转ivr号
     public static final String IVR_NUMBER_4002 = "4002";
+    //sip header Separator
+    public static final String SIP_HEADER_SEPARATOR = "|";
+    //xcc
+    public static final String SIP_HEADER_USER2USER = "sip_h_User-to-User";
+    //huawei
+    public static final String USER2USER = "User-to-User";
     /********************************************IVR相关********************************************/
 
 }

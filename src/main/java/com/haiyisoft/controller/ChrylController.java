@@ -49,19 +49,6 @@ public class ChrylController {
     }
 
     /**
-     * 查看配置
-     *
-     * @return
-     * @throws InterruptedException
-     * @throws IOException
-     */
-    @GetMapping("chryl2")
-    public String loadYml() throws InterruptedException, IOException {
-        String loadYml = JSON.toJSONString(IVRInit.XCC_CONFIG_PROPERTY, true);
-        return loadYml;
-    }
-
-    /**
      * info
      *
      * @return
@@ -72,7 +59,8 @@ public class ChrylController {
     public JSONObject info() throws InterruptedException, IOException {
         JSONObject a = new JSONObject();
         a.put("cpu", ThreadPoolConfig.CPU_NUM);
-        a.put("ip", IpUtil.INTERNET_IP);
+        a.put("nei_ip", IpUtil.INTRANET_IP);
+        a.put("wai_ip", IpUtil.INTERNET_IP);
         return a;
     }
 

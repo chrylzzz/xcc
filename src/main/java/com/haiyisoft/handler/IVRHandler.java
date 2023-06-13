@@ -8,6 +8,7 @@ import com.haiyisoft.entry.XCCEvent;
 import com.haiyisoft.util.XCCUtil;
 import io.nats.client.Connection;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by Chr.yl on 2023/6/4.
@@ -46,6 +47,7 @@ public class IVRHandler {
 //            xccEvent = XCCHandler.bridgeExternalExtension(nc, channelEvent, retValue);
             //转人工
             xccEvent = XCCHandler.bridgeArtificial(nc, channelEvent, retValue);
+
         } else if (XCCConstants.JZLC.equals(retKey)) {//转到精准IVR
             xccEvent = XCCHandler.bridgeIVR(nc, channelEvent, retValue);
         } else {
@@ -96,7 +98,7 @@ public class IVRHandler {
 
 
     /**
-     * 获取话务数据
+     * 获取xcc话务数据
      *
      * @param params
      * @return
@@ -116,15 +118,57 @@ public class IVRHandler {
             String node_uuid = params.getString("node_uuid");
             //当前Channel的状态,如START--Event.Channel（state=START）
             String state = params.getString("state");
+            //处理华为传递的SIP消息头
+            JSONObject resParams = params.getJSONObject("params");
+//            String u2u = resParams.getString(XCCConstants.SIP_HEADER_USER2USER)
+//                    == null ? "" : resParams.getString(XCCConstants.SIP_HEADER_USER2USER) + XCCConstants.SIP_HEADER_SEPARATOR;
+            String u2u = resParams.getString(XCCConstants.SIP_HEADER_USER2USER);
+            event.setSipHeaderU2U(u2u);
 
             event.setUuid(uuid);
             event.setNodeUuid(node_uuid);
             event.setState(state);
-
+            log.info("convertParams :{}", event);
         } catch (Exception e) {
             e.printStackTrace();
             log.error("convertParams 发生异常：{}", e);
         }
         return event;
     }
+
+    /**
+     * 处理随路数据,放到ivrEvent
+     *
+     * @param channelEvent
+     * @return
+     */
+    public static IVREvent convertIVREvent(ChannelEvent channelEvent) {
+        //使用channelId作为callId,sessionId
+        String channelId = channelEvent.getUuid();
+        String u2U = channelEvent.getSipHeaderU2U();
+
+        IVREvent ivrEvent = new IVREvent(channelId);
+
+        if (StringUtils.isBlank(u2U)) {
+            log.info("convertIVREvent sip User-to-User in null");
+        } else {
+            //callId、手机号、来话手机所对应的后缀码
+            try {
+                String[] splitU2U = u2U.split("\\|");
+                String call_id = splitU2U[0];
+                String phone = splitU2U[1];
+                String phoneCode = splitU2U[2];
+
+                ivrEvent.setIcdCallId(call_id);
+                ivrEvent.setPhone(phone);
+                ivrEvent.setPhoneAddressCode(phoneCode);
+                log.info("convertIVREvent :{}", ivrEvent);
+            } catch (Exception e) {
+                e.printStackTrace();
+                log.error("convertIVREvent 报错啦, 无法解析u2u");
+            }
+        }
+        return ivrEvent;
+    }
+
 }
