@@ -358,7 +358,7 @@ public class XCCUtil {
         playTTS(nc, channelEvent, ttsContent);
         //随路数据
         String sipHeaderU2U = channelEvent.getSipHeaderU2U();
-        String dialStr = convertDialStr(XCCConstants.IVR_NUMBER_4001);
+        String dialStr = convertDialStr(XCCConstants.HUAWEI_ARTIFICIAL_NUMBER);
 
         JSONObject params = convertBridgeParams(channelEvent, dialStr, sipHeaderU2U);
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
@@ -380,7 +380,7 @@ public class XCCUtil {
 
         //随路数据
         String sipHeaderU2U = channelEvent.getSipHeaderU2U();
-        String dialStr = convertDialStr(XCCConstants.IVR_NUMBER_4002);
+        String dialStr = convertDialStr(XCCConstants.HUAWEI_IVR_NUMBER);
 
         JSONObject params = convertBridgeParams(channelEvent, dialStr, sipHeaderU2U);
 
@@ -412,7 +412,7 @@ public class XCCUtil {
     }
 
     /**
-     * 处理转接paams
+     * 处理转接 params
      *
      * @param channelEvent
      * @param sipHeader

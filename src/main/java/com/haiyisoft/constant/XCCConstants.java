@@ -236,10 +236,10 @@ public class XCCConstants {
     //华为排队机
     public static final String IP_92 = "10.194.31.92:5060";
     public static final String IP_102 = "10.194.31.102:5060";
-    //转人工号
-    public static final String IVR_NUMBER_4001 = "4001";
-    //转ivr号
-    public static final String IVR_NUMBER_4002 = "4002";
+    //4001--IVR
+    public static final String HUAWEI_IVR_NUMBER = "4001";
+    //4002--人工坐席
+    public static final String HUAWEI_ARTIFICIAL_NUMBER = "4002";
     //sip header Separator
     public static final String SIP_HEADER_SEPARATOR = "|";
     //xcc
