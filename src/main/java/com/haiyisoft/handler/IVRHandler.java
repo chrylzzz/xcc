@@ -123,8 +123,8 @@ public class IVRHandler {
 //            String u2u = resParams.getString(XCCConstants.SIP_HEADER_USER2USER)
 //                    == null ? "" : resParams.getString(XCCConstants.SIP_HEADER_USER2USER) + XCCConstants.SIP_HEADER_SEPARATOR;
             String u2u = resParams.getString(XCCConstants.SIP_HEADER_USER2USER);
-            event.setSipHeaderU2U(u2u);
 
+            event.setSipReqHeaderU2U(u2u);
             event.setUuid(uuid);
             event.setNodeUuid(node_uuid);
             event.setState(state);
@@ -145,27 +145,27 @@ public class IVRHandler {
     public static IVREvent convertIVREvent(ChannelEvent channelEvent) {
         //使用channelId作为callId,sessionId
         String channelId = channelEvent.getUuid();
-        String u2U = channelEvent.getSipHeaderU2U();
+        String u2U = channelEvent.getSipReqHeaderU2U();
 
         IVREvent ivrEvent = new IVREvent(channelId);
 
         if (StringUtils.isBlank(u2U)) {
-            log.info("convertIVREvent sip User-to-User in null");
+            log.info("convertIVREvent sip header User-to-User in null");
         } else {
             //callId、手机号、来话手机所对应的后缀码
             try {
                 String[] splitU2U = u2U.split("\\|");
-                String call_id = splitU2U[0];
-                String phone = splitU2U[1];
-                String phoneCode = splitU2U[2];
+                String icd_call_id = splitU2U[0];
+                String cid_number = splitU2U[1];
+                String phone_code = splitU2U[2];
 
-                ivrEvent.setIcdCallId(call_id);
-                ivrEvent.setPhone(phone);
-                ivrEvent.setPhoneAddressCode(phoneCode);
-                log.info("convertIVREvent :{}", ivrEvent);
+                ivrEvent.setIcdCallId(icd_call_id);
+                ivrEvent.setCidNumber(cid_number);
+                ivrEvent.setPhoneAdsCode(phone_code);
+                log.info("convertIVREvent OK:{}", ivrEvent);
             } catch (Exception e) {
                 e.printStackTrace();
-                log.error("convertIVREvent 报错啦, 无法解析u2u");
+                log.error("convertIVREvent sip header User-to-User 报错啦, 无法解析u2u");
             }
         }
         return ivrEvent;

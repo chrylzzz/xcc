@@ -1,6 +1,8 @@
 package com.haiyisoft.constant;
 
 import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -15,6 +17,7 @@ import java.util.List;
  */
 @Data
 @ConfigurationProperties(prefix = "xcc")
+//@JsonNaming
 public class XCCConfigProperty {
 
     // nats url
@@ -34,6 +37,8 @@ public class XCCConfigProperty {
     private String ttsVoice;
     // asr engine
     private String asrEngine;
+    // xcc tts no break
+    private String noBreak;
     // ngd query url
     private String ngdCoreQueryUrl;
     // ngd boot token auth

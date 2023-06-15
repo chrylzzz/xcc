@@ -5,6 +5,7 @@ import com.haiyisoft.entry.ChannelEvent;
 import com.haiyisoft.entry.IVREvent;
 import com.haiyisoft.entry.NGDEvent;
 import com.haiyisoft.entry.XCCEvent;
+import com.haiyisoft.handler.ChannelHandler;
 import com.haiyisoft.handler.IVRHandler;
 import com.haiyisoft.handler.NGDHandler;
 import com.haiyisoft.handler.XCCHandler;
@@ -30,13 +31,17 @@ public class IVRServiceV2 {
         if (state == null) {
             log.error("state is null ");
         } else {
-            //使用channelId作为callId,sessionId
-            String channelId = channelEvent.getUuid();
-            //ivr event
-            IVREvent ivrEvent = new IVREvent(channelId);
-            XCCEvent xccEvent;
-            NGDEvent ngdEvent;
+            //event
+            IVREvent ivrEvent = IVRHandler.convertIVREvent(channelEvent);
+            XCCEvent xccEvent = new XCCEvent();
+            NGDEvent ngdEvent = new NGDEvent();
+            //fs call id
+            String channelId = ivrEvent.getChannelId();
+            //来电号码
+            String callNumber = ivrEvent.getCidNumber();
             log.info(" start this call channelId: {} , state :{} ", channelId, state);
+            log.info(" start this call IVREvent: {}", ivrEvent);
+
             if (XCCConstants.Channel_START.equals(state)) {
                 //开始接管,第一个指令必须是Accept或Answer
                 XCCHandler.answer(nc, channelEvent);
@@ -57,9 +62,11 @@ public class IVRServiceV2 {
                         //xcc识别数据
                         String xccRecognitionResult = xccEvent.getXccRecognitionResult();
                         //获取指令和话术
-                        ngdEvent = NGDHandler.handlerNlu(xccRecognitionResult, channelId);
+                        ngdEvent = NGDHandler.handlerNlu(xccRecognitionResult, channelId, callNumber);
                         retKey = ngdEvent.getRetKey();
                         retValue = ngdEvent.getRetValue();
+                        //处理sip header
+                        channelEvent = ChannelHandler.handleSipHeader(ngdEvent, channelEvent);
 
                         log.info("revert ivrEvent data: {}", ivrEvent);
                     }

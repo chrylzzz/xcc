@@ -31,12 +31,10 @@ public class IVREvent {
     //华为call id
     private String icdCallId;
     //手机归属地编码
-    private String phoneAddressCode;
+    private String phoneAdsCode;
     //来电手机号码
-    private String phone;
-    //用户编号,可为null,若流程有则不为null
-    private String uid;
-    //对话日志
-    private List<JSONObject> conversation;
+    private String cidNumber;
+    //目的号码
+    private String destNumber;
 
 }

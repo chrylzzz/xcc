@@ -7,28 +7,30 @@ server:
 ########XCC相关变量配置########
 xcc:
 #  xswitch config
-  natsUrl: nats://hy:h8klu6bRwW@nats.xswitch.cn:4222
-  xctrlSubject: cn.xswitch.ctrl
-  xnodeSubjectPrefix: cn.xswitch.node
+  nats-url: nats://hy:h8klu6bRwW@nats.xswitch.cn:4222
+  xctrl-subject: cn.xswitch.ctrl
+  xnode-subject-prefix: cn.xswitch.node
 #  tts engine
-  ttsEngine: unimrcp:tts
+  tts-engine: unimrcp:tts
 #  Voice-Name
-  ttsVoice: yifei
+  tts-voice: yifei
 #  asr engine
-  asrEngine: unimrcp:asr
+  asr-engine: unimrcp:asr
+# no break 是否打断放音, true 不可打断
+  no-break: true
 #  ngd
-  ngdCoreQueryUrl: http://10.100.104.20:8303/api/v2/core/query
+  ngd-core-query-url: http://10.100.104.20:8303/api/v2/core/query
 #  ngd boot id
-  ngdBootToken: NGD 0f0ec9dc-bdcc-4b15-9304-e0d5def75e27
-# convert solved
-  convertSolved: true
+  ngd-boot-token: NGD 0f0ec9dc-bdcc-4b15-9304-e0d5def75e27
+# convert solved :ngd存在solved=false，是否选择处理，true开启
+  convert-solved: true
 #
-# XML数据需要自己处理, JSON数据XSwitch已深度解析
-  handleEngineData: true
-#  若有多台XSwitch,再开启
+# XML数据需要自己处理, JSON数据XSwitch已深度解析, true开启自助解析
+  handle-engine-data: true
+# 若有多台XSwitch,再开启,true开启
   cluster: true
   #配置多节点
-  natsList:
+  nats-list:
   - node: 10.194.31.201
     nats: nats://10.194.31.200:4222
   - node: 10.194.31.203

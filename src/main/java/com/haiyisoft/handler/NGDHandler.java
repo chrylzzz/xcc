@@ -17,11 +17,12 @@ public class NGDHandler {
      *
      * @param xccRecognitionResult xcc识别数据
      * @param channelId            call id
+     * @param callNumber           来电号码
      * @return
      */
-    public static NGDEvent handlerNlu(String xccRecognitionResult, String channelId) {
+    public static NGDEvent handlerNlu(String xccRecognitionResult, String channelId, String callNumber) {
         //调用百度知识库,获取answer
-        NGDEvent ngdEvent = NGDUtil.coreQueryNGD(xccRecognitionResult, channelId);
+        NGDEvent ngdEvent = NGDUtil.coreQueryNGD(xccRecognitionResult, channelId, callNumber);
         //处理指令和话术,处理成retKey/retValue
         ngdEvent = NGDUtil.convertText(ngdEvent);
         log.info("handlerNlu ngdEvent :{}", ngdEvent);
@@ -44,7 +45,7 @@ public class NGDHandler {
 
 
     /**
-     * 赋值ngd返回数据
+     * 赋值 ngd 返回数据
      *
      * @param code
      * @param msg
@@ -52,11 +53,22 @@ public class NGDHandler {
      * @return
      */
     public static NGDEvent ngdEventSetVar(Integer code, String msg, String answer, String source, boolean solved) {
-        log.info("ngdEventSetVar 入参 code : [{}] , msg : [{}] , answer : [{}] , source : [{}]", code, msg, answer, source);
-        NGDEvent ngdEvent = new NGDEvent(code, msg, source, answer, solved, "", "");
+        log.info("ngdEventSetVar 入参 code : [{}] , msg : [{}] , answer : [{}] , source : [{}] , solved : {}", code, msg, answer, source, solved);
+        NGDEvent ngdEvent = new NGDEvent(code, msg, source, answer, solved);
         log.info("ngdEventSetVar 出参 ngdEvent : {}", ngdEvent);
         return ngdEvent;
     }
 
+    /**
+     * 设置失败 ngdEvent
+     *
+     * @param code
+     * @param msg
+     * @param answer
+     * @return
+     */
+    public static NGDEvent ngdEventSetErrorVar(Integer code, String msg, String answer) {
+        return ngdEventSetVar(code, msg, answer, "", false);
+    }
 
 }

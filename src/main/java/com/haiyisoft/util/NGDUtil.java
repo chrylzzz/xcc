@@ -1,11 +1,14 @@
 package com.haiyisoft.util;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.haiyisoft.boot.IVRInit;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.NGDEvent;
+import com.haiyisoft.enumerate.EnumXCC;
 import com.haiyisoft.handler.NGDHandler;
+import com.haiyisoft.model.NGDNodeModel;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -25,47 +28,46 @@ public class NGDUtil {
      * @param sessionId call id
      * @return
      */
-    public static NGDEvent coreQueryNGD(String queryText, String sessionId) {
-        JSONObject param = new JSONObject();
-        JSONObject context = new JSONObject();
-        JSONObject ext = new JSONObject();
-        context.put("channel", XCCConstants.CHANNEL_IVR);
-        param.put("queryText", queryText);//客户问题
-        param.put("sessionId", sessionId);//会话id
-        ext.put("exact", "true");
-        param.put("ext", ext);//ext
-        param.put("context", context);//渠道标识，智能IVR为广西智能ivr标识
+    public static NGDEvent coreQueryNGD(String queryText, String sessionId, String phone) {
+        //package
+        JSONObject param = coreQueryStruct(queryText, sessionId, phone);
         log.info("开始调用,百度知识库接口入参:{}", JSON.toJSONString(param, true));
         //invoke
         String jsonStrResult = HttpClientUtil.doPostJsonForGxNgd(IVRInit.XCC_CONFIG_PROPERTY.getNgdCoreQueryUrl(), param.toJSONString());
-        //百度知识库返回的数据信息
+        //res
         JSONObject parse = JSON.parseObject(jsonStrResult);
         log.info("结束调用,百度知识库接口返回: {}", parse);
 
-
         Integer code = parse.getIntValue("code");//统一返回
         String msg = parse.getString("msg");//统一返回
-        JSONObject resContext = parse.getJSONObject("data").getJSONObject("context");//context
-        if (resContext != null) {
-            String znivr_uid = resContext.getString("znivr_uid");
-        }
+
         NGDEvent ngdEvent;
         String answer = "";
         if (XCCConstants.OK == code) {
             JSONObject jsonData = parse.getJSONObject("data");
             //答复来源
             String source = jsonData.getString("source");
-            //是否解决:系统答复未解决
+            //是否解决
             boolean solved = jsonData.getBooleanValue("solved");
             answer = convertAnswer(jsonData, IVRInit.XCC_CONFIG_PROPERTY.isConvertSolved());
             ngdEvent = NGDHandler.ngdEventSetVar(code, msg, answer, source, solved);
-            log.info("百度知识库返回 code: {} , msg: {} , answer: {}", code, msg, answer);
+            //保存流程信息
+//            NGDNodeModel ngdNodeModel = saveNgdNode(queryText, answer, source, jsonData);
+//            ngdEvent.setNgdNodeModel(ngdNodeModel);
+            log.info("百度知识库返回正常 code: {} , msg: {} , answer: {}", code, msg, answer);
         } else {
             log.error("百度知识调用异常 code: {} , msg: {}", code, msg);
             answer = XCCConstants.XCC_MISSING_MSG;
-            ngdEvent = NGDHandler.ngdEventSetVar(code, msg, answer, "", false);
+            ngdEvent = NGDHandler.ngdEventSetErrorVar(code, msg, answer);
         }
-        return ngdEvent;
+
+
+        JSONObject resContext = parse.getJSONObject("data").getJSONObject("context");//context
+        //处理用户校验是否完成
+        NGDEvent resNgdEvent = convertUserOk(resContext, ngdEvent);
+
+        log.info("coreQueryNGD ngdEvent: {}", resNgdEvent);
+        return resNgdEvent;
     }
 
 
@@ -124,6 +126,27 @@ public class NGDUtil {
         log.info("百度知识库命中 answer: {}", answer);
         return answer;
 
+    }
+
+
+    /**
+     * 获取ngd节点流程
+     */
+    public static NGDNodeModel saveNgdNode(String query, String answer, String source, JSONObject jsonData) {
+        NGDNodeModel ngdNodeModel = new NGDNodeModel();
+        ngdNodeModel.setAnswer(answer);
+
+        String lastNodeName;
+        //task_based才有lastNodeName,其他情况手机source
+        if (XCCConstants.SOURCE_TASK_BASED.equals(source)) {//流程
+            lastNodeName = jsonData.getJSONObject("answer").getString("lastNodeName");
+        } else {
+            lastNodeName = source;
+        }
+        ngdNodeModel.setNodeName(lastNodeName);
+        ngdNodeModel.setSource(source);
+        ngdNodeModel.setQuery(query);
+        return ngdNodeModel;
     }
 
     /**
@@ -235,6 +258,53 @@ public class NGDUtil {
             queryText = "九";
         }
         return queryText;
+    }
+
+    /**
+     * 组装core query
+     *
+     * @param queryText
+     * @param sessionId
+     * @param phone
+     * @return
+     */
+    public static JSONObject coreQueryStruct(String queryText, String sessionId, String phone) {
+        JSONObject param = new JSONObject();
+        JSONObject context = new JSONObject();
+        JSONObject ext = new JSONObject();
+        context.put("channel", XCCConstants.CHANNEL_IVR);//渠道标识
+        context.put(XCCConstants.IVR_PHONE, phone);
+        param.put("queryText", queryText);//客户问题
+        param.put("sessionId", sessionId);//会话id
+        ext.put("exact", "true");
+        param.put("ext", ext);//ext
+        param.put("context", context);
+        return param;
+    }
+
+    /**
+     * 身份校验配套流程
+     */
+    public static NGDEvent convertUserOk(JSONObject context, NGDEvent ngdEvent) {
+        if (context != null) {
+            //判断用户校验是否完成
+            String userOK = context.getString(EnumXCC.USER_OK.getProperty());
+            if (EnumXCC.USER_OK.getValue().equals(userOK)) {
+                String uid = context.getString(XCCConstants.IVR_YHBH);
+                ngdEvent.setUserOk(true);
+                ngdEvent.setUid(uid);
+            } else {
+                ngdEvent.setUserOk(false);
+            }
+            //获取 conversation
+//            JSONArray conversation = context.getJSONArray("conversation");
+//            ngdEvent.setConversation(conversation);
+        } else {
+            ngdEvent.setUserOk(false);
+        }
+        return ngdEvent;
+
+
     }
 
 }

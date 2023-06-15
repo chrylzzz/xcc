@@ -73,7 +73,8 @@ public class XCCUtil {
         //引擎ASR engine,若使用xswitch配置unimrcp,则为unimrcp:profile.
         speech.put("engine", IVRInit.XCC_CONFIG_PROPERTY.getAsrEngine());
         //禁止打断。用户讲话不会打断放音。
-        speech.put("nobreak", XCCConstants.NO_BREAK);
+//        speech.put("nobreak", XCCConstants.NO_BREAK);
+        speech.put("nobreak", IVRInit.XCC_CONFIG_PROPERTY.getNoBreak());
         //正整数，未检测到语音超时，默认为5000ms
         speech.put("no_input_timeout", 5 * 1000);
         //语音超时，即如果对方讲话一直不停超时，最大只能设置成6000ms，默认为6000ms。
@@ -356,11 +357,10 @@ public class XCCUtil {
 
         //正在转接人工坐席,请稍后
         playTTS(nc, channelEvent, ttsContent);
-        //随路数据
-        String sipHeaderU2U = channelEvent.getSipHeaderU2U();
+        //转接字符
         String dialStr = convertDialStr(XCCConstants.HUAWEI_ARTIFICIAL_NUMBER);
-
-        JSONObject params = convertBridgeParams(channelEvent, dialStr, sipHeaderU2U);
+        //随路数据
+        JSONObject params = convertBridgeParams(channelEvent, dialStr);
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
         XCCEvent xccEvent = RequestUtil.natsRequestFutureByBridge(nc, service, XCCConstants.BRIDGE, params, 2000);
         return xccEvent;
@@ -377,13 +377,10 @@ public class XCCUtil {
     public static XCCEvent bridgeIVR(Connection nc, ChannelEvent channelEvent, String ttsContent) {
         //正在转接人工坐席,请稍后
         playTTS(nc, channelEvent, ttsContent);
-
-        //随路数据
-        String sipHeaderU2U = channelEvent.getSipHeaderU2U();
+        //转接字符
         String dialStr = convertDialStr(XCCConstants.HUAWEI_IVR_NUMBER);
-
-        JSONObject params = convertBridgeParams(channelEvent, dialStr, sipHeaderU2U);
-
+        //随路数据
+        JSONObject params = convertBridgeParams(channelEvent, dialStr);
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
         XCCEvent xccEvent = RequestUtil.natsRequestFutureByBridge(nc, service, XCCConstants.BRIDGE, params, 2000);
         return xccEvent;
@@ -415,11 +412,11 @@ public class XCCUtil {
      * 处理转接 params
      *
      * @param channelEvent
+     * @param dialStr
      * @param sipHeader
      * @return
      */
     public static JSONObject convertBridgeParams(ChannelEvent channelEvent, String dialStr, String sipHeader) {
-
         //全局参数
         JSONObject global_params = new JSONObject();
 
@@ -454,5 +451,15 @@ public class XCCUtil {
         return params;
     }
 
+    /**
+     * 处理转接 params
+     *
+     * @param channelEvent
+     * @param dialStr
+     * @return
+     */
+    public static JSONObject convertBridgeParams(ChannelEvent channelEvent, String dialStr) {
+        return convertBridgeParams(channelEvent, dialStr, channelEvent.getSipResHeaderU2U());
+    }
 
 }

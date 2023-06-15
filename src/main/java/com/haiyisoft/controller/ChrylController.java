@@ -64,6 +64,8 @@ public class ChrylController {
         return a;
     }
 
+
+    //----------------------------测试http client
     @GetMapping("/test/{queryText}")
     public String xcc(@PathVariable String queryText) {
         JSONObject a = new JSONObject();
@@ -90,7 +92,7 @@ public class ChrylController {
         System.out.println(ivrService2);
     }
 
-    //----------------------------测试http client
+
     @GetMapping("/timeout")
     public void testSocketTimeOut() {
         JSONObject a = new JSONObject();

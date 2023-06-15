@@ -113,8 +113,8 @@ public class IVRController {
                         //convert param
                         ChannelEvent event = IVRHandler.convertParams(params);
                         //asr domain
-                        ivrService.handlerChannelEvent(nc, event);
-//                        ivrServiceV2.handlerChannelEvent(nc, event);
+//                        ivrService.handlerChannelEvent(nc, event);
+                        ivrServiceV2.handlerChannelEvent(nc, event);
 
                     } else if (XCCConstants.Event_DetectedFace.equals(method)) {
                         log.info("事件 event======Event-Name : {}", "Event.DetectedFace");

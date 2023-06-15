@@ -4,29 +4,31 @@ server:
 ########XCC相关变量配置########
 xcc:
 #  xswitch config
-  natsUrl: nats://hy:h8klu6bRwW@nats.xswitch.cn:4222
-  xctrlSubject: cn.xswitch.ctrl
-#  xctrlSubject: cn.xswitch.ctrl.>
-  xnodeSubjectPrefix: cn.xswitch.node
+  nats-url: nats://hy:h8klu6bRwW@nats.xswitch.cn:4222
+  xctrl-subject: cn.xswitch.ctrl
+#  xctrl-subject: cn.xswitch.ctrl.>
+  xnode-subject-prefix: cn.xswitch.node
 #  tts engine
-  ttsEngine: ali
+  tts-engine: ali
 #  Voice-Name
-  ttsVoice: default
+  tts-voice: default
 #  asr engine
-  asrEngine: ali
+  asr-engine: ali
+# no break 是否打断放音, true 不可打断
+  no-break: true
 #  ngd query url
-  ngdCoreQueryUrl: https://api-ngd.baidu.com/api/v2/core/query
+  ngd-core-query-url: https://api-ngd.baidu.com/api/v2/core/query
 #  ngd boot token
-  ngdBootToken: NGD 88f20617-d6b5-4c4e-bf72-fde0c0db1d82
-# convert solved
-  convertSolved: false
+  ngd-boot-token: NGD 88f20617-d6b5-4c4e-bf72-fde0c0db1d82
+# convert solved ,ngd存在solved=false，是否选择处理，true开启
+  convert-solved: false
 #
-# XML数据需要自己处理, JSON数据XSwitch已深度解析
-  handleEngineData: false
-#  若有多台XSwitch,再开启
+# XML数据需要自己处理, JSON数据XSwitch已深度解析, true开启
+  handle-engine-data: false
+# 若有多台XSwitch,再开启,true开启
   cluster: false
   #配置多节点
-  natsList:
+  nats-list:
   - node: 127.0.0.1
     nats: nats://hy:h8klu6bRwW@nats.xswitch.cn:4222
   - node: 10.194.31.203

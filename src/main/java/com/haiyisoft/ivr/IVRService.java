@@ -5,6 +5,7 @@ import com.haiyisoft.entry.ChannelEvent;
 import com.haiyisoft.entry.IVREvent;
 import com.haiyisoft.entry.NGDEvent;
 import com.haiyisoft.entry.XCCEvent;
+import com.haiyisoft.handler.ChannelHandler;
 import com.haiyisoft.handler.IVRHandler;
 import com.haiyisoft.handler.NGDHandler;
 import com.haiyisoft.handler.XCCHandler;
@@ -46,15 +47,15 @@ public class IVRService {
         if (state == null) {
             log.error("state is null ");
         } else {
-
-            //使用channelId作为callId,sessionId
-            String channelId = channelEvent.getUuid();
             //event
-//            IVREvent ivrEvent = IVRHandler.convertIVREvent(channelEvent);
-            IVREvent ivrEvent = new IVREvent(channelId);
+            IVREvent ivrEvent = IVRHandler.convertIVREvent(channelEvent);
             XCCEvent xccEvent = new XCCEvent();
             NGDEvent ngdEvent = new NGDEvent();
+            String channelId = ivrEvent.getChannelId();
+            String callNumber = ivrEvent.getCidNumber();
             log.info(" start this call channelId: {} , state :{} ", channelId, state);
+            log.info(" start this call IVREvent: {}", ivrEvent);
+
             if (XCCConstants.Channel_START.equals(state)) {
                 //开始接管,第一个指令必须是Accept或Answer
                 XCCHandler.answer(nc, channelEvent);
@@ -80,7 +81,7 @@ public class IVRService {
                             //xcc识别数据
                             String xccRecognitionResult = xccEvent.getXccRecognitionResult();
                             //获取指令和话术
-                            ngdEvent = NGDHandler.handlerNlu(xccRecognitionResult, channelId);
+                            ngdEvent = NGDHandler.handlerNlu(xccRecognitionResult, channelId, callNumber);
 
                             //handle ngd agent
                             boolean handleSolved = NGDHandler.handleSolved(ngdEvent);
@@ -91,26 +92,27 @@ public class IVRService {
                             } else {
                                 log.info("机器回复");
                                 //触发转人工规则
-/*
                                 ivrEvent = IVRHandler.transferRule(ivrEvent, channelEvent, nc);
                                 if (ivrEvent.isTransferFlag()) {
-                                    //转人工
+                                    //转人工后挂机
                                     break;
                                 }
-*/
+
                             }
 
                             retKey = ngdEvent.getRetKey();
                             retValue = ngdEvent.getRetValue();
+                            //处理sip header
+                            channelEvent = ChannelHandler.handleSipHeader(ngdEvent, channelEvent);
+
                         } else {//xcc未识别
                             log.info("未识别到数据");
                             //触发转人工规则
-                            /*
                             ivrEvent = IVRHandler.transferRule(ivrEvent, channelEvent, nc);
                             if (ivrEvent.isTransferFlag()) {
-                                //转人工
+                                //转人工后挂机
                                 break;
-                            }*/
+                            }
                             if (XCCConstants.DETECT_SPEECH.equals(xccEvent.getXccMethod())) {
                                 retKey = "YYSR";
                                 retValue = "已检测到您没说话, 您请说";

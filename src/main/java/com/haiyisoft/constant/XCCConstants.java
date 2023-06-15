@@ -75,7 +75,7 @@ public class XCCConstants {
     //HEARTBEAT
     public static final String Event_NodeUpdate = "Event.NodeUpdate";
 
-    //不可打断
+    //不可打断 true 不可打断
     public static final boolean NO_BREAK = true;
     //TTS，即语音合成
     public static final String PLAY_TTS = "TEXT";
@@ -181,6 +181,10 @@ public class XCCConstants {
     public static final String[] RET_KEY_STR_ARR = {YYSR, AJSR, RGYT, YWAJ, JZLC};
     //智能ivr渠道
     public static final String CHANNEL_IVR = "智能IVR";
+    //智能IVR call phone
+    public static final String IVR_PHONE = "ivr_phone";
+    //身份校验通过后赋值用户编号
+    public static final String IVR_YHBH = "ivr_yhbh";
     //ngd话术分隔符
     public static final String NGD_SEPARATOR = "#";
     //unMatch : 百度知识库接口未匹配: 返回抱歉,我不太理解您的意思
@@ -246,6 +250,8 @@ public class XCCConstants {
     public static final String SIP_HEADER_USER2USER = "sip_h_User-to-User";
     //huawei
     public static final String USER2USER = "User-to-User";
+    //返回后缀
+    public static final String RES_SIP_SUFFIX = "|%s|1";
     /********************************************IVR相关********************************************/
 
 }
