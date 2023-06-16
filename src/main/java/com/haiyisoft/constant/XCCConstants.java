@@ -178,7 +178,7 @@ public class XCCConstants {
     //精准IVR流程
     public static final String JZLC = "JZLC";
     //指令集合数组
-    public static final String[] RET_KEY_STR_ARR = {YYSR, AJSR, RGYT, YWAJ, JZLC};
+    public static final String[] RET_KEY_STR_ARRAY = {YYSR, AJSR, RGYT, YWAJ, JZLC};
     //智能ivr渠道
     public static final String CHANNEL_IVR = "智能IVR";
     //智能IVR call phone

@@ -86,7 +86,6 @@ public class IVRController {
                     log.info(" this subMsg is null ");
                 } else {
 
-
                         /*
                         System.out.println("Got a new Call ...");
                         // handle this call in a new thread so we can continue to listen for other calls
@@ -96,15 +95,14 @@ public class IVRController {
                         new XCCHandler().ivrDomain();
 */
 
-
                     log.info(" subMsg ,{}", subMsg);
                     //订阅事件
                     String eventStr = new String(subMsg.getData(), StandardCharsets.UTF_8);
 //                    log.info(" eventStr data:{}", eventStr);
 
                     JSONObject eventJson = JSONObject.parseObject(eventStr);
-                    log.info("订阅事件 json data:{}", eventJson);
-//                    log.info("订阅事件 json data:{}", eventJson.getString("method"));
+//                    log.info("订阅事件 json data:{}", eventJson);
+                    log.info("订阅事件 json data:{}", eventJson.getString("method"));
                     //event状态,Event.Channel（state=START）
                     String method = eventJson.getString("method");
                     //XNode收到呼叫后，向NATS广播来话消息（Event.Channel（state = START）），Ctrl收到后进行处理。
@@ -120,20 +118,7 @@ public class IVRController {
                         log.info("事件 event======Event-Name : {}", "Event.DetectedFace");
                     } else if (XCCConstants.Event_NativeEvent.equals(method)) {
                         log.info("事件 event======Event-Name : {}", "Event_NativeEvent");
-//                        log.info("事件 event======:{}", "Event.NativeEvent");
-//                        JSONObject params = eventJson.getJSONObject("params");
-//                        JSONObject event = params.getJSONObject("event");
-//                        String node_uuid = params.getString("node_uuid");
-//                        String name = event.getString("Event-Name");
-//                        String callId = event.getString("Channel-Call-UUID");
-//                        ChannelEvent channelEvent = new ChannelEvent();
-//                        channelEvent.setUuid(callId);
-//                        channelEvent.setNodeUuid(node_uuid);
-//                        XCCUtil.answer(null, nc, channelEvent);
-//                        XCCUtil.playTTS(null, nc, channelEvent, XCCConstants.WELCOME_TEXT);
-//                        log.info("事件 event======Event-Name:{},Channel-Call-UUID:{}", name, callId);
                     }
-
 
                 }
             }

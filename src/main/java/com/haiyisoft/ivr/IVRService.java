@@ -8,6 +8,7 @@ import com.haiyisoft.entry.XCCEvent;
 import com.haiyisoft.handler.IVRHandler;
 import com.haiyisoft.handler.NGDHandler;
 import com.haiyisoft.handler.XCCHandler;
+import com.haiyisoft.model.NGDNodeMetaData;
 import com.haiyisoft.util.IdGenerator;
 import io.nats.client.Connection;
 import lombok.extern.slf4j.Slf4j;
@@ -117,8 +118,11 @@ public class IVRService {
                             }
 
                         }
-                        log.info("revert ivrEvent data: {}", ivrEvent);
+                        //获取ngd node metadata
+                        NGDNodeMetaData ngdNodeMetaData = ngdEvent.getNgdNodeMetaData();
+                        ivrEvent.getNgdNodeMetadataArray().add(ngdNodeMetaData);
                     }
+                    log.info("revert ivrEvent data: {}", ivrEvent);
 
                 }
 

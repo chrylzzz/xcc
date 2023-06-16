@@ -1,5 +1,6 @@
 package com.haiyisoft.ivr;
 
+import com.alibaba.fastjson2.JSONArray;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
 import com.haiyisoft.entry.IVREvent;
@@ -8,6 +9,7 @@ import com.haiyisoft.entry.XCCEvent;
 import com.haiyisoft.handler.IVRHandler;
 import com.haiyisoft.handler.NGDHandler;
 import com.haiyisoft.handler.XCCHandler;
+import com.haiyisoft.model.NGDNodeMetaData;
 import io.nats.client.Connection;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -65,9 +67,12 @@ public class IVRServiceV2 {
                         ngdEvent = NGDHandler.handlerNlu(xccRecognitionResult, channelId, callerIdNumber);
                         retKey = ngdEvent.getRetKey();
                         retValue = ngdEvent.getRetValue();
-
-                        log.info("revert ivrEvent data: {}", ivrEvent);
+                        //获取ngd node metadata
+                        NGDNodeMetaData ngdNodeMetaData = ngdEvent.getNgdNodeMetaData();
+                        ivrEvent.getNgdNodeMetadataArray().add(ngdNodeMetaData);
                     }
+                    log.info("revert ivrEvent data: {}", ivrEvent);
+
 
                 }
 
@@ -93,5 +98,19 @@ public class IVRServiceV2 {
         }
     }
 
+    public static void main(String[] args) {
+        IVREvent ivrEvent = new IVREvent("aaaa");
+        NGDNodeMetaData ngdNodeMetaData = new NGDNodeMetaData();
+        ngdNodeMetaData.setAnswer("1");
+        ngdNodeMetaData.setQuery("1");
+        ngdNodeMetaData.setSource("1");
+        ivrEvent.getNgdNodeMetadataArray().add(ngdNodeMetaData);
+
+//        JSONArray ngdNodeMetadataArr = ivrEvent.getNgdNodeMetadataArr();
+//        ngdNodeMetadataArr.add(ngdNodeMetaData);
+//        ivrEvent.setNgdNodeMetadataArr(ngdNodeMetadataArr);
+
+        System.out.println(ivrEvent);
+    }
 
 }

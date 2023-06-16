@@ -111,7 +111,6 @@ public class IVRHandler {
     public static ChannelEvent convertParams(JSONObject params) {
         ChannelEvent event = new ChannelEvent();
         try {
-
             String uuid = params.getString("uuid");
             String node_uuid = params.getString("node_uuid");
             //当前Channel的状态,如START--Event.Channel（state=START）
@@ -157,7 +156,7 @@ public class IVRHandler {
                 String cid_number = splitU2U[1];
                 String phone_code = splitU2U[2];
 
-                ivrEvent.setIcdCallId(icd_call_id);
+                ivrEvent.setIcdCallerId(icd_call_id);
                 ivrEvent.setCidNumber(cid_number);
                 ivrEvent.setPhoneAdsCode(phone_code);
                 log.info("convertIVREvent OK:{}", ivrEvent);

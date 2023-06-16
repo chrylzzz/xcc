@@ -50,12 +50,12 @@ public class NGDEvent {
     private boolean userOk;
 
 
-    //----------------
+    //----------------N G D交互标识
     //播报指令
     private String retKey;
     //播报话术
     private String retValue;
-    //----------------
+    //----------------N G D交互标识
 
 
 }

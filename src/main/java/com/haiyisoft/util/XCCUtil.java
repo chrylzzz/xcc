@@ -231,16 +231,12 @@ public class XCCUtil {
 //        terminator：结束符，如果有的话。
 //        本接口将在收到第一个DTMF按键后打断当前的播放。
 //
-//        JSONObject params = new JSONObject();
         JSONObject params = getDTMF(maxDigits);
         params.put("ctrl_uuid", "chryl-ivvr");
         //当前channel 的uuid
         String channelId = channelEvent.getUuid();
         params.put("uuid", channelId);
-//        JSONObject dtmf = getDTMF(maxDigits);
-//        params.put("dtmf", dtmf);
         JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
-//        params.put("data", media);
         params.put("media", media);
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
         return RequestUtil.natsRequestFutureByReadDTMF(nc, service, XCCConstants.READ_DTMF, params, 5000);
@@ -406,8 +402,6 @@ public class XCCUtil {
         callParam.put("dial_string", dialStr);
         //Caller ID Number
         callParam.put("cid_number", cidNumber);
-        //Destination Number
-        callParam.put("dest_number", "5695259");
         callParam.put("params", callParamArr);
         //[{},{}]
         JSONArray callParamArray = new JSONArray();

@@ -1,6 +1,7 @@
 package com.haiyisoft.util;
 
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.JSONWriter;
 import com.haiyisoft.boot.IVRInit;
@@ -9,6 +10,7 @@ import com.haiyisoft.entry.NGDEvent;
 import com.haiyisoft.enumerate.EnumXCC;
 import com.haiyisoft.handler.NGDHandler;
 import com.haiyisoft.model.NGDNodeMetaData;
+import com.haiyisoft.model.NgdNodeDialog;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -49,12 +51,13 @@ public class NGDUtil {
             String source = jsonData.getString("source");
             //是否解决
             boolean solved = jsonData.getBooleanValue("solved");
+            //处理answer
             answer = convertAnswer(jsonData, IVRInit.XCC_CONFIG_PROPERTY.isConvertSolved());
             ngdEvent = NGDHandler.ngdEventSetVar(sessionId, code, msg, answer, source, solved);
-            //保存流程信息
-//            NGDNodeMetaData ngdNodeMetaData = saveNgdNodeMateData(queryText, answer, source, jsonData);
-//            ngdEvent.setNgdNodeMetaData(ngdNodeMetaData);
             log.info("百度知识库返回正常 code: {} , msg: {} , answer: {}", code, msg, answer);
+            //保存流程信息
+            NGDNodeMetaData ngdNodeMetaData = saveNgdNodeMateData(queryText, answer, jsonData);
+            ngdEvent.setNgdNodeMetaData(ngdNodeMetaData);
         } else {
             log.error("百度知识调用异常 code: {} , msg: {}", code, msg);
             answer = XCCConstants.XCC_MISSING_MSG;
@@ -76,7 +79,7 @@ public class NGDUtil {
      * 根据source和solved
      *
      * @param jsonData
-     * @param convertSolved 是否处理 solved
+     * @param convertSolved 是否手动处理未解决回复(system/none...)
      * @return
      */
     public static String convertAnswer(JSONObject jsonData, boolean convertSolved) {
@@ -85,7 +88,7 @@ public class NGDUtil {
         String source = jsonData.getString("source");
         //是否解决
         boolean solved = jsonData.getBooleanValue("solved");
-        log.info("百度知识库命中 solved : {} source : {}", solved, source);
+        log.info("百度知识库命中 solved : {} , source : {}", solved, source);
         if (solved) {
             if (XCCConstants.SOURCE_TASK_BASED.equals(source)) {//task_based
                 answer = jsonData.getString("suggestAnswer");
@@ -108,7 +111,6 @@ public class NGDUtil {
         }
         log.info("百度知识库命中 answer: {}", answer);
         return answer;
-
     }
 
     /**
@@ -145,25 +147,42 @@ public class NGDUtil {
     /**
      * 获取ngd节点流程
      */
-    public static NGDNodeMetaData saveNgdNodeMateData(String query, String answer, String source, JSONObject jsonData) {
+    public static NGDNodeMetaData saveNgdNodeMateData(String query, String answer, JSONObject jsonData) {
+        //答复来源
+        String source = jsonData.getString("source");
+        //是否解决
+        boolean solved = jsonData.getBooleanValue("solved");
         NGDNodeMetaData ngdNodeMetaData = new NGDNodeMetaData();
-        ngdNodeMetaData.setAnswer(answer);
 
-        String lastNodeName;
-        //task_based才有lastNodeName,其他情况收集source
-        if (XCCConstants.SOURCE_TASK_BASED.equals(source)) {//流程
-            lastNodeName = jsonData.getJSONObject("answer").getString("lastNodeName");
+        if (XCCConstants.SOURCE_TASK_BASED.equals(source)) {//task_based
+            JSONArray dialogsArray = jsonData.getJSONObject("answer").getJSONArray("dialogs");
+            if (dialogsArray != null) {
+                dialogsArray.forEach(dialog -> {
+                    JSONObject jsonObject = (JSONObject) JSON.toJSON(dialog);
+                    String processName = jsonObject.getString("processName");
+                    String dialogNodeName = jsonObject.getString("dialogNodeName");
+                    JSONObject values = jsonObject.getJSONObject("values");
+                    NgdNodeDialog ngdNodeDialog = new NgdNodeDialog(processName, dialogNodeName, values);
+                    ngdNodeMetaData.getDialogArray().add(ngdNodeDialog);
+                });
+            } else {
+                //no dialogs 未处理 TODO
+            }
         } else {
-            lastNodeName = source;
+            //非流程未处理 TODO
+
         }
-        ngdNodeMetaData.setNodeName(lastNodeName);
-        ngdNodeMetaData.setSource(source);
+
         ngdNodeMetaData.setQuery(query);
+        ngdNodeMetaData.setAnswer(answer);
+        ngdNodeMetaData.setSource(source);
+        ngdNodeMetaData.setSolved(solved);
         return ngdNodeMetaData;
     }
 
     /**
      * 将百度返回的文本字段处理为 指令和播报的内容
+     * 若无指令默认使用 YYSR
      *
      * @param ngdEvent
      * @return
@@ -184,7 +203,7 @@ public class NGDUtil {
             } else {//带#的话术
                 String[] split = todoText.split(XCCConstants.NGD_SEPARATOR);
                 retKey = split[0];//指令
-                if (StringUtils.containsAny(retKey, XCCConstants.RET_KEY_STR_ARR)) {//有指令
+                if (StringUtils.containsAny(retKey, XCCConstants.RET_KEY_STR_ARRAY)) {//有指令
                     retValue = split[1];//内容
                 } else {//无指令
                     retKey = XCCConstants.YYSR;
@@ -309,9 +328,6 @@ public class NGDUtil {
             } else {
                 ngdEvent.setUserOk(false);
             }
-            //获取 conversation
-//            JSONArray conversation = context.getJSONArray("conversation");
-//            ngdEvent.setConversation(conversation);
         } else {
             ngdEvent.setUserOk(false);
         }
