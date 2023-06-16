@@ -21,26 +21,31 @@ public class ChannelHandler {
      * @param channelEvent
      * @return
      */
-    public static ChannelEvent handleSipHeader(NGDEvent ngdEvent, ChannelEvent channelEvent) {
+    public static String handleSipHeader(NGDEvent ngdEvent, ChannelEvent channelEvent) {
         //校验通过处理sip header
         //req
         String sipReqHeaderU2U = channelEvent.getSipReqHeaderU2U();
+
+        String formatSipHeader = "";
         if (ngdEvent.isUserOk()) {
             //用户编号
             String uid = ngdEvent.getUid();
             if (StringUtils.isBlank(uid)) {
                 //不处理使用,只加 |
-                channelEvent.setSipResHeaderU2U(sipReqHeaderU2U + XCCConstants.SIP_HEADER_SEPARATOR);
+                formatSipHeader = sipReqHeaderU2U + XCCConstants.SIP_HEADER_SEPARATOR;
             } else {
                 //处理,替换用户编号
                 //当前使用1业务类型
                 //res
                 String sipResHeaderU2U = sipReqHeaderU2U + XCCConstants.RES_SIP_SUFFIX;
-                String formatSipHeader = String.format(sipResHeaderU2U, uid);
-                channelEvent.setSipResHeaderU2U(formatSipHeader);
+                formatSipHeader = String.format(sipResHeaderU2U, uid);
+
             }
+        } else {
+            //不处理使用,只加 |
+            formatSipHeader = sipReqHeaderU2U + XCCConstants.SIP_HEADER_SEPARATOR;
         }
-        return channelEvent;
+        return formatSipHeader;
     }
 
 

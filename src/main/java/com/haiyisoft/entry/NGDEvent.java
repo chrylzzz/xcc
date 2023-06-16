@@ -30,7 +30,8 @@ public class NGDEvent {
     //ngd返回solved 是否解决
     private boolean solved;
 
-    public NGDEvent(Integer code, String msg, String source, String answer, boolean solved) {
+    public NGDEvent(String sessionId, Integer code, String msg, String source, String answer, boolean solved) {
+        this.sessionId = sessionId;
         this.code = code;
         this.msg = msg;
         this.source = source;

@@ -64,7 +64,7 @@ public class IVRService {
                 String retValue = XCCConstants.WELCOME_TEXT;
                 while (true) {
 
-                    xccEvent = IVRHandler.domain(nc, channelEvent, retKey, retValue);
+                    xccEvent = IVRHandler.domain(nc, channelEvent, retKey, retValue, ngdEvent);
 
                     //处理是否挂机
                     boolean handleHangup = XCCHandler.handleSomeHangup(xccEvent, channelId);
@@ -102,8 +102,6 @@ public class IVRService {
 
                             retKey = ngdEvent.getRetKey();
                             retValue = ngdEvent.getRetValue();
-                            //处理sip header
-                            channelEvent = ChannelHandler.handleSipHeader(ngdEvent, channelEvent);
 
                         } else {//xcc未识别
                             log.info("未识别到数据");

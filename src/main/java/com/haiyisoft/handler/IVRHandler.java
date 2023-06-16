@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
 import com.haiyisoft.entry.IVREvent;
+import com.haiyisoft.entry.NGDEvent;
 import com.haiyisoft.entry.XCCEvent;
 import com.haiyisoft.util.XCCUtil;
 import io.nats.client.Connection;
@@ -26,14 +27,15 @@ public class IVRHandler {
      * @param channelEvent
      * @param retKey
      * @param retValue
+     * @param ngdEvent
      * @return
      */
-    public static XCCEvent domain(Connection nc, ChannelEvent channelEvent, String retKey, String retValue) {
+    public static XCCEvent domain(Connection nc, ChannelEvent channelEvent, String retKey, String retValue, NGDEvent ngdEvent) {
         XCCEvent xccEvent;
         if (XCCConstants.YYSR.equals(retKey)) {//调用播报收音
             xccEvent = XCCHandler.detectSpeechPlayTTSNoDTMF(nc, channelEvent, retValue);
         } else if (XCCConstants.AJSR.equals(retKey)) {//调用xcc收集按键方法，多位按键
-            xccEvent = XCCHandler.playAndReadDTMF(nc, channelEvent, retValue, 16);
+            xccEvent = XCCHandler.playAndReadDTMF(nc, channelEvent, retValue, 18);
         } else if (XCCConstants.YWAJ.equals(retKey)) {//调用xcc收集按键方法，一位按键
             xccEvent = XCCHandler.playAndReadDTMF(nc, channelEvent, retValue, 1);
         } else if (XCCConstants.RGYT.equals(retKey)) {//转人工
@@ -46,10 +48,10 @@ public class IVRHandler {
             //外部
 //            xccEvent = XCCHandler.bridgeExternalExtension(nc, channelEvent, retValue);
             //转人工
-            xccEvent = XCCHandler.bridgeArtificial(nc, channelEvent, retValue);
+            xccEvent = XCCHandler.bridgeArtificial(nc, channelEvent, retValue, ngdEvent);
 
         } else if (XCCConstants.JZLC.equals(retKey)) {//转到精准IVR
-            xccEvent = XCCHandler.bridgeIVR(nc, channelEvent, retValue);
+            xccEvent = XCCHandler.bridgeIVR(nc, channelEvent, retValue, ngdEvent);
         } else {
             log.error("严格根据配置的指令开发");
             xccEvent = new XCCEvent();

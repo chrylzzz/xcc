@@ -5,7 +5,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.haiyisoft.boot.IVRInit;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
+import com.haiyisoft.entry.NGDEvent;
 import com.haiyisoft.entry.XCCEvent;
+import com.haiyisoft.handler.ChannelHandler;
 import io.nats.client.Connection;
 import lombok.extern.slf4j.Slf4j;
 
@@ -353,14 +355,14 @@ public class XCCUtil {
      * @param ttsContent
      * @return
      */
-    public static XCCEvent bridgeArtificial(Connection nc, ChannelEvent channelEvent, String ttsContent) {
+    public static XCCEvent bridgeArtificial(Connection nc, ChannelEvent channelEvent, String ttsContent, NGDEvent ngdEvent) {
 
         //正在转接人工坐席,请稍后
         playTTS(nc, channelEvent, ttsContent);
         //转接字符
         String dialStr = convertDialStr(XCCConstants.HUAWEI_ARTIFICIAL_NUMBER);
         //随路数据
-        JSONObject params = convertBridgeParams(channelEvent, dialStr);
+        JSONObject params = convertBridgeParams(channelEvent, dialStr, ngdEvent);
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
         XCCEvent xccEvent = RequestUtil.natsRequestFutureByBridge(nc, service, XCCConstants.BRIDGE, params, 2000);
         return xccEvent;
@@ -374,13 +376,13 @@ public class XCCUtil {
      * @param ttsContent
      * @return
      */
-    public static XCCEvent bridgeIVR(Connection nc, ChannelEvent channelEvent, String ttsContent) {
+    public static XCCEvent bridgeIVR(Connection nc, ChannelEvent channelEvent, String ttsContent, NGDEvent ngdEvent) {
         //正在转接人工坐席,请稍后
         playTTS(nc, channelEvent, ttsContent);
         //转接字符
         String dialStr = convertDialStr(XCCConstants.HUAWEI_IVR_NUMBER);
         //随路数据
-        JSONObject params = convertBridgeParams(channelEvent, dialStr);
+        JSONObject params = convertBridgeParams(channelEvent, dialStr, ngdEvent);
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
         XCCEvent xccEvent = RequestUtil.natsRequestFutureByBridge(nc, service, XCCConstants.BRIDGE, params, 2000);
         return xccEvent;
@@ -409,7 +411,7 @@ public class XCCUtil {
     }
 
     /**
-     * 处理转接 params
+     * 直传 sip header
      *
      * @param channelEvent
      * @param dialStr
@@ -452,14 +454,16 @@ public class XCCUtil {
     }
 
     /**
-     * 处理转接 params
+     * 处理 sip header
      *
      * @param channelEvent
      * @param dialStr
      * @return
      */
-    public static JSONObject convertBridgeParams(ChannelEvent channelEvent, String dialStr) {
-        return convertBridgeParams(channelEvent, dialStr, channelEvent.getSipResHeaderU2U());
+    public static JSONObject convertBridgeParams(ChannelEvent channelEvent, String dialStr, NGDEvent ngdEvent) {
+        String handleSipHeader = ChannelHandler.handleSipHeader(ngdEvent, channelEvent);
+        return convertBridgeParams(channelEvent, dialStr, handleSipHeader);
     }
+
 
 }

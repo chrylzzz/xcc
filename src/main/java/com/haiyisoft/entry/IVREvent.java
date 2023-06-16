@@ -1,10 +1,7 @@
 package com.haiyisoft.entry;
 
-import com.alibaba.fastjson.JSONObject;
 import com.haiyisoft.constant.XCCConstants;
 import lombok.Data;
-
-import java.util.List;
 
 /**
  * IVR业务实体

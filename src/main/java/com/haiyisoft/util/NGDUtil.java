@@ -50,7 +50,7 @@ public class NGDUtil {
             //是否解决
             boolean solved = jsonData.getBooleanValue("solved");
             answer = convertAnswer(jsonData, IVRInit.XCC_CONFIG_PROPERTY.isConvertSolved());
-            ngdEvent = NGDHandler.ngdEventSetVar(code, msg, answer, source, solved);
+            ngdEvent = NGDHandler.ngdEventSetVar(sessionId, code, msg, answer, source, solved);
             //保存流程信息
 //            NGDNodeModel ngdNodeModel = saveNgdNode(queryText, answer, source, jsonData);
 //            ngdEvent.setNgdNodeModel(ngdNodeModel);
@@ -58,7 +58,7 @@ public class NGDUtil {
         } else {
             log.error("百度知识调用异常 code: {} , msg: {}", code, msg);
             answer = XCCConstants.XCC_MISSING_MSG;
-            ngdEvent = NGDHandler.ngdEventSetErrorVar(code, msg, answer);
+            ngdEvent = NGDHandler.ngdEventSetErrorVar(sessionId, code, msg, answer);
         }
 
 

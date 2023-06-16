@@ -47,14 +47,17 @@ public class NGDHandler {
     /**
      * 赋值 ngd 返回数据
      *
+     * @param sessionId
      * @param code
      * @param msg
      * @param answer
+     * @param source
+     * @param solved
      * @return
      */
-    public static NGDEvent ngdEventSetVar(Integer code, String msg, String answer, String source, boolean solved) {
-        log.info("ngdEventSetVar 入参 code : [{}] , msg : [{}] , answer : [{}] , source : [{}] , solved : {}", code, msg, answer, source, solved);
-        NGDEvent ngdEvent = new NGDEvent(code, msg, source, answer, solved);
+    public static NGDEvent ngdEventSetVar(String sessionId, Integer code, String msg, String answer, String source, boolean solved) {
+        log.info("ngdEventSetVar 入参 sessionId : [{}] , code : [{}] , msg : [{}] , answer : [{}] , source : [{}] , solved : {}", code, msg, answer, source, solved);
+        NGDEvent ngdEvent = new NGDEvent(sessionId, code, msg, source, answer, solved);
         log.info("ngdEventSetVar 出参 ngdEvent : {}", ngdEvent);
         return ngdEvent;
     }
@@ -67,8 +70,8 @@ public class NGDHandler {
      * @param answer
      * @return
      */
-    public static NGDEvent ngdEventSetErrorVar(Integer code, String msg, String answer) {
-        return ngdEventSetVar(code, msg, answer, "", false);
+    public static NGDEvent ngdEventSetErrorVar(String sessionId, Integer code, String msg, String answer) {
+        return ngdEventSetVar(sessionId, code, msg, answer, "", false);
     }
 
 }

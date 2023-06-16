@@ -31,6 +31,7 @@ public class IVRServiceV2 {
         if (state == null) {
             log.error("state is null ");
         } else {
+
             //event
             IVREvent ivrEvent = IVRHandler.convertIVREvent(channelEvent);
             XCCEvent xccEvent = new XCCEvent();
@@ -50,7 +51,7 @@ public class IVRServiceV2 {
                 String retValue = XCCConstants.WELCOME_TEXT;
                 while (true) {
 
-                    xccEvent = IVRHandler.domain(nc, channelEvent, retKey, retValue);
+                    xccEvent = IVRHandler.domain(nc, channelEvent, retKey, retValue, ngdEvent);
 
                     //处理是否挂机
                     boolean handleHangup = XCCHandler.handleSomeHangup(xccEvent, channelId);
@@ -65,8 +66,6 @@ public class IVRServiceV2 {
                         ngdEvent = NGDHandler.handlerNlu(xccRecognitionResult, channelId, callNumber);
                         retKey = ngdEvent.getRetKey();
                         retValue = ngdEvent.getRetValue();
-                        //处理sip header
-                        channelEvent = ChannelHandler.handleSipHeader(ngdEvent, channelEvent);
 
                         log.info("revert ivrEvent data: {}", ivrEvent);
                     }

@@ -3,6 +3,7 @@ package com.haiyisoft.handler;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
 import com.haiyisoft.entry.IVREvent;
+import com.haiyisoft.entry.NGDEvent;
 import com.haiyisoft.entry.XCCEvent;
 import com.haiyisoft.util.NumberUtil;
 import com.haiyisoft.util.XCCUtil;
@@ -211,8 +212,8 @@ public class XCCHandler {
     }
 
     //转人工
-    public static XCCEvent bridgeArtificial(Connection nc, ChannelEvent channelEvent, String retValue) {
-        return XCCUtil.bridgeArtificial(nc, channelEvent, retValue);
+    public static XCCEvent bridgeArtificial(Connection nc, ChannelEvent channelEvent, String retValue, NGDEvent ngdEvent) {
+        return XCCUtil.bridgeArtificial(nc, channelEvent, retValue, ngdEvent);
     }
 
     public static XCCEvent playTTS(Connection nc, ChannelEvent channelEvent, String ttsContent) {
@@ -220,7 +221,7 @@ public class XCCHandler {
     }
 
     //转接到精准ivr
-    public static XCCEvent bridgeIVR(Connection nc, ChannelEvent channelEvent, String retValue) {
-        return XCCUtil.bridgeIVR(nc, channelEvent, retValue);
+    public static XCCEvent bridgeIVR(Connection nc, ChannelEvent channelEvent, String retValue, NGDEvent ngdEvent) {
+        return XCCUtil.bridgeIVR(nc, channelEvent, retValue, ngdEvent);
     }
 }
