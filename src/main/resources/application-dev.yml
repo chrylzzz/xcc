@@ -18,8 +18,8 @@ xcc:
   no-break: true
 #  ngd query url
   ngd-core-query-url: https://api-ngd.baidu.com/api/v2/core/query
-#  ngd boot token
-  ngd-boot-token: NGD 88f20617-d6b5-4c4e-bf72-fde0c0db1d82
+#  ngd bot token
+  ngd-bot-token: NGD 88f20617-d6b5-4c4e-bf72-fde0c0db1d82
 # convert solved ,ngd存在solved=false，是否选择处理，true开启
   convert-solved: false
 #

@@ -41,8 +41,8 @@ public class XCCConfigProperty {
     private String noBreak;
     // ngd query url
     private String ngdCoreQueryUrl;
-    // ngd boot token auth
-    private String ngdBootToken;
+    // ngd bot token auth
+    private String ngdBotToken;
     // convert solved
     private boolean convertSolved;
     // cluster true or false

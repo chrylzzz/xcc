@@ -20,10 +20,10 @@ xcc:
   no-break: true
 #  ngd
   ngd-core-query-url: http://10.100.104.20:8303/api/v2/core/query
-#  ngd boot id
-  ngd-boot-token: NGD 0f0ec9dc-bdcc-4b15-9304-e0d5def75e27
+#  ngd bot id
+  ngd-bot-token: NGD 0f0ec9dc-bdcc-4b15-9304-e0d5def75e27
 # convert solved :ngd存在solved=false，是否选择处理，true开启
-  convert-solved: true
+  convert-solved: false
 #
 # XML数据需要自己处理, JSON数据XSwitch已深度解析, true开启自助解析
   handle-engine-data: true
