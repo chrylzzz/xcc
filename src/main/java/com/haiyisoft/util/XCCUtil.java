@@ -1,7 +1,7 @@
 package com.haiyisoft.util;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import com.haiyisoft.boot.IVRInit;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
@@ -51,7 +51,7 @@ public class XCCUtil {
      * @param maxDigits 最大位长
      * @return
      */
-    public static JSONObject getDtmf(int maxDigits) {
+    public static JSONObject getDTMF(int maxDigits) {
         JSONObject dtmf = new JSONObject();
         dtmf.put("min_digits", 1);//min_digits：最小位长。
         dtmf.put("max_digits", maxDigits);//max_digits：最大位长。
@@ -232,12 +232,12 @@ public class XCCUtil {
 //        本接口将在收到第一个DTMF按键后打断当前的播放。
 //
 //        JSONObject params = new JSONObject();
-        JSONObject params = getDtmf(maxDigits);
+        JSONObject params = getDTMF(maxDigits);
         params.put("ctrl_uuid", "chryl-ivvr");
         //当前channel 的uuid
         String channelId = channelEvent.getUuid();
         params.put("uuid", channelId);
-//        JSONObject dtmf = getDtmf(maxDigits);
+//        JSONObject dtmf = getDTMF(maxDigits);
 //        params.put("dtmf", dtmf);
         JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
 //        params.put("data", media);

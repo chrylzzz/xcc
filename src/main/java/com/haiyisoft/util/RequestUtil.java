@@ -1,7 +1,8 @@
 package com.haiyisoft.util;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson2.JSONWriter;
 import com.haiyisoft.advice.IVRExceptionAdvice;
 import com.haiyisoft.boot.IVRInit;
 import com.haiyisoft.constant.XCCConstants;
@@ -12,9 +13,7 @@ import io.nats.client.Message;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -62,11 +61,10 @@ public class RequestUtil {
      */
     public static void natsRequest(Connection con, String service, String method, JSONObject params) {
         JSONObject jsonRpc = getJsonRpc(method, params);
-        StringWriter request = new StringWriter();
-        jsonRpc.writeJSONString(request);
+        byte[] bytes = jsonRpc.toString().getBytes(StandardCharsets.UTF_8);
         log.info(" service:{}, jsonRpc:{}", service, jsonRpc);
         try {
-            con.request(service, request.toString().getBytes(StandardCharsets.UTF_8));
+            con.request(service, bytes);
         } catch (Exception e) {
             e.printStackTrace();
             log.error("xcc handleException 发生异常：{} , {}", method, e);
@@ -87,13 +85,11 @@ public class RequestUtil {
     public static void natsRequestTimeOut(Connection con, String service, String method, JSONObject params, long milliSeconds) {
         log.info("{} 执行开始", method);
         JSONObject jsonRpc = getJsonRpc(method, params);
-        StringWriter request = new StringWriter();
-        jsonRpc.writeJSONString(request);
-        String json = JSON.toJSONString(jsonRpc, true);
+        byte[] bytes = jsonRpc.toString().getBytes(StandardCharsets.UTF_8);
+        String json = JSON.toJSONString(jsonRpc, JSONWriter.Feature.PrettyFormat);
         log.info("{} 请求信息 service:[{}], Serializer json:{}", method, service, json);
         try {
-            con.request(service, request.toString().getBytes(StandardCharsets.UTF_8), Duration.ofMillis(milliSeconds));
-            Future<Message> incoming = con.request(service, request.toString().getBytes(StandardCharsets.UTF_8));
+            Future<Message> incoming = con.request(service, bytes);
             Message msg = incoming.get(milliSeconds, TimeUnit.MILLISECONDS);
             String response = new String(msg.getData(), StandardCharsets.UTF_8);
             log.info("{} 返回信息:{}", method, response);
@@ -146,12 +142,11 @@ public class RequestUtil {
     public static XCCEvent natsRequestFutureByAnswer(Connection con, String service, String method, JSONObject params, long milliSeconds) {
         log.info("{} 执行开始", method);
         JSONObject jsonRpc = getJsonRpc(method, params);
-        StringWriter request = new StringWriter();
-        jsonRpc.writeJSONString(request);
-        log.info("{} 请求信息 service:[{}], Serializer json:{}", method, service, JSON.toJSONString(jsonRpc, true));
+        byte[] bytes = jsonRpc.toString().getBytes(StandardCharsets.UTF_8);
+        log.info("{} 请求信息 service:[{}], Serializer json:{}", method, service, JSON.toJSONString(jsonRpc, JSONWriter.Feature.PrettyFormat));
         XCCEvent xccEvent;
         try {
-            Future<Message> incoming = con.request(service, request.toString().getBytes(StandardCharsets.UTF_8));
+            Future<Message> incoming = con.request(service, bytes);
             Message msg = incoming.get();
             String response = new String(msg.getData(), StandardCharsets.UTF_8);
             log.info("{} 返回信息:{}", method, response);
@@ -185,12 +180,11 @@ public class RequestUtil {
     public static XCCEvent natsRequestFutureByDetectSpeech(Connection con, String service, String method, JSONObject params, long milliSeconds) {
         log.info("{} 执行开始", method);
         JSONObject jsonRpc = getJsonRpc(method, params);
-        StringWriter request = new StringWriter();
-        jsonRpc.writeJSONString(request);
-        log.info("{} 请求信息 service:[{}], Serializer json:{}", method, service, JSON.toJSONString(jsonRpc, true));
+        byte[] bytes = jsonRpc.toString().getBytes(StandardCharsets.UTF_8);
+        log.info("{} 请求信息 service:[{}], Serializer json:{}", method, service, JSON.toJSONString(jsonRpc, JSONWriter.Feature.PrettyFormat));
         XCCEvent xccEvent;
         try {
-            Future<Message> incoming = con.request(service, request.toString().getBytes(StandardCharsets.UTF_8));
+            Future<Message> incoming = con.request(service, bytes);
             Message msg = incoming.get();
 //            Message msg = incoming.get(milliSeconds, TimeUnit.MILLISECONDS);
             String response = new String(msg.getData(), StandardCharsets.UTF_8);
@@ -252,12 +246,11 @@ public class RequestUtil {
     public static XCCEvent natsRequestFutureByReadDTMF(Connection con, String service, String method, JSONObject params, long milliSeconds) {
         log.info("{} 执行开始时间为", method);
         JSONObject jsonRpc = getJsonRpc(method, params);
-        StringWriter request = new StringWriter();
-        jsonRpc.writeJSONString(request);
-        log.info("{} 请求信息 service:[{}], Serializer json:{}", method, service, JSON.toJSONString(jsonRpc, true));
+        byte[] bytes = jsonRpc.toString().getBytes(StandardCharsets.UTF_8);
+        log.info("{} 请求信息 service:[{}], Serializer json:{}", method, service, JSON.toJSONString(jsonRpc, JSONWriter.Feature.PrettyFormat));
         XCCEvent xccEvent;
         try {
-            Future<Message> incoming = con.request(service, request.toString().getBytes(StandardCharsets.UTF_8));
+            Future<Message> incoming = con.request(service, bytes);
             Message msg = incoming.get();
 //            Message msg = incoming.get(milliSeconds, TimeUnit.MILLISECONDS);
             String response = new String(msg.getData(), StandardCharsets.UTF_8);
@@ -306,12 +299,11 @@ public class RequestUtil {
     public static XCCEvent natsRequestFutureByBridge(Connection con, String service, String method, JSONObject params, int milliSeconds) {
         log.info("{} 执行开始时间为", method);
         JSONObject jsonRpc = getJsonRpc(method, params);
-        StringWriter request = new StringWriter();
-        jsonRpc.writeJSONString(request);
-        log.info("{} 请求信息 service:[{}], Serializer json:{}", method, service, JSON.toJSONString(jsonRpc, true));
+        byte[] bytes = jsonRpc.toString().getBytes(StandardCharsets.UTF_8);
+        log.info("{} 请求信息 service:[{}], Serializer json:{}", method, service, JSON.toJSONString(jsonRpc, JSONWriter.Feature.PrettyFormat));
         XCCEvent xccEvent;
         try {
-            Future<Message> incoming = con.request(service, request.toString().getBytes(StandardCharsets.UTF_8));
+            Future<Message> incoming = con.request(service, bytes);
 //            Message msg = incoming.get(milliSeconds, TimeUnit.MILLISECONDS);
             Message msg = incoming.get();
             String response = new String(msg.getData(), StandardCharsets.UTF_8);

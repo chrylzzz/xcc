@@ -1,8 +1,6 @@
 package com.haiyisoft.constant;
 
-import com.alibaba.fastjson.JSONObject;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.alibaba.fastjson2.JSONObject;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

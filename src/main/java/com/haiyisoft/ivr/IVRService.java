@@ -5,15 +5,12 @@ import com.haiyisoft.entry.ChannelEvent;
 import com.haiyisoft.entry.IVREvent;
 import com.haiyisoft.entry.NGDEvent;
 import com.haiyisoft.entry.XCCEvent;
-import com.haiyisoft.handler.ChannelHandler;
 import com.haiyisoft.handler.IVRHandler;
 import com.haiyisoft.handler.NGDHandler;
 import com.haiyisoft.handler.XCCHandler;
 import com.haiyisoft.util.IdGenerator;
-import com.haiyisoft.util.XCCUtil;
 import io.nats.client.Connection;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 

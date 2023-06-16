@@ -1,14 +1,14 @@
 package com.haiyisoft.util;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson2.JSONWriter;
 import com.haiyisoft.boot.IVRInit;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.NGDEvent;
 import com.haiyisoft.enumerate.EnumXCC;
 import com.haiyisoft.handler.NGDHandler;
-import com.haiyisoft.model.NGDNodeModel;
+import com.haiyisoft.model.NGDNodeMetaData;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -31,7 +31,7 @@ public class NGDUtil {
     public static NGDEvent coreQueryNGD(String queryText, String sessionId, String phone) {
         //package
         JSONObject param = coreQueryStruct(queryText, sessionId, phone);
-        log.info("开始调用,百度知识库接口入参:{}", JSON.toJSONString(param, true));
+        log.info("开始调用,百度知识库接口入参:{}", JSON.toJSONString(param, JSONWriter.Feature.PrettyFormat));
         //invoke
         String jsonStrResult = HttpClientUtil.doPostJsonForGxNgd(IVRInit.XCC_CONFIG_PROPERTY.getNgdCoreQueryUrl(), param.toJSONString());
         //res
@@ -52,8 +52,8 @@ public class NGDUtil {
             answer = convertAnswer(jsonData, IVRInit.XCC_CONFIG_PROPERTY.isConvertSolved());
             ngdEvent = NGDHandler.ngdEventSetVar(sessionId, code, msg, answer, source, solved);
             //保存流程信息
-//            NGDNodeModel ngdNodeModel = saveNgdNode(queryText, answer, source, jsonData);
-//            ngdEvent.setNgdNodeModel(ngdNodeModel);
+//            NGDNodeMetaData ngdNodeMetaData = saveNgdNodeMateData(queryText, answer, source, jsonData);
+//            ngdEvent.setNgdNodeMetaData(ngdNodeMetaData);
             log.info("百度知识库返回正常 code: {} , msg: {} , answer: {}", code, msg, answer);
         } else {
             log.error("百度知识调用异常 code: {} , msg: {}", code, msg);
@@ -73,6 +73,7 @@ public class NGDUtil {
 
     /**
      * 根据百度知识库返回的数据取到合理的回复
+     * 根据source和solved
      *
      * @param jsonData
      * @param convertSolved 是否处理 solved
@@ -86,7 +87,7 @@ public class NGDUtil {
         boolean solved = jsonData.getBooleanValue("solved");
         log.info("百度知识库命中 solved : {} source : {}", solved, source);
         if (solved) {
-            if (XCCConstants.SOURCE_TASK_BASED.equals(source)) {//流程
+            if (XCCConstants.SOURCE_TASK_BASED.equals(source)) {//task_based
                 answer = jsonData.getString("suggestAnswer");
             } else if (XCCConstants.SOURCE_FAQ.equals(source)) {//faq
                 answer = jsonData.getString("suggestAnswer");
@@ -105,8 +106,23 @@ public class NGDUtil {
                 answer = jsonData.getString("suggestAnswer");
             }
         }
-/*
-        if (XCCConstants.SOURCE_TASK_BASED.equals(source)) {//流程
+        log.info("百度知识库命中 answer: {}", answer);
+        return answer;
+
+    }
+
+    /**
+     * 根据百度知识库返回的数据取到合理的回复
+     * 根据source取answer
+     *
+     * @param jsonData
+     * @return
+     */
+    public static String convertAnswer(JSONObject jsonData) {
+        String answer = "";
+        //根据 source 判断
+        String source = jsonData.getString("source");
+        if (XCCConstants.SOURCE_TASK_BASED.equals(source)) {//task_based
             answer = jsonData.getString("suggestAnswer");
         } else if (XCCConstants.SOURCE_FAQ.equals(source)) {//faq
             answer = jsonData.getString("suggestAnswer");
@@ -122,31 +138,28 @@ public class NGDUtil {
         } else {
             answer = XCCConstants.XCC_MISSING_MSG;
         }
-*/
-        log.info("百度知识库命中 answer: {}", answer);
         return answer;
-
     }
 
 
     /**
      * 获取ngd节点流程
      */
-    public static NGDNodeModel saveNgdNode(String query, String answer, String source, JSONObject jsonData) {
-        NGDNodeModel ngdNodeModel = new NGDNodeModel();
-        ngdNodeModel.setAnswer(answer);
+    public static NGDNodeMetaData saveNgdNodeMateData(String query, String answer, String source, JSONObject jsonData) {
+        NGDNodeMetaData ngdNodeMetaData = new NGDNodeMetaData();
+        ngdNodeMetaData.setAnswer(answer);
 
         String lastNodeName;
-        //task_based才有lastNodeName,其他情况手机source
+        //task_based才有lastNodeName,其他情况收集source
         if (XCCConstants.SOURCE_TASK_BASED.equals(source)) {//流程
             lastNodeName = jsonData.getJSONObject("answer").getString("lastNodeName");
         } else {
             lastNodeName = source;
         }
-        ngdNodeModel.setNodeName(lastNodeName);
-        ngdNodeModel.setSource(source);
-        ngdNodeModel.setQuery(query);
-        return ngdNodeModel;
+        ngdNodeMetaData.setNodeName(lastNodeName);
+        ngdNodeMetaData.setSource(source);
+        ngdNodeMetaData.setQuery(query);
+        return ngdNodeMetaData;
     }
 
     /**

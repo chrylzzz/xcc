@@ -1,6 +1,6 @@
 package com.haiyisoft.config;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import com.haiyisoft.constant.XCCConfigProperty;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.util.IpUtil;

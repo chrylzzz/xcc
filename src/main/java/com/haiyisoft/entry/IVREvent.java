@@ -1,5 +1,6 @@
 package com.haiyisoft.entry;
 
+import com.alibaba.fastjson2.JSONArray;
 import com.haiyisoft.constant.XCCConstants;
 import lombok.Data;
 
@@ -34,4 +35,5 @@ public class IVREvent {
     //目的号码
     private String destNumber;
 
+    private JSONArray a;
 }

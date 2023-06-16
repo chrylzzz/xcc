@@ -1,6 +1,6 @@
 package com.haiyisoft.handler;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
 import com.haiyisoft.entry.IVREvent;
@@ -111,13 +111,6 @@ public class IVRHandler {
     public static ChannelEvent convertParams(JSONObject params) {
         ChannelEvent event = new ChannelEvent();
         try {
-//          we have to serialize the params into a string and parse it again
-//          unless we can find a way to convert JsonElement to protobuf class
-//            Xctrl.ChannelEvent.Builder xccEvent = Xctrl.ChannelEvent.newBuilder();
-//            JsonFormat.parser().ignoringUnknownFields().merge(params.toString(), xccEvent);
-//            log.info("Xctrl convert xcc event :{}", xccEvent);
-//          String state = cevent.getState();
-
 
             String uuid = params.getString("uuid");
             String node_uuid = params.getString("node_uuid");

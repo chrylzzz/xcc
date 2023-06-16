@@ -5,7 +5,6 @@ import com.haiyisoft.entry.ChannelEvent;
 import com.haiyisoft.entry.IVREvent;
 import com.haiyisoft.entry.NGDEvent;
 import com.haiyisoft.entry.XCCEvent;
-import com.haiyisoft.handler.ChannelHandler;
 import com.haiyisoft.handler.IVRHandler;
 import com.haiyisoft.handler.NGDHandler;
 import com.haiyisoft.handler.XCCHandler;
