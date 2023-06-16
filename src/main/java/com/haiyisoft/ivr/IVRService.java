@@ -64,7 +64,7 @@ public class IVRService {
                 String retValue = XCCConstants.WELCOME_TEXT;
                 while (true) {
 
-                    xccEvent = IVRHandler.domain(nc, channelEvent, retKey, retValue, ngdEvent);
+                    xccEvent = IVRHandler.domain(nc, channelEvent, retKey, retValue, ngdEvent, callNumber);
 
                     //处理是否挂机
                     boolean handleHangup = XCCHandler.handleSomeHangup(xccEvent, channelId);

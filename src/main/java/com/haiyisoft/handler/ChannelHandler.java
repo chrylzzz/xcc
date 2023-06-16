@@ -39,7 +39,6 @@ public class ChannelHandler {
                 //res
                 String sipResHeaderU2U = sipReqHeaderU2U + XCCConstants.RES_SIP_SUFFIX;
                 formatSipHeader = String.format(sipResHeaderU2U, uid);
-
             }
         } else {
             //不处理使用,只加 |

@@ -167,8 +167,7 @@ public class XCCUtil {
         JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
         params.put("media", media);
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
-        XCCEvent xccEvent = RequestUtil.natsRequestFutureByPlayTTS(nc, service, XCCConstants.PLAY, params, 1000);
-        return xccEvent;
+        return RequestUtil.natsRequestFutureByPlayTTS(nc, service, XCCConstants.PLAY, params, 1000);
     }
 
     /**
@@ -212,8 +211,7 @@ public class XCCUtil {
         JSONObject speech = getSpeech();
         params.put("speech", speech);
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
-        XCCEvent xccEvent = RequestUtil.natsRequestFutureByDetectSpeech(nc, service, XCCConstants.DETECT_SPEECH, params, 10000);
-        return xccEvent;
+        return RequestUtil.natsRequestFutureByDetectSpeech(nc, service, XCCConstants.DETECT_SPEECH, params, 10000);
     }
 
     /**
@@ -246,8 +244,7 @@ public class XCCUtil {
 //        params.put("data", media);
         params.put("media", media);
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
-        XCCEvent xccEvent = RequestUtil.natsRequestFutureByReadDTMF(nc, service, XCCConstants.READ_DTMF, params, 5000);
-        return xccEvent;
+        return RequestUtil.natsRequestFutureByReadDTMF(nc, service, XCCConstants.READ_DTMF, params, 5000);
     }
 
 
@@ -322,10 +319,9 @@ public class XCCUtil {
         //正在转接人工坐席,请稍后
         playTTS(nc, channelEvent, ttsContent);
 
-        JSONObject params = convertBridgeParams(channelEvent, "user/1001", "555555555555555");
+        JSONObject params = convertBridgeParams(channelEvent, "user/1001", "555555555555555", "13287983898");
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
-        XCCEvent xccEvent = RequestUtil.natsRequestFutureByBridge(nc, service, XCCConstants.BRIDGE, params, 2000);
-        return xccEvent;
+        return RequestUtil.natsRequestFutureByBridge(nc, service, XCCConstants.BRIDGE, params, 2000);
     }
 
     /**
@@ -341,10 +337,9 @@ public class XCCUtil {
         //正在转接人工坐席,请稍后
         playTTS(nc, channelEvent, ttsContent);
 
-        JSONObject params = convertBridgeParams(channelEvent, "sofia/default/1001@10.194.38.38:5060", "555555555555555");
+        JSONObject params = convertBridgeParams(channelEvent, "sofia/default/1001@10.194.38.38:5060", "555555555555555", "13287983898");
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
-        XCCEvent xccEvent = RequestUtil.natsRequestFutureByBridge(nc, service, XCCConstants.BRIDGE, params, 2000);
-        return xccEvent;
+        return RequestUtil.natsRequestFutureByBridge(nc, service, XCCConstants.BRIDGE, params, 2000);
     }
 
     /**
@@ -355,17 +350,11 @@ public class XCCUtil {
      * @param ttsContent
      * @return
      */
-    public static XCCEvent bridgeArtificial(Connection nc, ChannelEvent channelEvent, String ttsContent, NGDEvent ngdEvent) {
-
+    public static XCCEvent bridgeArtificial(Connection nc, ChannelEvent channelEvent, String ttsContent, JSONObject params) {
         //正在转接人工坐席,请稍后
         playTTS(nc, channelEvent, ttsContent);
-        //转接字符
-        String dialStr = convertDialStr(XCCConstants.HUAWEI_ARTIFICIAL_NUMBER);
-        //随路数据
-        JSONObject params = convertBridgeParams(channelEvent, dialStr, ngdEvent);
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
-        XCCEvent xccEvent = RequestUtil.natsRequestFutureByBridge(nc, service, XCCConstants.BRIDGE, params, 2000);
-        return xccEvent;
+        return RequestUtil.natsRequestFutureByBridge(nc, service, XCCConstants.BRIDGE, params, 2000);
     }
 
     /**
@@ -376,16 +365,11 @@ public class XCCUtil {
      * @param ttsContent
      * @return
      */
-    public static XCCEvent bridgeIVR(Connection nc, ChannelEvent channelEvent, String ttsContent, NGDEvent ngdEvent) {
+    public static XCCEvent bridgeIVR(Connection nc, ChannelEvent channelEvent, String ttsContent, JSONObject params) {
         //正在转接人工坐席,请稍后
         playTTS(nc, channelEvent, ttsContent);
-        //转接字符
-        String dialStr = convertDialStr(XCCConstants.HUAWEI_IVR_NUMBER);
-        //随路数据
-        JSONObject params = convertBridgeParams(channelEvent, dialStr, ngdEvent);
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
-        XCCEvent xccEvent = RequestUtil.natsRequestFutureByBridge(nc, service, XCCConstants.BRIDGE, params, 2000);
-        return xccEvent;
+        return RequestUtil.natsRequestFutureByBridge(nc, service, XCCConstants.BRIDGE, params, 2000);
     }
 
     /**
@@ -416,29 +400,31 @@ public class XCCUtil {
      * @param channelEvent
      * @param dialStr
      * @param sipHeader
+     * @param cidNumber
      * @return
      */
-    public static JSONObject convertBridgeParams(ChannelEvent channelEvent, String dialStr, String sipHeader) {
+    public static JSONObject convertBridgeParams(ChannelEvent channelEvent, String dialStr, String sipHeader, String cidNumber) {
         //全局参数
-        JSONObject global_params = new JSONObject();
+        JSONObject globalParam = new JSONObject();
 
         //组装call params arr
-        JSONObject call_params_arr = new JSONObject();
-        call_params_arr.put("leg_timeout", "20");
-        call_params_arr.put(XCCConstants.SIP_HEADER_USER2USER, sipHeader);
-        call_params_arr.put("find_sip_device_only", "false");
+        JSONObject callParamArr = new JSONObject();
+        callParamArr.put("leg_timeout", "20");
+        callParamArr.put(XCCConstants.SIP_HEADER_USER2USER, sipHeader);
+        callParamArr.put("find_sip_device_only", "false");
 
         //呼叫参数
-        JSONObject call_params = new JSONObject();
-        call_params.put("uuid", IdGenerator.simpleUUID());
-        call_params.put("dial_string", dialStr);
-        call_params.put("params", call_params_arr);
+        JSONObject callParam = new JSONObject();
+        callParam.put("uuid", IdGenerator.simpleUUID());
+        callParam.put("dial_string", dialStr);
+        callParam.put("cid_number", cidNumber);
+        callParam.put("params", callParamArr);
         //[{},{}]
         JSONArray callParamArray = new JSONArray();
-        callParamArray.add(call_params);
+        callParamArray.add(callParam);
         //组装destination
         JSONObject destination = new JSONObject();
-        destination.put("global_params", global_params);
+        destination.put("global_params", globalParam);
         destination.put("call_params", callParamArray);
 
         JSONObject params = new JSONObject();
@@ -458,11 +444,12 @@ public class XCCUtil {
      *
      * @param channelEvent
      * @param dialStr
+     * @param callNumber
      * @return
      */
-    public static JSONObject convertBridgeParams(ChannelEvent channelEvent, String dialStr, NGDEvent ngdEvent) {
+    public static JSONObject convertBridgeParams(ChannelEvent channelEvent, String dialStr, NGDEvent ngdEvent, String callNumber) {
         String handleSipHeader = ChannelHandler.handleSipHeader(ngdEvent, channelEvent);
-        return convertBridgeParams(channelEvent, dialStr, handleSipHeader);
+        return convertBridgeParams(channelEvent, dialStr, handleSipHeader, callNumber);
     }
 
 

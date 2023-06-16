@@ -30,7 +30,9 @@ public class IVRHandler {
      * @param ngdEvent
      * @return
      */
-    public static XCCEvent domain(Connection nc, ChannelEvent channelEvent, String retKey, String retValue, NGDEvent ngdEvent) {
+    public static XCCEvent domain(Connection nc, ChannelEvent channelEvent,
+                                  String retKey, String retValue,
+                                  NGDEvent ngdEvent, String callNumber) {
         XCCEvent xccEvent;
         if (XCCConstants.YYSR.equals(retKey)) {//调用播报收音
             xccEvent = XCCHandler.detectSpeechPlayTTSNoDTMF(nc, channelEvent, retValue);
@@ -48,10 +50,10 @@ public class IVRHandler {
             //外部
 //            xccEvent = XCCHandler.bridgeExternalExtension(nc, channelEvent, retValue);
             //转人工
-            xccEvent = XCCHandler.bridgeArtificial(nc, channelEvent, retValue, ngdEvent);
+            xccEvent = XCCHandler.bridgeArtificial(nc, channelEvent, retValue, ngdEvent, callNumber);
 
         } else if (XCCConstants.JZLC.equals(retKey)) {//转到精准IVR
-            xccEvent = XCCHandler.bridgeIVR(nc, channelEvent, retValue, ngdEvent);
+            xccEvent = XCCHandler.bridgeIVR(nc, channelEvent, retValue, ngdEvent, callNumber);
         } else {
             log.error("严格根据配置的指令开发");
             xccEvent = new XCCEvent();
@@ -60,7 +62,7 @@ public class IVRHandler {
     }
 
     /**
-     * 触发转人工规则
+     * 触发转人工规则,若使用bot配置管理控制,则不需要使用该方法
      * ngd: 机器回复一次+1,连续两次机器回复转人工
      * xcc: 未识别一次+1,连续两次未识别转人工
      */
