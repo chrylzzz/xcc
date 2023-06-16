@@ -52,7 +52,7 @@ public class IVRService {
             XCCEvent xccEvent = new XCCEvent();
             NGDEvent ngdEvent = new NGDEvent();
             String channelId = ivrEvent.getChannelId();
-            String callNumber = ivrEvent.getCidNumber();
+            String callerIdNumber = ivrEvent.getCidNumber();
             log.info(" start this call channelId: {} , state :{} ", channelId, state);
             log.info(" start this call IVREvent: {}", ivrEvent);
 
@@ -64,7 +64,7 @@ public class IVRService {
                 String retValue = XCCConstants.WELCOME_TEXT;
                 while (true) {
 
-                    xccEvent = IVRHandler.domain(nc, channelEvent, retKey, retValue, ngdEvent, callNumber);
+                    xccEvent = IVRHandler.domain(nc, channelEvent, retKey, retValue, ivrEvent, ngdEvent, callerIdNumber);
 
                     //处理是否挂机
                     boolean handleHangup = XCCHandler.handleSomeHangup(xccEvent, channelId);
@@ -81,7 +81,7 @@ public class IVRService {
                             //xcc识别数据
                             String xccRecognitionResult = xccEvent.getXccRecognitionResult();
                             //获取指令和话术
-                            ngdEvent = NGDHandler.handlerNlu(xccRecognitionResult, channelId, callNumber);
+                            ngdEvent = NGDHandler.handlerNlu(xccRecognitionResult, channelId, callerIdNumber);
 
                             //handle ngd agent
                             boolean handleSolved = NGDHandler.handleSolved(ngdEvent);

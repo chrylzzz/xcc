@@ -28,11 +28,14 @@ public class IVRHandler {
      * @param retKey
      * @param retValue
      * @param ngdEvent
+     * @param ivrEvent
+     * @param callerIdNumber
      * @return
      */
     public static XCCEvent domain(Connection nc, ChannelEvent channelEvent,
                                   String retKey, String retValue,
-                                  NGDEvent ngdEvent, String callNumber) {
+                                  IVREvent ivrEvent,
+                                  NGDEvent ngdEvent, String callerIdNumber) {
         XCCEvent xccEvent;
         if (XCCConstants.YYSR.equals(retKey)) {//调用播报收音
             xccEvent = XCCHandler.detectSpeechPlayTTSNoDTMF(nc, channelEvent, retValue);
@@ -47,13 +50,11 @@ public class IVRHandler {
              */
             //分机
 //            xccEvent = XCCHandler.bridgeExtension(nc, channelEvent, retValue);
-            //外部
-//            xccEvent = XCCHandler.bridgeExternalExtension(nc, channelEvent, retValue);
             //转人工
-            xccEvent = XCCHandler.bridgeArtificial(nc, channelEvent, retValue, ngdEvent, callNumber);
+            xccEvent = XCCHandler.bridgeArtificial(nc, channelEvent, retValue, ngdEvent, callerIdNumber);
 
         } else if (XCCConstants.JZLC.equals(retKey)) {//转到精准IVR
-            xccEvent = XCCHandler.bridgeIVR(nc, channelEvent, retValue, ngdEvent, callNumber);
+            xccEvent = XCCHandler.bridgeIVR(nc, channelEvent, retValue, ivrEvent, ngdEvent, callerIdNumber);
         } else {
             log.error("严格根据配置的指令开发");
             xccEvent = new XCCEvent();

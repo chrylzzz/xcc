@@ -241,7 +241,9 @@ public class XCCConstants {
     public static final String IP_92 = "10.194.31.92:5060";
     public static final String IP_102 = "10.194.31.102:5060";
     //4001--IVR
-    public static final String HUAWEI_IVR_NUMBER = "4001";
+    public static final String HUAWEI_IVR_NUMBER = "4001";//此处需要95598开头的+加上地区后缀码,比如崇左的95598041400
+    //南方电网 95598
+    public static final String CHINA_SOUTHERN_POWER_GRID = "95598";
     //4002--人工坐席
     public static final String HUAWEI_ARTIFICIAL_NUMBER = "4002";
     //sip header Separator

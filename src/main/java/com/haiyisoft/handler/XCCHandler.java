@@ -1,6 +1,5 @@
 package com.haiyisoft.handler;
 
-import com.alibaba.fastjson.JSONObject;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
 import com.haiyisoft.entry.IVREvent;
@@ -203,22 +202,17 @@ public class XCCHandler {
         return XCCUtil.playAndReadDTMF(nc, channelEvent, retValue, maxDigits);
     }
 
-    //分机
+    //转分机
     public static XCCEvent bridgeExtension(Connection nc, ChannelEvent channelEvent, String retValue) {
         return XCCUtil.bridgeExtension(nc, channelEvent, retValue);
-    }
-
-    //外部话机
-    public static XCCEvent bridgeExternalExtension(Connection nc, ChannelEvent channelEvent, String retValue) {
-        return XCCUtil.bridgeExternalExtension(nc, channelEvent, retValue);
     }
 
     //转人工
     public static XCCEvent bridgeArtificial(Connection nc, ChannelEvent channelEvent, String retValue, NGDEvent ngdEvent, String callNumber) {
         //呼叫字符串
         String dialStr = XCCUtil.convertDialStr(XCCConstants.HUAWEI_ARTIFICIAL_NUMBER);
-        JSONObject params = XCCUtil.convertBridgeParams(channelEvent, dialStr, ngdEvent, callNumber);
-        return XCCUtil.bridgeArtificial(nc, channelEvent, retValue, params);
+        String handleSipHeader = ChannelHandler.handleSipHeader(ngdEvent, channelEvent);
+        return XCCUtil.bridgePro(nc, channelEvent, retValue, dialStr, handleSipHeader, callNumber);
     }
 
     public static XCCEvent playTTS(Connection nc, ChannelEvent channelEvent, String ttsContent) {
@@ -226,10 +220,12 @@ public class XCCHandler {
     }
 
     //转接到精准ivr
-    public static XCCEvent bridgeIVR(Connection nc, ChannelEvent channelEvent, String retValue, NGDEvent ngdEvent, String callNumber) {
-        //呼叫字符串
-        String dialStr = XCCUtil.convertDialStr(XCCConstants.HUAWEI_IVR_NUMBER);
-        JSONObject params = XCCUtil.convertBridgeParams(channelEvent, dialStr, ngdEvent, callNumber);
-        return XCCUtil.bridgeIVR(nc, channelEvent, retValue, params);
+    public static XCCEvent bridgeIVR(Connection nc, ChannelEvent channelEvent, String retValue, IVREvent ivrEvent, NGDEvent ngdEvent, String callNumber) {
+        //呼叫字符串,不使用4001,使用后缀码
+        String phoneAdsCode = ivrEvent.getPhoneAdsCode();
+        String dialStr = XCCUtil.convertDialStr(phoneAdsCode);
+//        String dialStr = XCCUtil.convertDialStr(XCCConstants.HUAWEI_IVR_NUMBER);
+        String handleSipHeader = ChannelHandler.handleSipHeader(ngdEvent, channelEvent);
+        return XCCUtil.bridgePro(nc, channelEvent, retValue, dialStr, handleSipHeader, callNumber);
     }
 }

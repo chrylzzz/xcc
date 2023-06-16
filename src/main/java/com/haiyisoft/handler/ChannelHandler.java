@@ -15,7 +15,9 @@ import org.apache.commons.lang3.StringUtils;
 public class ChannelHandler {
 
     /**
-     * 有uid,处理sip header
+     * 处理 sip header
+     * userOk
+     * uid
      *
      * @param ngdEvent
      * @param channelEvent
@@ -52,7 +54,7 @@ public class ChannelHandler {
 //        String s = "callid | 来电手机号 | 来话手机所对应的后缀码 | %s | 转人工业务类型";
         String s = "callid | 来电手机号 | 来话手机所对应的后缀码 | 100100001 | 转人工业务类型";
         StringBuilder stringBuffer = new StringBuilder();
-        String format = String.format(s, "10102244");
+        String format = String.format(s, "5555555");
         System.out.println(format);
     }
 }
