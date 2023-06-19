@@ -1,6 +1,5 @@
 package com.haiyisoft.ivr;
 
-import com.alibaba.fastjson2.JSONArray;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
 import com.haiyisoft.entry.IVREvent;

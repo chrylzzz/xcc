@@ -26,19 +26,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class IVRService {
 
-    /**
-     * 一定要交给spring管理,哪怕是此方法被调用
-     */
-    @Async
-    public void ivrDomain() {
-        for (int i = 0; i < 500; i++) {
-            for (int j = 0; j < 500; j++) {
-                System.out.println(Thread.currentThread().getName() + "===" + IdGenerator.snowflakeId());
-            }
-        }
-    }
-
-
     @Async
     public void handlerChannelEvent(Connection nc, ChannelEvent channelEvent) {
         String state = channelEvent.getState();
