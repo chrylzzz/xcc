@@ -14,8 +14,8 @@ xcc:
   tts-engine: unimrcp:tts
 #  Voice-Name
   tts-voice: yifei
-# 语速
-  prosody-rate: x-slow
+# 语速 格式：	[t*]	(*=0~10) ,默认语速值为5
+  xtts-s: s4
 #  asr engine
   asr-engine: unimrcp:asr
 # no break 是否打断放音, true 不可打断

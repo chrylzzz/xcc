@@ -33,12 +33,17 @@ public class XCCConfigProperty {
     private String ttsEngine;
     // tts engine
     private String ttsVoice;
-    // 语速
-    private String prosodyRate;
+
+    // 讯飞tts语速
+    private String xttsS;
+
+
     // asr engine
     private String asrEngine;
+
     // xcc tts no break
     private String noBreak;
+
     // ngd query url
     private String ngdCoreQueryUrl;
     // ngd bot token auth

@@ -254,6 +254,8 @@ public class XCCConstants {
     public static final String USER2USER = "User-to-User";
     //返回后缀
     public static final String RES_SIP_SUFFIX = "|%s|1";
+    //
+    public static final String XTTS = "%s";
     /********************************************IVR相关********************************************/
 
 }

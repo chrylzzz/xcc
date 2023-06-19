@@ -37,7 +37,8 @@ public class XCCUtil {
          *        SSML：TTS，SSML格式支持（并非所有引擎都支持SSML）
          */
         media.put("type", playType);
-        media.put("data", content);
+        media.put("data", "[" + IVRInit.XCC_CONFIG_PROPERTY.getXttsS() + "]" + content);
+//        media.put("data", content);
         //引擎TTS engine,若使用xswitch配置unimrcp,则为unimrcp:profile
         media.put("engine", IVRInit.XCC_CONFIG_PROPERTY.getTtsEngine());
         //嗓音Voice-Name，由TTS引擎决定，默认为default。
@@ -86,10 +87,11 @@ public class XCCUtil {
         speech.put("partial_event", true);
         //默认会发送Event.DetectedData事件，如果为true则不发送。
         speech.put("disable_detected_data_event", true);
-        JSONObject params = new JSONObject();
+        //测试未成功
+//        JSONObject params = new JSONObject();
         //语速 prosody_rate：[x-slow、slow、medium、fast、x-fast、default]
-        params.put("prosody-rate", IVRInit.XCC_CONFIG_PROPERTY.getProsodyRate());
-        speech.put("params", params);
+//        params.put("prosody-rate","x-slow");
+//        speech.put("params", params);
         return speech;
     }
 
