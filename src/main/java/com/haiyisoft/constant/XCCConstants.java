@@ -196,6 +196,7 @@ public class XCCConstants {
      * faq : faq回复
      * task_based :流程恢复
      * clarify: 澄清
+     * chitchat: 闲聊
      * <p>
      * "solved": false
      * system: 机器回复
@@ -206,6 +207,9 @@ public class XCCConstants {
     public static final String SOURCE_CLARIFY = "clarify";
     public static final String SOURCE_SYSTEM = "system";
     public static final String SOURCE_NONE = "none";
+    public static final String CHITCHAT = "chitchat";
+    //ngd建议话术
+    public static final String SUGGEST_ANSWER = "suggestAnswer";
     //ngd未触发答案
     //NGD识别失败话术 "source":"task_based"
     public static final String NGD_MISSING_MSG = "这个家伙很懒,没留下答案就跑了";

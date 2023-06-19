@@ -91,14 +91,16 @@ public class NGDUtil {
         log.info("百度知识库命中 solved : {} , source : {}", solved, source);
         if (solved) {
             if (XCCConstants.SOURCE_TASK_BASED.equals(source)) {//task_based
-                answer = jsonData.getString("suggestAnswer");
+                answer = jsonData.getString(XCCConstants.SUGGEST_ANSWER);
             } else if (XCCConstants.SOURCE_FAQ.equals(source)) {//faq
-                answer = jsonData.getString("suggestAnswer");
+                answer = jsonData.getString(XCCConstants.SUGGEST_ANSWER);
             } else if (XCCConstants.SOURCE_CLARIFY.equals(source)) {//clarify
                 answer = jsonData.getJSONObject("clarifyQuestions")
                         .getJSONObject("voice")
                         .getJSONArray("questions")
                         .getString(0);
+            } else if (XCCConstants.CHITCHAT.equals(source)) {//chitchat
+                answer = jsonData.getString(XCCConstants.SUGGEST_ANSWER);
             } else {//此处自定义,待发现新类型继续补充
                 answer = XCCConstants.XCC_MISSING_MSG;
             }
@@ -106,7 +108,7 @@ public class NGDUtil {
             if (convertSolved) {//处理,使用自定义话术
                 answer = XCCConstants.XCC_MISSING_MSG;
             } else {//不处理
-                answer = jsonData.getString("suggestAnswer");
+                answer = jsonData.getString(XCCConstants.SUGGEST_ANSWER);
             }
         }
         log.info("百度知识库命中 answer: {}", answer);
@@ -125,18 +127,20 @@ public class NGDUtil {
         //根据 source 判断
         String source = jsonData.getString("source");
         if (XCCConstants.SOURCE_TASK_BASED.equals(source)) {//task_based
-            answer = jsonData.getString("suggestAnswer");
+            answer = jsonData.getString(XCCConstants.SUGGEST_ANSWER);
         } else if (XCCConstants.SOURCE_FAQ.equals(source)) {//faq
-            answer = jsonData.getString("suggestAnswer");
+            answer = jsonData.getString(XCCConstants.SUGGEST_ANSWER);
         } else if (XCCConstants.SOURCE_CLARIFY.equals(source)) {//clarify
             answer = jsonData.getJSONObject("clarifyQuestions")
                     .getJSONObject("voice")
                     .getJSONArray("questions")
                     .getString(0);
+        } else if (XCCConstants.CHITCHAT.equals(source)) {//chitchat
+            answer = jsonData.getString(XCCConstants.SUGGEST_ANSWER);
         } else if (XCCConstants.SOURCE_SYSTEM.equals(source)) {//system
             answer = XCCConstants.XCC_MISSING_MSG;
         } else if (XCCConstants.SOURCE_NONE.equals(source)) {//none
-            answer = jsonData.getString("suggestAnswer");
+            answer = jsonData.getString(XCCConstants.SUGGEST_ANSWER);
         } else {
             answer = XCCConstants.XCC_MISSING_MSG;
         }
@@ -245,7 +249,6 @@ public class NGDUtil {
 //                "  \"context\" : {\"channel\":\"" + ch + "\"},\n" +
 //                "  \"ext\" : {\"exact\":true}\n" +
 //                "}";
-
 
         JSONObject param = new JSONObject();
         JSONObject context = new JSONObject();
