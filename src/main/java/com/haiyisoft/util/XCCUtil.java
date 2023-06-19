@@ -25,7 +25,7 @@ public class XCCUtil {
      * 获取媒体对象
      *
      * @param playType play类型
-     * @param content  内容,可为text,file
+     * @param content  播报内容,可为string,file
      * @return JSONObject
      */
     public static JSONObject getPlayMedia(String playType, String content) {
