@@ -14,6 +14,8 @@ xcc:
   tts-engine: unimrcp:tts
 #  Voice-Name
   tts-voice: yifei
+# 语速
+  prosody-rate: x-slow
 #  asr engine
   asr-engine: unimrcp:asr
 # no break 是否打断放音, true 不可打断

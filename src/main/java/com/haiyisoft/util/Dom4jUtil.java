@@ -21,7 +21,7 @@ public class Dom4jUtil {
     /**
      * 广西智能IVR专用
      * 解析ASR返回的XML
-     * Xwitch目前只将阿里/迅飞返回的JSON解析,XML只透传了结果
+     * XSwitch目前只将阿里/迅飞返回的JSON解析,XML只透传了结果
      *
      * @param xmlStr
      * @return
@@ -41,7 +41,7 @@ public class Dom4jUtil {
         if (StringUtils.isBlank(xmlStr)) {
             log.info("parseAsrResXml 解析 xmlStr 数据为空");
         } else {
-            log.info("parseAsrResXml 解析 xmlStr 开始:{}", xmlStr);
+            log.info("parseAsrResXml 解析 xmlStr 开始 : [{}]", xmlStr);
             try {
                 xmlStr = xmlStr.replace(XCCConstants.NL, "");
                 System.out.println(xmlStr);

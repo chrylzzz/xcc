@@ -56,7 +56,8 @@ public class NGDHandler {
      * @return
      */
     public static NGDEvent ngdEventSetVar(String sessionId, Integer code, String msg, String answer, String source, boolean solved) {
-        log.info("ngdEventSetVar 入参 sessionId : [{}] , code : [{}] , msg : [{}] , answer : [{}] , source : [{}] , solved : {}", code, msg, answer, source, solved);
+        log.info("ngdEventSetVar 入参 sessionId : [{}] , code : [{}] , msg : [{}] , answer : [{}] , source : [{}] , solved : {}",
+                sessionId, code, msg, answer, source, solved);
         NGDEvent ngdEvent = new NGDEvent(sessionId, code, msg, source, answer, solved);
         log.info("ngdEventSetVar 出参 ngdEvent : {}", ngdEvent);
         return ngdEvent;

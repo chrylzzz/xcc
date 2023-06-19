@@ -33,6 +33,8 @@ public class XCCConfigProperty {
     private String ttsEngine;
     // tts engine
     private String ttsVoice;
+    // 语速
+    private String prosodyRate;
     // asr engine
     private String asrEngine;
     // xcc tts no break

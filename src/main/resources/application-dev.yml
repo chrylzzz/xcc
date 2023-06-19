@@ -12,6 +12,8 @@ xcc:
   tts-engine: ali
 #  Voice-Name
   tts-voice: default
+# 语速
+  prosody-rate: x-slow
 #  asr engine
   asr-engine: ali
 # no break 是否打断放音, true 不可打断
