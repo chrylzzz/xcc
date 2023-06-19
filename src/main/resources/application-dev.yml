@@ -12,7 +12,7 @@ xcc:
   tts-engine: ali
 #  Voice-Name
   tts-voice: default
-# 语速 格式：	[t*]	(*=0~10) ,默认语速值为5
+# 语速 格式：	[s*]	(*=0~10) ,默认语速值为5
   xtts-s: s4
 #  asr engine
   asr-engine: ali
