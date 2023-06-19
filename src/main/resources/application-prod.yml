@@ -20,7 +20,7 @@ xcc:
   asr-engine: unimrcp:asr
 # no break 是否打断放音, true 不可打断
   no-break: true
-#  ngd
+#  ngd  query url
   ngd-core-query-url: http://10.100.104.20:8303/api/v2/core/query
 #  ngd bot id
   ngd-bot-token: NGD 0f0ec9dc-bdcc-4b15-9304-e0d5def75e27
