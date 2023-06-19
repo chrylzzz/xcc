@@ -81,9 +81,8 @@ public class IVRController {
             while (true) {
                 //订阅消息
                 Message subMsg = sub.nextMessage(Duration.ofMillis(50000));
-//                log.info("订阅接收的消息：{}", subMsg);
                 if (subMsg == null) {
-                    log.info(" this subMsg is null ");
+                    log.warn(" this subMsg is null ");
                 } else {
 
                         /*
@@ -95,14 +94,13 @@ public class IVRController {
                         new XCCHandler().ivrDomain();
 */
 
-                    log.info(" subMsg ,{}", subMsg);
                     //订阅事件
+                    //XNode收到呼叫后，向NATS广播来话消息（Event.Channel（state = START）），Ctrl收到后进行处理。
                     String eventStr = new String(subMsg.getData(), StandardCharsets.UTF_8);
                     JSONObject eventJson = JSONObject.parseObject(eventStr);
                     log.info("订阅事件 eventJson:{}", eventJson);
-                    //event状态,Event.Channel（state=START）
+                    //event状态:Event.Channel（state=START）
                     String method = eventJson.getString("method");
-                    //XNode收到呼叫后，向NATS广播来话消息（Event.Channel（state = START）），Ctrl收到后进行处理。
                     if (XCCConstants.Event_Channel.equals(method)) {
                         JSONObject params = eventJson.getJSONObject("params");
                         //convert param
