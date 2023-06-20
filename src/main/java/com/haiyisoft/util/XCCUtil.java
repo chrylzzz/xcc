@@ -323,14 +323,15 @@ public class XCCUtil {
     }
 
     /**
-     * 转接pro
+     * 转接
+     * 带消息头/原始呼叫
      *
      * @param nc
      * @param channelEvent
      * @param ttsContent
      * @return
      */
-    public static XCCEvent bridgePro(Connection nc, ChannelEvent channelEvent, String ttsContent, String dialStr, String sipHeader, String callNumber) {
+    public static XCCEvent bridge(Connection nc, ChannelEvent channelEvent, String ttsContent, String dialStr, String sipHeader, String callNumber) {
         //正在转接,请稍后
         playTTS(nc, channelEvent, ttsContent);
         JSONObject params = convertBridgeParams(channelEvent, dialStr, sipHeader, callNumber);
@@ -381,7 +382,7 @@ public class XCCUtil {
     }
 
     /**
-     * 组装 bridgePro:
+     * 组装 bridge:
      * sip header
      * caller id number
      *
@@ -393,7 +394,7 @@ public class XCCUtil {
      */
     public static JSONObject convertBridgeParams(ChannelEvent channelEvent, String dialStr, String sipHeader, String cidNumber) {
         //全局参数
-        JSONObject globalParam = new JSONObject();
+//        JSONObject globalParam = new JSONObject();
 
         //组装call params arr
         JSONObject callParamArr = new JSONObject();
@@ -414,7 +415,7 @@ public class XCCUtil {
         callParamArray.add(callParam);
         //组装destination
         JSONObject destination = new JSONObject();
-        destination.put("global_params", globalParam);
+//        destination.put("global_params", globalParam);
         destination.put("call_params", callParamArray);
 
         JSONObject params = new JSONObject();
@@ -436,7 +437,7 @@ public class XCCUtil {
      */
     public static JSONObject convertBridgeParams(ChannelEvent channelEvent, String dialStr) {
         //全局参数
-        JSONObject globalParam = new JSONObject();
+//        JSONObject globalParam = new JSONObject();
 
         //组装call params arr
         JSONObject callParamArr = new JSONObject();
@@ -453,7 +454,7 @@ public class XCCUtil {
         callParamArray.add(callParam);
         //组装destination
         JSONObject destination = new JSONObject();
-        destination.put("global_params", globalParam);
+//        destination.put("global_params", globalParam);
         destination.put("call_params", callParamArray);
 
         JSONObject params = new JSONObject();

@@ -212,7 +212,7 @@ public class XCCHandler {
         //呼叫字符串
         String dialStr = XCCUtil.convertDialStr(XCCConstants.HUAWEI_ARTIFICIAL_NUMBER);
         String handleSipHeader = ChannelHandler.handleSipHeader(ngdEvent, channelEvent);
-        return XCCUtil.bridgePro(nc, channelEvent, retValue, dialStr, handleSipHeader, callNumber);
+        return XCCUtil.bridge(nc, channelEvent, retValue, dialStr, handleSipHeader, callNumber);
     }
 
     public static XCCEvent playTTS(Connection nc, ChannelEvent channelEvent, String ttsContent) {
@@ -226,6 +226,6 @@ public class XCCHandler {
         String dialStr = XCCUtil.convertDialStr(phoneAdsCode);
 //        String dialStr = XCCUtil.convertDialStr(XCCConstants.HUAWEI_IVR_NUMBER);
         String handleSipHeader = ChannelHandler.handleSipHeader(ngdEvent, channelEvent);
-        return XCCUtil.bridgePro(nc, channelEvent, retValue, dialStr, handleSipHeader, callNumber);
+        return XCCUtil.bridge(nc, channelEvent, retValue, dialStr, handleSipHeader, callNumber);
     }
 }
