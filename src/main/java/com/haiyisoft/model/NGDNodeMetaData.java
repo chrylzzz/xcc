@@ -25,4 +25,9 @@ public class NGDNodeMetaData {
     public NGDNodeMetaData() {
         this.dialogArray = new JSONArray();
     }
+
+    public NGDNodeMetaData(String query, String answer) {
+        this.query = query;
+        this.answer = answer;
+    }
 }

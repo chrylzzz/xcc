@@ -57,6 +57,9 @@ public class IVRServiceV2 {
                     boolean handleHangup = XCCHandler.handleSomeHangup(xccEvent, channelId);
                     if (handleHangup) {//挂机
                         log.info("挂断部分");
+                        //记录已挂机的IVR对话日志
+                        NGDNodeMetaData ngdNodeMetaData = new NGDNodeMetaData(retValue, "");
+                        ivrEvent.getNgdNodeMetadataArray().add(ngdNodeMetaData);
                         break;
                     } else {//正常通话
 

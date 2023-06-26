@@ -56,6 +56,9 @@ public class XCCConfigProperty {
     private boolean handleEngineData;
     // nats list
     private List<JSONObject> natsList;
-
+    // DTMF 输入超时
+    private Integer dtmfTimeout;
+    // DTMF 位间超时
+    private Integer digitTimeout;
 
 }

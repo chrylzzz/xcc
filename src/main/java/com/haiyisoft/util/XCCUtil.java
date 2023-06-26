@@ -56,8 +56,8 @@ public class XCCUtil {
         JSONObject dtmf = new JSONObject();
         dtmf.put("min_digits", 1);//min_digits：最小位长。
         dtmf.put("max_digits", maxDigits);//max_digits：最大位长。
-        dtmf.put("timeout", 8 * 1000);//timeout：超时，默认5000ms。
-        dtmf.put("digit_timeout", 3 * 1000);//digit_timeout：位间超时，默认2000ms。
+        dtmf.put("timeout", 10 * 1000);//timeout：超时，默认5000ms。
+        dtmf.put("digit_timeout", 5 * 1000);//digit_timeout：位间超时，默认2000ms。
         dtmf.put("terminators", XCCConstants.DTMF_TERMINATORS);//terminators：结束符，如#。
         return dtmf;
     }
