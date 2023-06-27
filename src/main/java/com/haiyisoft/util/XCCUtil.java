@@ -92,7 +92,8 @@ public class XCCUtil {
         speech.put("partial_event", true);
         //默认会发送Event.DetectedData事件，如果为true则不发送。
         speech.put("disable_detected_data_event", true);
-        //测试未成功
+
+        //未测试:xcc支持在参数直接控制语速
 //        JSONObject params = new JSONObject();
         //语速 prosody_rate：[x-slow、slow、medium、fast、x-fast、default]
 //        params.put("prosody-rate","x-slow");
