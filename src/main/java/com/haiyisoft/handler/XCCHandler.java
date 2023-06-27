@@ -42,7 +42,7 @@ public class XCCHandler {
                 || XCCConstants.JSONRPC_USER_HANGUP == code//410
                 || XCCConstants.JSONRPC_CLIENT_ERROR == code//400
                 || XCCConstants.JSONRPC_SERVER_ERROR == code//500
-                || XCCConstants.CODE_CHRYL_ERROR == code//555
+                || XCCConstants.CHRYL_ERROR_CODE == code//555
                 ) {
             log.info("handleXccAgent 执行挂机 channelId : [{}] , code : [{}]  ,", channelId, code);
             return true;
@@ -103,7 +103,7 @@ public class XCCHandler {
             //发生在放音或ASR检测过程中用户侧挂机的情况
         } else if (XCCConstants.JSONRPC_SERVER_ERROR == code) {//500
             //xswitch出错
-        } else if (XCCConstants.CODE_CHRYL_ERROR == code) {//555
+        } else if (XCCConstants.CHRYL_ERROR_CODE == code) {//555
             //自定义错误码
         } else if (XCCConstants.JSONRPC_CODE_SYSTEM_ERROR == code) {//6xx
             //系统错误

@@ -127,7 +127,7 @@ public class XCCConstants {
     //500：内部错误。
     public static final int JSONRPC_SERVER_ERROR = 500;
     //555: 自定义错误码
-    public static final int CODE_CHRYL_ERROR = 555;
+    public static final int CHRYL_ERROR_CODE = 555;
     //6xx: 系统错误，如发生在关机或即将关机的情况下，拒绝呼叫。
     public static final int JSONRPC_CODE_SYSTEM_ERROR = 6;
     //--------------------xcc识别返回 code

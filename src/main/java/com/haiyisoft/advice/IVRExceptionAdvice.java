@@ -25,7 +25,7 @@ public class IVRExceptionAdvice {
          * 报错直接转人工
          */
         XCCEvent xccEvent = new XCCEvent();
-        xccEvent.setCode(XCCConstants.CODE_CHRYL_ERROR);
+        xccEvent.setCode(XCCConstants.CHRYL_ERROR_CODE);
         xccEvent.setMessage("你的代码报错啦: " + method + e);
 //        xccEvent.setXccRecognitionResult("你的代码报错啦: " + xccEvent.getXccRecognitionResult());
 //        xccEvent.setType("你的代码报错啦: " + xccEvent.getType());
