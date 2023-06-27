@@ -55,101 +55,148 @@ public class RequestUtil {
     }
 
     /**
+     * 无数据返回
+     *
      * @param con     connection
      * @param service node uuid
      * @param method  xcc method
      * @param params  rpc-json params
+     * @param timeout 超时时间
+     * @return
      */
-    public static void natsRequest(Connection con, String service, String method, JSONObject params) {
+    public static void natsRequestTimeOut(Connection con, String service, String method, JSONObject params, Duration timeout) {
+        log.info("{} 执行开始时间为", method);
         JSONObject jsonRpc = getJsonRpc(method, params);
         byte[] bytes = jsonRpc.toString().getBytes(StandardCharsets.UTF_8);
-        log.info(" service:{}, jsonRpc:{}", service, jsonRpc);
+        log.info("{} 请求信息 service:[{}], Serializer json:{}", method, service, JSON.toJSONString(jsonRpc, JSONWriter.Feature.PrettyFormat));
         try {
-            con.request(service, bytes);
+            Message msg = con.request(service, bytes, timeout);
+            String response = new String(msg.getData(), StandardCharsets.UTF_8);
+            log.info("{} 返回信息:{}", method, response);
+            JSONObject result = JSONObject.parseObject(response).getJSONObject("result");
+            Integer code = result.getInteger("code");//统一返回
+            String message = result.getString("message");//统一返回
+            String type = "";//type=ERROR时才有
+            String error = "";//type=ERROR时才有
+            String cause = result.getString("cause");
+            log.error("XSwitch Print Log method : [{}]  code : [{}] , message : [{}] , type : [{}] , error : [{}] , cause : [{}]",
+                    method, code, message, type, error, cause);
         } catch (Exception e) {
-            e.printStackTrace();
             log.error("xcc handleException 发生异常：{} , {}", method, e);
         }
+        log.info("{} 执行结束", method);
     }
-
 
     /**
      * 无数据返回
+     * nats 请求超时时间默认十分钟
      *
-     * @param con          connection
-     * @param service      node uuid
-     * @param method       xcc method
-     * @param params       rpc-json params
-     * @param milliSeconds 毫秒
+     * @param con     connection
+     * @param service node uuid
+     * @param method  xcc method
+     * @param params  rpc-json params
      * @return
      */
-    public static void natsRequestTimeOut(Connection con, String service, String method, JSONObject params, long milliSeconds) {
-        log.info("{} 执行开始", method);
+    public static void natsRequest(Connection con, String service, String method, JSONObject params) {
+        log.info("{} 执行开始时间为", method);
         JSONObject jsonRpc = getJsonRpc(method, params);
         byte[] bytes = jsonRpc.toString().getBytes(StandardCharsets.UTF_8);
-        String json = JSON.toJSONString(jsonRpc, JSONWriter.Feature.PrettyFormat);
-        log.info("{} 请求信息 service:[{}], Serializer json:{}", method, service, json);
+        log.info("{} 请求信息 service:[{}], Serializer json:{}", method, service, JSON.toJSONString(jsonRpc, JSONWriter.Feature.PrettyFormat));
         try {
+            //默认请求超时时间10分钟 NatsRequestCompletableFuture
             Future<Message> incoming = con.request(service, bytes);
-            Message msg = incoming.get(milliSeconds, TimeUnit.MILLISECONDS);
+            Message msg = incoming.get();
+//            Message msg = incoming.get(1L, TimeUnit.MILLISECONDS);
             String response = new String(msg.getData(), StandardCharsets.UTF_8);
             log.info("{} 返回信息:{}", method, response);
-            log.info("{} 执行结束", method);
+            JSONObject result = JSONObject.parseObject(response).getJSONObject("result");
+            Integer code = result.getInteger("code");//统一返回
+            String message = result.getString("message");//统一返回
+            String type = "";//type=ERROR时才有
+            String error = "";//type=ERROR时才有
+            String cause = result.getString("cause");
+            log.error("XSwitch Print Log method : [{}]  code : [{}] , message : [{}] , type : [{}] , error : [{}] , cause : [{}]",
+                    method, code, message, type, error, cause);
         } catch (Exception e) {
-            e.printStackTrace();
             log.error("xcc handleException 发生异常：{} , {}", method, e);
         }
-
+        log.info("{} 执行结束", method);
     }
 
     /**
      * Hangup
      *
-     * @param con          connection
-     * @param service      node uuid
-     * @param method       xcc method
-     * @param params       rpc-json params
-     * @param milliSeconds 毫秒
+     * @param con     connection
+     * @param service node uuid
+     * @param method  xcc method
+     * @param params  rpc-json params
+     * @param timeout 超时时间
      * @return
      */
-    public static XCCEvent natsRequestFutureByHangup(Connection con, String service, String method, JSONObject params, long milliSeconds) {
-        return natsRequestFutureByAnswer(con, service, method, params, milliSeconds);
+    public static XCCEvent natsRequestFutureByHangup(Connection con, String service, String method, JSONObject params, Duration timeout) {
+        return natsRequestFutureByAnswer(con, service, method, params, timeout);
+    }
+
+    /**
+     * Hangup
+     * nats 请求超时时间默认十分钟
+     *
+     * @param con     connection
+     * @param service node uuid
+     * @param method  xcc method
+     * @param params  rpc-json params
+     * @return
+     */
+    public static XCCEvent natsRequestFutureByHangup(Connection con, String service, String method, JSONObject params) {
+        return natsRequestFutureByAnswer(con, service, method, params, null);
     }
 
     /**
      * PlayTTS
      *
-     * @param con          connection
-     * @param service      node uuid
-     * @param method       xcc method
-     * @param params       rpc-json params
-     * @param milliSeconds 毫秒
+     * @param con     connection
+     * @param service node uuid
+     * @param method  xcc method
+     * @param params  rpc-json params
+     * @param timeout 超时时间
      * @return
      */
-    public static XCCEvent natsRequestFutureByPlayTTS(Connection con, String service, String method, JSONObject params, long milliSeconds) {
-        return natsRequestFutureByAnswer(con, service, method, params, milliSeconds);
+    public static XCCEvent natsRequestFutureByPlayTTS(Connection con, String service, String method, JSONObject params, Duration timeout) {
+        return natsRequestFutureByAnswer(con, service, method, params, timeout);
+    }
+
+    /**
+     * PlayTTS
+     * nats 请求超时时间默认十分钟
+     *
+     * @param con     connection
+     * @param service node uuid
+     * @param method  xcc method
+     * @param params  rpc-json params
+     * @return
+     */
+    public static XCCEvent natsRequestFutureByPlayTTS(Connection con, String service, String method, JSONObject params) {
+        return natsRequestFutureByAnswer(con, service, method, params, null);
     }
 
     /**
      * Answer
      *
-     * @param con          connection
-     * @param service      node uuid
-     * @param method       xcc method
-     * @param params       rpc-json params
-     * @param milliSeconds 毫秒
+     * @param con     connection
+     * @param service node uuid
+     * @param method  xcc method
+     * @param params  rpc-json params
+     * @param timeout 超时时间
      * @return
      */
-    public static XCCEvent natsRequestFutureByAnswer(Connection con, String service, String method, JSONObject params, long milliSeconds) {
+    public static XCCEvent natsRequestFutureByAnswer(Connection con, String service, String method, JSONObject params, Duration timeout) {
         log.info("{} 执行开始", method);
         JSONObject jsonRpc = getJsonRpc(method, params);
         byte[] bytes = jsonRpc.toString().getBytes(StandardCharsets.UTF_8);
         log.info("{} 请求信息 service:[{}], Serializer json:{}", method, service, JSON.toJSONString(jsonRpc, JSONWriter.Feature.PrettyFormat));
         XCCEvent xccEvent;
         try {
-            Future<Message> incoming = con.request(service, bytes);
-            Message msg = incoming.get();
-//            Message msg = incoming.get(milliSeconds, TimeUnit.MILLISECONDS);
+            Message msg = con.request(service, bytes, timeout);
             String response = new String(msg.getData(), StandardCharsets.UTF_8);
             log.info("{} 返回信息:{}", method, response);
             JSONObject result = JSONObject.parseObject(response).getJSONObject("result");
@@ -164,9 +211,22 @@ public class RequestUtil {
             log.error("xcc handleException 发生异常：{} , {}", method, e);
             xccEvent = IVRExceptionAdvice.handleException(method, e);
         }
-
         log.info("{} 执行结束", method);
         return xccEvent;
+    }
+
+    /**
+     * Answer
+     * nats 请求超时时间默认十分钟
+     *
+     * @param con     connection
+     * @param service node uuid
+     * @param method  xcc method
+     * @param params  rpc-json params
+     * @return
+     */
+    public static XCCEvent natsRequestFutureByAnswer(Connection con, String service, String method, JSONObject params) {
+        return natsRequestFutureByAnswer(con, service, method, params, null);
     }
 
     /**
@@ -295,22 +355,23 @@ public class RequestUtil {
      * @param service node uuid
      * @param method  xcc method
      * @param params  rpc-json params
-     * @param hours   小时
+     * @param timeout 超时时间
      * @return
      */
-    public static XCCEvent natsRequestFutureByBridge(Connection con, String service, String method, JSONObject params, long hours) {
+    public static XCCEvent natsRequestFutureByBridge(Connection con, String service, String method, JSONObject params, Duration timeout) {
         log.info("{} 执行开始时间为", method);
         JSONObject jsonRpc = getJsonRpc(method, params);
         byte[] bytes = jsonRpc.toString().getBytes(StandardCharsets.UTF_8);
         log.info("{} 请求信息 service:[{}], Serializer json:{}", method, service, JSON.toJSONString(jsonRpc, JSONWriter.Feature.PrettyFormat));
         XCCEvent xccEvent;
         try {
+            //默认超时时间10分钟 NatsRequestCompletableFuture
 //            Future<Message> incoming = con.request(service, bytes);
 //            Message msg = incoming.get();
 //            Message msg = incoming.get(milliSeconds, TimeUnit.MILLISECONDS);
 //            Message msg = incoming.get(1L, TimeUnit.HOURS);
 
-            Message msg = con.request(service, bytes, Duration.ofHours(1L));
+            Message msg = con.request(service, bytes, timeout);
             String response = new String(msg.getData(), StandardCharsets.UTF_8);
             log.info("{} 返回信息:{}", method, response);
             JSONObject result = JSONObject.parseObject(response).getJSONObject("result");
@@ -331,36 +392,44 @@ public class RequestUtil {
     }
 
     /**
+     * Bridge
+     * nats 请求超时时间默认十分钟
+     *
+     * @param con     connection
+     * @param service node uuid
+     * @param method  xcc method
+     * @param params  rpc-json params
+     * @return
+     */
+    public static XCCEvent natsRequestFutureByBridge(Connection con, String service, String method, JSONObject params) {
+        return natsRequestFutureByBridge(con, service, method, params, null);
+    }
+
+    /**
      * Log
      *
      * @param con     connection
      * @param service node uuid
      * @param method  xcc method
      * @param params  rpc-json params
-     * @param hours   毫秒
+     * @param timeout 超时时间
      * @return
      */
-    public static void natsRequestFutureByLog(Connection con, String service, String method, JSONObject params, long hours) {
-        log.info("{} 执行开始时间为", method);
-        JSONObject jsonRpc = getJsonRpc(method, params);
-        byte[] bytes = jsonRpc.toString().getBytes(StandardCharsets.UTF_8);
-        log.info("{} 请求信息 service:[{}], Serializer json:{}", method, service, JSON.toJSONString(jsonRpc, JSONWriter.Feature.PrettyFormat));
-        try {
-            Future<Message> incoming = con.request(service, bytes);
-            Message msg = incoming.get();
-            String response = new String(msg.getData(), StandardCharsets.UTF_8);
-            log.info("{} 返回信息:{}", method, response);
-            JSONObject result = JSONObject.parseObject(response).getJSONObject("result");
-            Integer code = result.getInteger("code");//统一返回
-            String message = result.getString("message");//统一返回
-            String type = "";//type=ERROR时才有
-            String error = "";//type=ERROR时才有
-            String cause = result.getString("cause");
-            log.info("{} print log : {}", method, "-----------");
-        } catch (Exception e) {
-            log.error("xcc handleException 发生异常：{} , {}", method, e);
-        }
-        log.info("{} 执行结束", method);
+    public static void natsRequestFutureByLog(Connection con, String service, String method, JSONObject params, Duration timeout) {
+        natsRequestTimeOut(con, service, method, params, timeout);
+    }
 
+    /**
+     * Log
+     * nats 请求超时时间默认十分钟
+     *
+     * @param con     connection
+     * @param service node uuid
+     * @param method  xcc method
+     * @param params  rpc-json params
+     * @return
+     */
+    public static void natsRequestFutureByLog(Connection con, String service, String method, JSONObject params) {
+        natsRequest(con, service, method, params);
     }
 }

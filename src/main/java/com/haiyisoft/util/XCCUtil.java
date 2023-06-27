@@ -10,6 +10,7 @@ import com.haiyisoft.handler.XCCHandler;
 import io.nats.client.Connection;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -122,7 +123,7 @@ public class XCCUtil {
         params.put("ctrl_uuid", "chryl-ivvr");
         params.put("uuid", channelEvent.getUuid());
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
-        RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.GET_STATE, params, 10000);
+        RequestUtil.natsRequest(nc, service, XCCConstants.GET_STATE, params);
     }
 
 
@@ -145,7 +146,7 @@ public class XCCUtil {
         String channelId = channelEvent.getUuid();
         params.put("uuid", channelId);
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
-        XCCEvent xccEvent = RequestUtil.natsRequestFutureByAnswer(nc, service, XCCConstants.ANSWER, params, 1000);
+        XCCEvent xccEvent = RequestUtil.natsRequestFutureByAnswer(nc, service, XCCConstants.ANSWER, params);
         return xccEvent;
     }
 
@@ -158,7 +159,7 @@ public class XCCUtil {
         //flag integer 值为: 0 挂断自己 , 1 挂断对方 , 2 挂断双方
         params.put("flag", 2);
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
-        RequestUtil.natsRequestFutureByHangup(nc, service, XCCConstants.HANGUP, params, 3000);
+        RequestUtil.natsRequestFutureByHangup(nc, service, XCCConstants.HANGUP, params);
     }
 
     /**
@@ -178,7 +179,7 @@ public class XCCUtil {
         JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
         params.put("media", media);
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
-        return RequestUtil.natsRequestFutureByPlayTTS(nc, service, XCCConstants.PLAY, params, 1000);
+        return RequestUtil.natsRequestFutureByPlayTTS(nc, service, XCCConstants.PLAY, params);
     }
 
     /**
@@ -197,7 +198,7 @@ public class XCCUtil {
         JSONObject media = getPlayMedia(XCCConstants.PLAY_FILE, file);
         params.put("media", media);
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
-        RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.PLAY, params, 1000);
+        RequestUtil.natsRequest(nc, service, XCCConstants.PLAY, params);
     }
 
     /**
@@ -325,7 +326,7 @@ public class XCCUtil {
 
         JSONObject params = convertBridgeParams(channelEvent, "user/1001", "555555555555555", "13287983898");
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
-        return RequestUtil.natsRequestFutureByBridge(nc, service, XCCConstants.BRIDGE, params, 1L);
+        return RequestUtil.natsRequestFutureByBridge(nc, service, XCCConstants.BRIDGE, params, Duration.ofHours(1L));
     }
 
     /**
@@ -342,7 +343,7 @@ public class XCCUtil {
         playTTS(nc, channelEvent, ttsContent);
         JSONObject params = convertBridgeParams(channelEvent, dialStr, sipHeader, callNumber);
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
-        return RequestUtil.natsRequestFutureByBridge(nc, service, XCCConstants.BRIDGE, params, 1L);
+        return RequestUtil.natsRequestFutureByBridge(nc, service, XCCConstants.BRIDGE, params, Duration.ofHours(1L));
     }
 
     /**
@@ -362,7 +363,7 @@ public class XCCUtil {
         playTTS(nc, channelEvent, ttsContent);
         JSONObject params = convertBridgeParams(channelEvent, dialStr);
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
-        return RequestUtil.natsRequestFutureByBridge(nc, service, XCCConstants.BRIDGE, params, 1L);
+        return RequestUtil.natsRequestFutureByBridge(nc, service, XCCConstants.BRIDGE, params, Duration.ofHours(1L));
     }
 
     /**
@@ -410,7 +411,7 @@ public class XCCUtil {
         params.put("data", "Hello, this is a test");
 
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
-        RequestUtil.natsRequestFutureByLog(nc, service, XCCConstants.LOG, params, 1L);
+        RequestUtil.natsRequestFutureByLog(nc, service, XCCConstants.LOG, params);
     }
 
     /********************************************xswitch相关********************************************/
