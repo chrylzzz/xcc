@@ -191,6 +191,7 @@ public class XCCHandler {
     }
 
     public static void hangup(Connection nc, ChannelEvent channelEvent) {
+        XCCUtil.writeLog(nc, channelEvent);
         XCCUtil.hangup(nc, channelEvent);
     }
 

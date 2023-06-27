@@ -130,44 +130,15 @@ public class RequestUtil {
      * @param service node uuid
      * @param method  xcc method
      * @param params  rpc-json params
-     * @param timeout 超时时间
-     * @return
-     */
-    public static XCCEvent natsRequestFutureByHangup(Connection con, String service, String method, JSONObject params, Duration timeout) {
-        return natsRequestFutureByAnswer(con, service, method, params, timeout);
-    }
-
-    /**
-     * Hangup
-     * nats 请求超时时间默认十分钟
-     *
-     * @param con     connection
-     * @param service node uuid
-     * @param method  xcc method
-     * @param params  rpc-json params
      * @return
      */
     public static XCCEvent natsRequestFutureByHangup(Connection con, String service, String method, JSONObject params) {
-        return natsRequestFutureByAnswer(con, service, method, params, null);
+        return natsRequestFutureByAnswer(con, service, method, params);
     }
+
 
     /**
      * PlayTTS
-     *
-     * @param con     connection
-     * @param service node uuid
-     * @param method  xcc method
-     * @param params  rpc-json params
-     * @param timeout 超时时间
-     * @return
-     */
-    public static XCCEvent natsRequestFutureByPlayTTS(Connection con, String service, String method, JSONObject params, Duration timeout) {
-        return natsRequestFutureByAnswer(con, service, method, params, timeout);
-    }
-
-    /**
-     * PlayTTS
-     * nats 请求超时时间默认十分钟
      *
      * @param con     connection
      * @param service node uuid
@@ -176,27 +147,28 @@ public class RequestUtil {
      * @return
      */
     public static XCCEvent natsRequestFutureByPlayTTS(Connection con, String service, String method, JSONObject params) {
-        return natsRequestFutureByAnswer(con, service, method, params, null);
+        return natsRequestFutureByAnswer(con, service, method, params);
     }
 
     /**
      * Answer
+     * nats 请求超时时间默认十分钟
      *
      * @param con     connection
      * @param service node uuid
      * @param method  xcc method
      * @param params  rpc-json params
-     * @param timeout 超时时间
      * @return
      */
-    public static XCCEvent natsRequestFutureByAnswer(Connection con, String service, String method, JSONObject params, Duration timeout) {
+    public static XCCEvent natsRequestFutureByAnswer(Connection con, String service, String method, JSONObject params) {
         log.info("{} 执行开始", method);
         JSONObject jsonRpc = getJsonRpc(method, params);
         byte[] bytes = jsonRpc.toString().getBytes(StandardCharsets.UTF_8);
         log.info("{} 请求信息 service:[{}], Serializer json:{}", method, service, JSON.toJSONString(jsonRpc, JSONWriter.Feature.PrettyFormat));
         XCCEvent xccEvent;
         try {
-            Message msg = con.request(service, bytes, timeout);
+            Future<Message> incoming = con.request(service, bytes);
+            Message msg = incoming.get();
             String response = new String(msg.getData(), StandardCharsets.UTF_8);
             log.info("{} 返回信息:{}", method, response);
             JSONObject result = JSONObject.parseObject(response).getJSONObject("result");
@@ -213,20 +185,6 @@ public class RequestUtil {
         }
         log.info("{} 执行结束", method);
         return xccEvent;
-    }
-
-    /**
-     * Answer
-     * nats 请求超时时间默认十分钟
-     *
-     * @param con     connection
-     * @param service node uuid
-     * @param method  xcc method
-     * @param params  rpc-json params
-     * @return
-     */
-    public static XCCEvent natsRequestFutureByAnswer(Connection con, String service, String method, JSONObject params) {
-        return natsRequestFutureByAnswer(con, service, method, params, null);
     }
 
     /**
@@ -389,34 +347,6 @@ public class RequestUtil {
         log.info("{} 执行结束", method);
 
         return xccEvent;
-    }
-
-    /**
-     * Bridge
-     * nats 请求超时时间默认十分钟
-     *
-     * @param con     connection
-     * @param service node uuid
-     * @param method  xcc method
-     * @param params  rpc-json params
-     * @return
-     */
-    public static XCCEvent natsRequestFutureByBridge(Connection con, String service, String method, JSONObject params) {
-        return natsRequestFutureByBridge(con, service, method, params, null);
-    }
-
-    /**
-     * Log
-     *
-     * @param con     connection
-     * @param service node uuid
-     * @param method  xcc method
-     * @param params  rpc-json params
-     * @param timeout 超时时间
-     * @return
-     */
-    public static void natsRequestFutureByLog(Connection con, String service, String method, JSONObject params, Duration timeout) {
-        natsRequestTimeOut(con, service, method, params, timeout);
     }
 
     /**

@@ -82,12 +82,12 @@ public class XCCUtil {
 //        speech.put("nobreak", XCCConstants.NO_BREAK);
         speech.put("nobreak", IVRInit.XCC_CONFIG_PROPERTY.getNoBreak());
         //正整数，未检测到语音超时，默认为5000ms
-//        speech.put("no_input_timeout", 8 * 1000);
+//        speech.put("no_input_timeout", 5 * 1000);
         speech.put("no_input_timeout", IVRInit.XCC_CONFIG_PROPERTY.getSpeechNoInputTimeout());
         //语音超时，即如果对方讲话一直不停超时，最大只能设置成6000ms，默认为6000ms。
 //        speech.put("speech_timeout", 8 * 1000);
         //正整数，语音最大超时，和参数speech_timeout作用相同，如果max_speech_timeout的值大于speech_timeout，则以max_speech_timeout为主，用于一些特殊场景的语音时长设置。
-//        speech.put("max_speech_timeout", 12 * 1000);
+//        speech.put("max_speech_timeout", 8 * 1000);
         speech.put("max_speech_timeout", IVRInit.XCC_CONFIG_PROPERTY.getMaxSpeechTimeout());
         //是否返回中间结果
         speech.put("partial_event", true);
@@ -112,7 +112,7 @@ public class XCCUtil {
         params.put("uuid", channelEvent.getUuid());
         params.put("data", data);
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
-//        RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.SET_VAR, params, 1000);
+        RequestUtil.natsRequest(nc, service, XCCConstants.SET_VAR, params);
     }
 
 
@@ -135,7 +135,7 @@ public class XCCUtil {
         String channelUuid = channelEvent.getUuid();
         params.put("uuid", channelUuid);
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
-//        RequestUtil.natsRequestTimeOut(nc, service, XCCConstants.ACCEPT, params, 10000);
+        RequestUtil.natsRequest(nc, service, XCCConstants.ACCEPT, params);
     }
 
     //应答
@@ -401,14 +401,16 @@ public class XCCUtil {
             "id": "fake-log"
         }
          */
+        //当前channel 的uuid
+        String channelId = channelEvent.getUuid();
         JSONObject params = new JSONObject();
         params.put("ctrl_uuid", "chryl-ivvr");
         params.put("level", "ERR");
-        params.put("function", "ERR");
-        params.put("file", "ERR");
-        params.put("log_uuid", "ERR");
-        params.put("line", "ERR");
-        params.put("data", "Hello, this is a test");
+        params.put("function", "xnode_status");
+        params.put("file", "log.js");
+        params.put("log_uuid", channelId);
+        params.put("line", 69);
+        params.put("data", "XCC 执行挂断");
 
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
         RequestUtil.natsRequestFutureByLog(nc, service, XCCConstants.LOG, params);
