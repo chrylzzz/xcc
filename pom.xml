@@ -9,7 +9,7 @@
         <relativePath/>
     </parent>
     <groupId>com.haiyisoft</groupId>
-    <artifactId>xcc</artifactId>
+    <artifactId>chryl-xcc</artifactId>
     <!--<packaging>war</packaging>-->
     <packaging>jar</packaging>
     <version>0.0.1-SNAPSHOT</version>
@@ -107,7 +107,7 @@
     </dependencies>
 
     <build>
-        <finalName>xcc</finalName>
+        <finalName>chryl-xcc</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
