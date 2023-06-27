@@ -79,7 +79,7 @@ public class RequestUtil {
             String type = "";//type=ERROR时才有
             String error = "";//type=ERROR时才有
             String cause = result.getString("cause");
-            log.error("XSwitch Print Log method : [{}]  code : [{}] , message : [{}] , type : [{}] , error : [{}] , cause : [{}]",
+            log.error("XSwitch Invoke method : [{}]  code : [{}] , message : [{}] , type : [{}] , error : [{}] , cause : [{}]",
                     method, code, message, type, error, cause);
         } catch (Exception e) {
             log.error("xcc handleException 发生异常：{} , {}", method, e);
@@ -115,7 +115,7 @@ public class RequestUtil {
             String type = "";//type=ERROR时才有
             String error = "";//type=ERROR时才有
             String cause = result.getString("cause");
-            log.error("XSwitch Print Log method : [{}]  code : [{}] , message : [{}] , type : [{}] , error : [{}] , cause : [{}]",
+            log.error("XSwitch Invoke method : [{}]  code : [{}] , message : [{}] , type : [{}] , error : [{}] , cause : [{}]",
                     method, code, message, type, error, cause);
         } catch (Exception e) {
             log.error("xcc handleException 发生异常：{} , {}", method, e);
@@ -351,7 +351,6 @@ public class RequestUtil {
 
     /**
      * Log
-     * nats 请求超时时间默认十分钟
      *
      * @param con     connection
      * @param service node uuid
