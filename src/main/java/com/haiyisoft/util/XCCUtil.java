@@ -377,8 +377,8 @@ public class XCCUtil {
      * @param channelEvent
      * @return
      */
-    public static XCCEvent log(Connection nc, ChannelEvent channelEvent) {
-        JSONObject params = new JSONObject();
+    public static void log(Connection nc, ChannelEvent channelEvent) {
+
         /*
         {
             "jsonrpc": "2.0",
@@ -395,6 +395,7 @@ public class XCCUtil {
             "id": "fake-log"
         }
          */
+        JSONObject params = new JSONObject();
         params.put("ctrl_uuid", "chryl-ivvr");
         params.put("level", "ERR");
         params.put("function", "ERR");
@@ -404,7 +405,7 @@ public class XCCUtil {
         params.put("data", "Hello, this is a test");
 
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
-        return RequestUtil.natsRequestFutureByLog(nc, service, XCCConstants.LOG, params, 1L);
+        RequestUtil.natsRequestFutureByLog(nc, service, XCCConstants.LOG, params, 1L);
     }
 
     /********************************************xswitch相关********************************************/
