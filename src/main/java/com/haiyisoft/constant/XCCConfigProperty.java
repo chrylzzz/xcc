@@ -31,12 +31,12 @@ public class XCCConfigProperty {
 
     // tts engine
     private String ttsEngine;
+
     // tts engine
     private String ttsVoice;
 
-    // 讯飞tts语速
+    // tts语速
     private String xttsS;
-
 
     // asr engine
     private String asrEngine;
@@ -56,9 +56,31 @@ public class XCCConfigProperty {
     private boolean handleEngineData;
     // nats list
     private List<JSONObject> natsList;
-    // DTMF 输入超时
-    private Integer dtmfTimeout;
-    // DTMF 位间超时
-    private Integer digitTimeout;
 
+
+    // DTMF 输入超时
+    private int dtmfNoInputTimeout;
+    // DTMF 位间超时
+    private int digitTimeout;
+
+    // speech 未检测到语音超时
+    private int speechNoInputTimeout;
+    // speech 语音超时，即如果对方讲话一直不停超时
+    private int maxSpeechTimeout;
+
+    public void setDtmfNoInputTimeout(int dtmfNoInputTimeout) {
+        this.dtmfNoInputTimeout = dtmfNoInputTimeout * 1000;
+    }
+
+    public void setDigitTimeout(int digitTimeout) {
+        this.digitTimeout = digitTimeout * 1000;
+    }
+
+    public void setSpeechNoInputTimeout(int speechNoInputTimeout) {
+        this.speechNoInputTimeout = speechNoInputTimeout * 1000;
+    }
+
+    public void setMaxSpeechTimeout(int maxSpeechTimeout) {
+        this.maxSpeechTimeout = maxSpeechTimeout * 1000;
+    }
 }

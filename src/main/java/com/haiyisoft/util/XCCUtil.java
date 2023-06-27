@@ -57,8 +57,10 @@ public class XCCUtil {
         JSONObject dtmf = new JSONObject();
         dtmf.put("min_digits", 1);//min_digits：最小位长。
         dtmf.put("max_digits", maxDigits);//max_digits：最大位长。
-        dtmf.put("timeout", 10 * 1000);//timeout：超时，默认5000ms。
-        dtmf.put("digit_timeout", 5 * 1000);//digit_timeout：位间超时，默认2000ms。
+//        dtmf.put("timeout", 10 * 1000);//timeout：超时，默认5000ms。
+//        dtmf.put("digit_timeout", 5 * 1000);//digit_timeout：位间超时，默认2000ms。
+        dtmf.put("timeout", IVRInit.XCC_CONFIG_PROPERTY.getDtmfNoInputTimeout());//timeout：超时，默认5000ms。
+        dtmf.put("digit_timeout", IVRInit.XCC_CONFIG_PROPERTY.getDigitTimeout());//digit_timeout：位间超时，默认2000ms。
         dtmf.put("terminators", XCCConstants.DTMF_TERMINATORS);//terminators：结束符，如#。
         return dtmf;
     }
@@ -79,11 +81,13 @@ public class XCCUtil {
 //        speech.put("nobreak", XCCConstants.NO_BREAK);
         speech.put("nobreak", IVRInit.XCC_CONFIG_PROPERTY.getNoBreak());
         //正整数，未检测到语音超时，默认为5000ms
-        speech.put("no_input_timeout", 5 * 1000);
+//        speech.put("no_input_timeout", 8 * 1000);
+        speech.put("no_input_timeout", IVRInit.XCC_CONFIG_PROPERTY.getSpeechNoInputTimeout());
         //语音超时，即如果对方讲话一直不停超时，最大只能设置成6000ms，默认为6000ms。
-        speech.put("speech_timeout", 6 * 1000);
+//        speech.put("speech_timeout", 8 * 1000);
         //正整数，语音最大超时，和参数speech_timeout作用相同，如果max_speech_timeout的值大于speech_timeout，则以max_speech_timeout为主，用于一些特殊场景的语音时长设置。
-        speech.put("max_speech_timeout", 8 * 1000);
+//        speech.put("max_speech_timeout", 12 * 1000);
+        speech.put("max_speech_timeout", IVRInit.XCC_CONFIG_PROPERTY.getMaxSpeechTimeout());
         //是否返回中间结果
         speech.put("partial_event", true);
         //默认会发送Event.DetectedData事件，如果为true则不发送。
@@ -377,7 +381,7 @@ public class XCCUtil {
      * @param channelEvent
      * @return
      */
-    public static void log(Connection nc, ChannelEvent channelEvent) {
+    public static void writeLog(Connection nc, ChannelEvent channelEvent) {
 
         /*
         {

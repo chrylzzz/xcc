@@ -29,6 +29,16 @@ xcc:
 #
 # XML数据需要自己处理, JSON数据XSwitch已深度解析, true开启自助解析
   handle-engine-data: true
+#
+# DTMF 输入超时
+  dtmf-no-input-timeout: 10
+# DTMF 位间超时
+  digit-timeout: 5
+# speech 未检测到语音超时
+  speech-no-input-timeout: 8
+# speech 语音超时，即如果对方讲话一直不停超时
+  max-speech-timeout: 12
+#
 # 若有多台XSwitch,再开启,true开启
   cluster: true
   #配置多节点
