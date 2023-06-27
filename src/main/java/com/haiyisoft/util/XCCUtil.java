@@ -20,6 +20,7 @@ import java.util.Map;
 @Slf4j
 public class XCCUtil {
 
+    /********************************************xswitch相关********************************************/
 
     /**
      * 获取媒体对象
@@ -319,7 +320,7 @@ public class XCCUtil {
 
         JSONObject params = convertBridgeParams(channelEvent, "user/1001", "555555555555555", "13287983898");
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
-        return RequestUtil.natsRequestFutureByBridge(nc, service, XCCConstants.BRIDGE, params, 2000);
+        return RequestUtil.natsRequestFutureByBridge(nc, service, XCCConstants.BRIDGE, params, 1L);
     }
 
     /**
@@ -336,7 +337,7 @@ public class XCCUtil {
         playTTS(nc, channelEvent, ttsContent);
         JSONObject params = convertBridgeParams(channelEvent, dialStr, sipHeader, callNumber);
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
-        return RequestUtil.natsRequestFutureByBridge(nc, service, XCCConstants.BRIDGE, params, 2000);
+        return RequestUtil.natsRequestFutureByBridge(nc, service, XCCConstants.BRIDGE, params, 1L);
     }
 
     /**
@@ -356,9 +357,59 @@ public class XCCUtil {
         playTTS(nc, channelEvent, ttsContent);
         JSONObject params = convertBridgeParams(channelEvent, dialStr);
         String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
-        return RequestUtil.natsRequestFutureByBridge(nc, service, XCCConstants.BRIDGE, params, 2000);
+        return RequestUtil.natsRequestFutureByBridge(nc, service, XCCConstants.BRIDGE, params, 1L);
     }
 
+    /**
+     * 日志打印。
+     * 通过调用本接口可实现在XSwitch内打印想要输出的日志信息。该接口不依赖于通话，可在任意处进行调用。
+     * <p>
+     * level：日志级别。字符串类型。可从以下级别中任选其一。默认为DEBUG。
+     * -------DISABLE、CONSOLE、ALERT、CRIT、ERR、WARNING、NOTICE、INFO、DEBUG
+     * function：调用该接口代码所在函数名称。
+     * file：调用该接口代码所在文件名称。
+     * line：调用该接口代码行数。整型。
+     * log_uuid：任意字符串。可选。建议为当前通话UUID。
+     * data：想要打印的日志信息。
+     * 注意，以上六个参数中，只有log_uuid为可选参数，其他均为必填
+     *
+     * @param nc
+     * @param channelEvent
+     * @return
+     */
+    public static XCCEvent log(Connection nc, ChannelEvent channelEvent) {
+        JSONObject params = new JSONObject();
+        /*
+        {
+            "jsonrpc": "2.0",
+            "method": "XNode.Log",
+            "params": {
+                "ctrl_uuid": "f8a02eed-3ea6-42a2-838d-856f529d3fbc",
+                "level": "ALERT",
+                "function": "xnode_status",
+                "file": "log.js",
+                "log_uuid": "",
+                "line": 69,
+                "data": "Hello, this is a test"
+            },
+            "id": "fake-log"
+        }
+         */
+        params.put("ctrl_uuid", "chryl-ivvr");
+        params.put("level", "ERR");
+        params.put("function", "ERR");
+        params.put("file", "ERR");
+        params.put("log_uuid", "ERR");
+        params.put("line", "ERR");
+        params.put("data", "Hello, this is a test");
+
+        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
+        return RequestUtil.natsRequestFutureByLog(nc, service, XCCConstants.LOG, params, 1L);
+    }
+
+    /********************************************xswitch相关********************************************/
+
+    /********************************************数据处理********************************************/
     /**
      * 转人工和转精准ivr
      * sofia/default/1001@10.194.38.38:5060
@@ -468,5 +519,7 @@ public class XCCUtil {
 
         return params;
     }
+
+    /********************************************数据处理********************************************/
 
 }

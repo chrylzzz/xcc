@@ -101,6 +101,8 @@ public class XCCConstants {
     public static final String BRIDGE = "Xnode.Bridge";
     //挂断
     public static final String HANGUP = "Xnode.Hangup";
+    //日志打印
+    public static final String LOG = "XNode.Log";
 
     //flow_control：呼叫控制，跟程控交换机中的控制方式类似，略有不同。
     //NONE：无控制，任意方挂机不影响其它一方
