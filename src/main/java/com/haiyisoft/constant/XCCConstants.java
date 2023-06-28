@@ -163,6 +163,7 @@ public class XCCConstants {
     public static final String NGD_QUERY_AUTHORIZATION = "NGD 43b6f0be-4894-466f-a346-08046d935035";
     //欢迎语
     public static final String WELCOME_TEXT = "我是智能美美, 您要咨询什么问题, 您请说";
+    //    public static final String WELCOME_TEXT = "欢迎致电南方电网广西电网公司，我是智能用电管家美美，我可以为您查电费、查表码，请问您需要查询这些信息吗？";
     //转人工话术
     public static final String ARTIFICIAL_TEXT = "正在为您转接人工坐席, 请稍后";
     //XCC返回失败话术

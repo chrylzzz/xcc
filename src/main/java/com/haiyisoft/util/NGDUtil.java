@@ -193,19 +193,21 @@ public class NGDUtil {
      */
 
     public static NGDEvent convertText(NGDEvent ngdEvent) {
-        String retKey = "";//指令
-        String retValue = "";//播报内容
+        String retKey;//指令
+        String retValue;//播报内容
         String todoText = ngdEvent.getAnswer();
         log.info("convertText todoText: {}", todoText);
         if (StringUtils.isBlank(todoText)) {//话术为空
             retKey = XCCConstants.YYSR;
             retValue = XCCConstants.XCC_MISSING_ANSWER;
         } else {
-            if (!todoText.contains(XCCConstants.NGD_SEPARATOR)) {//不带#的话术
+            //转大写
+            String upperCase = todoText.toUpperCase();
+            if (!upperCase.contains(XCCConstants.NGD_SEPARATOR)) {//不带#的话术
                 retKey = XCCConstants.YYSR;
-                retValue = todoText;
+                retValue = upperCase;
             } else {//带#的话术
-                String[] split = todoText.split(XCCConstants.NGD_SEPARATOR);
+                String[] split = upperCase.split(XCCConstants.NGD_SEPARATOR);
                 retKey = split[0];//指令
                 if (StringUtils.containsAny(retKey, XCCConstants.RET_KEY_STR_ARRAY)) {//有指令
                     retValue = split[1];//内容
@@ -338,5 +340,4 @@ public class NGDUtil {
 
 
     }
-
 }
