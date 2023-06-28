@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * V4版本:
- * 先调用百度
+ * 欢迎语在百度ngd流程配置(先调用百度)
  * <p>
  * Created By Chryl on 2023-02-08.
  */
@@ -47,7 +47,6 @@ public class IVRServiceV4 {
                 XCCHandler.answer(nc, channelEvent);
                 //
                 while (true) {
-
                     //xcc识别数据
                     String xccRecognitionResult = xccEvent.getXccRecognitionResult();
                     //获取指令和话术

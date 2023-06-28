@@ -46,7 +46,7 @@ public class NGDEvent {
 
     //uid为用户编号
     private String uid;
-    //是否通过身份验证流程,true通过
+    //是否通过身份验证流程,true通过 : userOk is true: NGD 已校验完成身份验证,可对SIP HEADER处理
     private boolean userOk;
 
 

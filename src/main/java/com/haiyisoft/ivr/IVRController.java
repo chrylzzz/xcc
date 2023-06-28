@@ -17,7 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
 /**
- * IVR
+ * IVR Control
  * Created By Chryl on 2023-02-08.
  */
 @Slf4j
@@ -40,22 +40,13 @@ public class IVRController {
             Connection nc = Nats.connect(IVRInit.XCC_CONFIG_PROPERTY.getNatsUrl());
             //从nats获取订阅主题
             Subscription sub = nc.subscribe(IVRInit.XCC_CONFIG_PROPERTY.getXctrlSubject());
-            log.warn("Ivr Controller started");
+            log.info("Ivr Controller started");
             while (true) {
                 //订阅消息
                 Message subMsg = sub.nextMessage(Duration.ofMillis(50000));
                 if (subMsg == null) {
                     log.warn(" this subMsg is null ");
                 } else {
-
-                        /*
-                        System.out.println("Got a new Call ...");
-                        // handle this call in a new thread so we can continue to listen for other calls
-//                        new IvrThread(nc, params).start();
-//                        new Ivr().ivrDomain(nc, params);
-//                        ivrService.ivrDomain();
-                        new XCCHandler().ivrDomain();
-*/
 
                     //订阅事件
                     //XNode收到呼叫后，向NATS广播来话消息（Event.Channel（state = START）），Ctrl收到后进行处理。

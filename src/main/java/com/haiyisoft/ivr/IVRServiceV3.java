@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 /**
  * V3版本:
  * 依托于百度知识库配置,注重与知识库配合使用
- * 流程区分客户是否输入,其他不作处理,未输入则不进入知识库
+ * 流程区分客户是否输入(未输入则不进入知识库)
  * <p>
  * Created By Chryl on 2023-02-08.
  */

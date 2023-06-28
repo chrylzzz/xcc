@@ -25,6 +25,7 @@ public class NGDUtil {
 
     /**
      * 广西知识库接口
+     * queryText 若为空时暂时不做判断,依赖百度NGD BOT配置/处理;若有需求再修改方法逻辑;
      *
      * @param queryText
      * @param sessionId call id
@@ -321,16 +322,24 @@ public class NGDUtil {
 
     /**
      * 身份校验配套流程
+     * userOK is true :身份校验已通过,用户编号已确定
+     * userOK is false :身份校验未通过,用户编号未确定
+     *
+     * @param context
+     * @param ngdEvent
+     * @return
      */
     public static NGDEvent convertUserOk(JSONObject context, NGDEvent ngdEvent) {
         if (context != null) {
             //判断用户校验是否完成
             String userOK = context.getString(EnumXCC.USER_OK.getProperty());
             if (EnumXCC.USER_OK.getValue().equals(userOK)) {
+                //已通过
                 String uid = context.getString(XCCConstants.IVR_YHBH);
                 ngdEvent.setUserOk(true);
                 ngdEvent.setUid(uid);
             } else {
+                //未通过
                 ngdEvent.setUserOk(false);
             }
         } else {

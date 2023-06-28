@@ -16,8 +16,9 @@ public class ChannelHandler {
 
     /**
      * 处理 sip header
-     * userOk
+     * userOk is true: NGD 已校验完成身份验证,可对SIP HEADER处理
      * uid
+     * userOk is false: NGD 未校验完成身份验证,不处理
      *
      * @param ngdEvent
      * @param channelEvent
