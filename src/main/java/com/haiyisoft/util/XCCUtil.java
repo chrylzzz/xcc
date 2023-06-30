@@ -16,7 +16,9 @@ import java.util.Map;
 
 /**
  * XCC工具类
- * Created By Chryl on 2023-02-08.
+ * Created By Chr.yl on 2023-02-08.
+ *
+ * @author Chr.yl
  **/
 @Slf4j
 public class XCCUtil {
@@ -39,12 +41,12 @@ public class XCCUtil {
          *        SSML：TTS，SSML格式支持（并非所有引擎都支持SSML）
          */
         media.put("type", playType);
-        media.put("data", "[" + IVRInit.XCC_CONFIG_PROPERTY.getXttsS() + "]" + content);
+        media.put("data", "[" + IVRInit.CHRYL_CONFIG_PROPERTY.getXttsS() + "]" + content);
 //        media.put("data", content);
         //引擎TTS engine,若使用xswitch配置unimrcp,则为unimrcp:profile
-        media.put("engine", IVRInit.XCC_CONFIG_PROPERTY.getTtsEngine());
+        media.put("engine", IVRInit.CHRYL_CONFIG_PROPERTY.getTtsEngine());
         //嗓音Voice-Name，由TTS引擎决定，默认为default。
-        media.put("voice", IVRInit.XCC_CONFIG_PROPERTY.getTtsVoice());
+        media.put("voice", IVRInit.CHRYL_CONFIG_PROPERTY.getTtsVoice());
         return media;
     }
 
@@ -60,8 +62,8 @@ public class XCCUtil {
         dtmf.put("max_digits", maxDigits);//max_digits：最大位长。
 //        dtmf.put("timeout", 10 * 1000);//timeout：超时，默认5000ms。
 //        dtmf.put("digit_timeout", 5 * 1000);//digit_timeout：位间超时，默认2000ms。
-        dtmf.put("timeout", IVRInit.XCC_CONFIG_PROPERTY.getDtmfNoInputTimeout());//timeout：超时，默认5000ms。
-        dtmf.put("digit_timeout", IVRInit.XCC_CONFIG_PROPERTY.getDigitTimeout());//digit_timeout：位间超时，默认2000ms。
+        dtmf.put("timeout", IVRInit.CHRYL_CONFIG_PROPERTY.getDtmfNoInputTimeout());//timeout：超时，默认5000ms。
+        dtmf.put("digit_timeout", IVRInit.CHRYL_CONFIG_PROPERTY.getDigitTimeout());//digit_timeout：位间超时，默认2000ms。
         dtmf.put("terminators", XCCConstants.DTMF_TERMINATORS);//terminators：结束符，如#。
         return dtmf;
     }
@@ -77,18 +79,18 @@ public class XCCUtil {
 //        speech.put("grammar", "default");
         speech.put("grammar", "builtin:grammar/boolean?language=zh-CN;y=1;n=2 builtin");
         //引擎ASR engine,若使用xswitch配置unimrcp,则为unimrcp:profile.
-        speech.put("engine", IVRInit.XCC_CONFIG_PROPERTY.getAsrEngine());
+        speech.put("engine", IVRInit.CHRYL_CONFIG_PROPERTY.getAsrEngine());
         //禁止打断。用户讲话不会打断放音。
 //        speech.put("nobreak", XCCConstants.NO_BREAK);
-        speech.put("nobreak", IVRInit.XCC_CONFIG_PROPERTY.getNoBreak());
+        speech.put("nobreak", IVRInit.CHRYL_CONFIG_PROPERTY.getNoBreak());
         //正整数，未检测到语音超时，默认为5000ms
 //        speech.put("no_input_timeout", 5 * 1000);
-        speech.put("no_input_timeout", IVRInit.XCC_CONFIG_PROPERTY.getSpeechNoInputTimeout());
+        speech.put("no_input_timeout", IVRInit.CHRYL_CONFIG_PROPERTY.getSpeechNoInputTimeout());
         //语音超时，即如果对方讲话一直不停超时，最大只能设置成6000ms，默认为6000ms。
 //        speech.put("speech_timeout", 8 * 1000);
         //正整数，语音最大超时，和参数speech_timeout作用相同，如果max_speech_timeout的值大于speech_timeout，则以max_speech_timeout为主，用于一些特殊场景的语音时长设置。
 //        speech.put("max_speech_timeout", 8 * 1000);
-        speech.put("max_speech_timeout", IVRInit.XCC_CONFIG_PROPERTY.getMaxSpeechTimeout());
+        speech.put("max_speech_timeout", IVRInit.CHRYL_CONFIG_PROPERTY.getMaxSpeechTimeout());
         //是否返回中间结果
         speech.put("partial_event", true);
         //默认会发送Event.DetectedData事件，如果为true则不发送。
@@ -111,7 +113,7 @@ public class XCCUtil {
         params.put("ctrl_uuid", "chryl-ivvr");
         params.put("uuid", channelEvent.getUuid());
         params.put("data", data);
-        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
+        String service = IVRInit.CHRYL_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
         RequestUtil.natsRequest(nc, service, XCCConstants.SET_VAR, params);
     }
 
@@ -122,7 +124,7 @@ public class XCCUtil {
         JSONObject params = new JSONObject();
         params.put("ctrl_uuid", "chryl-ivvr");
         params.put("uuid", channelEvent.getUuid());
-        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
+        String service = IVRInit.CHRYL_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
         RequestUtil.natsRequest(nc, service, XCCConstants.GET_STATE, params);
     }
 
@@ -134,7 +136,7 @@ public class XCCUtil {
         //当前channel 的uuid
         String channelUuid = channelEvent.getUuid();
         params.put("uuid", channelUuid);
-        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
+        String service = IVRInit.CHRYL_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
         RequestUtil.natsRequest(nc, service, XCCConstants.ACCEPT, params);
     }
 
@@ -145,7 +147,7 @@ public class XCCUtil {
         //当前channel 的uuid
         String channelId = channelEvent.getUuid();
         params.put("uuid", channelId);
-        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
+        String service = IVRInit.CHRYL_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
         XCCEvent xccEvent = RequestUtil.natsRequestFutureByAnswer(nc, service, XCCConstants.ANSWER, params);
         return xccEvent;
     }
@@ -158,7 +160,7 @@ public class XCCUtil {
         params.put("uuid", channelEvent.getUuid());
         //flag integer 值为: 0 挂断自己 , 1 挂断对方 , 2 挂断双方
         params.put("flag", 2);
-        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
+        String service = IVRInit.CHRYL_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
         RequestUtil.natsRequestFutureByHangup(nc, service, XCCConstants.HANGUP, params);
     }
 
@@ -178,7 +180,7 @@ public class XCCUtil {
         log.info("TTS播报内容为 : {}", ttsContent);
         JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
         params.put("media", media);
-        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
+        String service = IVRInit.CHRYL_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
         return RequestUtil.natsRequestFutureByPlayTTS(nc, service, XCCConstants.PLAY, params);
     }
 
@@ -197,7 +199,7 @@ public class XCCUtil {
         params.put("uuid", channelUuid);
         JSONObject media = getPlayMedia(XCCConstants.PLAY_FILE, file);
         params.put("media", media);
-        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
+        String service = IVRInit.CHRYL_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
         RequestUtil.natsRequest(nc, service, XCCConstants.PLAY, params);
     }
 
@@ -222,7 +224,7 @@ public class XCCUtil {
 //        params.put("dtmf", null);
         JSONObject speech = getSpeech();
         params.put("speech", speech);
-        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
+        String service = IVRInit.CHRYL_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
         return RequestUtil.natsRequestFutureByDetectSpeech(nc, service, XCCConstants.DETECT_SPEECH, params, 10000);
     }
 
@@ -251,7 +253,7 @@ public class XCCUtil {
         params.put("uuid", channelId);
         JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
         params.put("media", media);
-        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
+        String service = IVRInit.CHRYL_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
         return RequestUtil.natsRequestFutureByReadDTMF(nc, service, XCCConstants.READ_DTMF, params, 5000);
     }
 
@@ -325,7 +327,7 @@ public class XCCUtil {
         playTTS(nc, channelEvent, ttsContent);
 
         JSONObject params = convertBridgeParams(channelEvent, "user/1001", "555555555555555", "13287983898");
-        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
+        String service = IVRInit.CHRYL_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
         return RequestUtil.natsRequestFutureByBridge(nc, service, XCCConstants.BRIDGE, params, Duration.ofHours(1L));
     }
 
@@ -342,7 +344,7 @@ public class XCCUtil {
         //正在转接,请稍后
         playTTS(nc, channelEvent, ttsContent);
         JSONObject params = convertBridgeParams(channelEvent, dialStr, sipHeader, callNumber);
-        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
+        String service = IVRInit.CHRYL_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
         return RequestUtil.natsRequestFutureByBridge(nc, service, XCCConstants.BRIDGE, params, Duration.ofHours(1L));
     }
 
@@ -362,7 +364,7 @@ public class XCCUtil {
         //正在转接,请稍后
         playTTS(nc, channelEvent, ttsContent);
         JSONObject params = convertBridgeParams(channelEvent, dialStr);
-        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
+        String service = IVRInit.CHRYL_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
         return RequestUtil.natsRequestFutureByBridge(nc, service, XCCConstants.BRIDGE, params, Duration.ofHours(1L));
     }
 
@@ -412,7 +414,7 @@ public class XCCUtil {
         params.put("line", 69);
         params.put("data", "XCC 执行挂断");
 
-        String service = IVRInit.XCC_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
+        String service = IVRInit.CHRYL_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
         RequestUtil.natsRequestFutureByLog(nc, service, XCCConstants.LOG, params);
     }
 

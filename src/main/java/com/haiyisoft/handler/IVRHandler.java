@@ -34,14 +34,13 @@ public class IVRHandler {
      */
     public static XCCEvent domain(Connection nc, ChannelEvent channelEvent,
                                   String retKey, String retValue,
-                                  IVREvent ivrEvent,
-                                  NGDEvent ngdEvent, String callerIdNumber) {
+                                  IVREvent ivrEvent, NGDEvent ngdEvent, String callerIdNumber) {
         XCCEvent xccEvent;
-        if (XCCConstants.YYSR.equals(retKey)) {//调用播报收音
+        if (XCCConstants.YYSR.equals(retKey)) {//播报收音
             xccEvent = XCCHandler.detectSpeechPlayTTSNoDTMF(nc, channelEvent, retValue);
-        } else if (XCCConstants.AJSR.equals(retKey)) {//调用xcc收集按键方法，多位按键
+        } else if (XCCConstants.AJSR.equals(retKey)) {//收集按键，多位按键
             xccEvent = XCCHandler.playAndReadDTMF(nc, channelEvent, retValue, 18);
-        } else if (XCCConstants.YWAJ.equals(retKey)) {//调用xcc收集按键方法，一位按键
+        } else if (XCCConstants.YWAJ.equals(retKey)) {//收集按键，一位按键
             xccEvent = XCCHandler.playAndReadDTMF(nc, channelEvent, retValue, 1);
         } else if (XCCConstants.RGYT.equals(retKey)) {//转人工
             /**
@@ -52,9 +51,10 @@ public class IVRHandler {
 //            xccEvent = XCCHandler.bridgeExtension(nc, channelEvent, retValue);
             //转人工
             xccEvent = XCCHandler.bridgeArtificial(nc, channelEvent, retValue, ngdEvent, callerIdNumber);
-
-        } else if (XCCConstants.JZLC.equals(retKey)) {//转到精准IVR
+        } else if (XCCConstants.JZLC.equals(retKey)) {//转精准IVR
             xccEvent = XCCHandler.bridgeIVR(nc, channelEvent, retValue, ivrEvent, ngdEvent, callerIdNumber);
+        } else if (XCCConstants.DXFS.equals(retKey)) {//短信发送
+            xccEvent = WebHookHandler.sendMessage(ivrEvent);
         } else {
             log.error("严格根据配置的指令开发");
             xccEvent = new XCCEvent();

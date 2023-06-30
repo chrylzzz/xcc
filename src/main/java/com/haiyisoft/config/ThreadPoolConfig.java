@@ -10,7 +10,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * 重写异步线程
- * Created By Chryl on 2023-02-08.
+ * Created By Chr.yl on 2023-02-08.
+ *
+ * @author Chr.yl
  */
 @Slf4j
 @Component
@@ -24,10 +26,10 @@ public class ThreadPoolConfig implements AsyncConfigurer {
         ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
 //        taskExecutor.setCorePoolSize(CPU_NUM);//核心线程大小
 //        taskExecutor.setMaxPoolSize(CPU_NUM * 2);//最大线程大小
-        taskExecutor.setCorePoolSize(CPU_NUM * 3);//核心线程大小
-        taskExecutor.setMaxPoolSize(CPU_NUM * 6);//最大线程大小
-//        taskExecutor.setCorePoolSize(CPU_NUM * 4);//核心线程大小
-//        taskExecutor.setMaxPoolSize(CPU_NUM * 8);//最大线程大小
+//        taskExecutor.setCorePoolSize(CPU_NUM * 3);//核心线程大小
+//        taskExecutor.setMaxPoolSize(CPU_NUM * 6);//最大线程大小
+        taskExecutor.setCorePoolSize(CPU_NUM * 4);//核心线程大小
+        taskExecutor.setMaxPoolSize(CPU_NUM * 8);//最大线程大小
         taskExecutor.setQueueCapacity(800);//队列最大容量
         //当提交的任务个数大于QueueCapacity，就需要设置该参数，但spring提供的都不太满足业务场景，可以自定义一个，也可以注意不要超过QueueCapacity即可
         taskExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());

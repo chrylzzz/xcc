@@ -3,7 +3,9 @@ package com.haiyisoft.constant;
 /**
  * 不可配置
  * XCC和NGD常量
- * Created By Chryl on 2023-02-08.
+ * Created By Chr.yl on 2023-02-08.
+ *
+ * @author Chr.yl
  */
 public class XCCConstants {
 
@@ -180,8 +182,10 @@ public class XCCConstants {
     public static final String RGYT = "RGYT";
     //精准IVR流程
     public static final String JZLC = "JZLC";
+    //短信发送
+    public static final String DXFS = "DXFS";
     //指令集合数组
-    public static final String[] RET_KEY_STR_ARRAY = {YYSR, AJSR, RGYT, YWAJ, JZLC};
+    public static final String[] RET_KEY_STR_ARRAY = {YYSR, AJSR, RGYT, YWAJ, JZLC, DXFS};
     //智能ivr渠道
     public static final String CHANNEL_IVR = "智能IVR";
     //智能IVR call phone
@@ -223,6 +227,9 @@ public class XCCConstants {
     //bot token错误
     public static final int NGD_BOT_TOKEN_ERREO = 4002409;
 
+    //WebHook 地址
+    public static final String WEBHOOK_URL = "nats://hy:h8klu6bRwW@nats.xswitch.cn:4222";
+
     /********************************************ngd相关********************************************/
 
     /********************************************IVR相关********************************************/
@@ -261,8 +268,13 @@ public class XCCConstants {
     public static final String USER2USER = "User-to-User";
     //返回后缀
     public static final String RES_SIP_SUFFIX = "|%s|1";
-    //
+    //XTTS
     public static final String XTTS = "%s";
+    //机器
+    public static final String B = "#B";
+    //客户
+    public static final String H = "#H";
+
     /********************************************IVR相关********************************************/
 
 }

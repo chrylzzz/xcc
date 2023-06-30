@@ -16,10 +16,11 @@ import org.apache.commons.lang3.StringUtils;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 /**
- * Created By Chryl on 2023-02-08.
+ * Created By Chr.yl on 2023-02-08.
+ *
+ * @author Chr.yl
  */
 @Slf4j
 public class RequestUtil {
@@ -222,7 +223,7 @@ public class RequestUtil {
 
             } else {
                 if (XCCConstants.OK == code) {//200
-                    if (IVRInit.XCC_CONFIG_PROPERTY.isHandleEngineData()) {//手动解析
+                    if (IVRInit.CHRYL_CONFIG_PROPERTY.isHandleEngineData()) {//手动解析
                         String xmlStr = jsonData.getString("engine_data");
                         utterance = Dom4jUtil.parseAsrResXml(xmlStr);
                         if (StringUtils.isBlank(utterance)) {

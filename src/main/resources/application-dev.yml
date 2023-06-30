@@ -1,32 +1,20 @@
 server:
   port: 8088
 #
-########XCC相关变量配置########
-xcc:
+####################################################################################################
+############################################# ChrylConfigProperty 相关变量配置 ######################
+####################################################################################################
+chryl:
+######################################################################## XCC
 #  xswitch config
   nats-url: nats://hy:h8klu6bRwW@nats.xswitch.cn:4222
   xctrl-subject: cn.xswitch.ctrl
 #  xctrl-subject: cn.xswitch.ctrl.>
   xnode-subject-prefix: cn.xswitch.node
-#  tts engine
-  tts-engine: ali
-#  Voice-Name
-  tts-voice: default
-# TTS 语速 格式：	[s*]	(*=0~10) ,默认语速值为5
-  xtts-s: s4
-#  asr engine
-  asr-engine: ali
 # no break 是否打断放音, true 不可打断
   no-break: true
-#  ngd query url
-  ngd-core-query-url: https://api-ngd.baidu.com/api/v2/core/query
-#  ngd bot token
-  ngd-bot-token: NGD 88f20617-d6b5-4c4e-bf72-fde0c0db1d82
-# convert solved ,ngd存在solved=false，是否选择处理，true开启
-  convert-solved: false
 # XML数据需要自己处理, JSON数据XSwitch已深度解析, true开启
   handle-engine-data: false
-#
 # DTMF 输入超时(秒)
   dtmf-no-input-timeout: 10
 # DTMF 位间超时(秒)
@@ -44,10 +32,34 @@ xcc:
     nats: nats://hy:h8klu6bRwW@nats.xswitch.cn:4222
   - node: 10.194.31.203
     nats: nats://10.194.31.203:4222
-
-########XCC相关变量配置########
-#
+######################################################################## XCC
+######################################################################## NGD
+#  ngd query url
+  ngd-core-query-url: https://api-ngd.baidu.com/api/v2/core/query
+#  ngd bot token
+  ngd-bot-token: NGD 88f20617-d6b5-4c4e-bf72-fde0c0db1d82
+# convert solved ,ngd存在solved=false，是否选择处理，true开启
+  convert-solved: false
+# webhook url
+  webhook-url: 10.100.104.30:8090/gddw/electric
+######################################################################## NGD
+######################################################################## ASR
+#  asr engine
+  asr-engine: ali
+######################################################################## ASR
+######################################################################## TTS
+#  tts engine
+  tts-engine: ali
+#  Voice-Name
+  tts-voice: default
+# TTS 语速 格式：	[s*]	(*=0~10) ,默认语速值为5
+  xtts-s: s4
+######################################################################## TTS
+######################################################################## LOG
 # log path
 logback:
   path: /Users/chryl/logs/xcc/
-# log path
+######################################################################## LOG
+####################################################################################################
+############################################# ChrylConfigProperty 相关变量配置 ######################
+####################################################################################################

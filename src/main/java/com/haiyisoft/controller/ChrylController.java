@@ -41,7 +41,7 @@ public class ChrylController {
      */
     @GetMapping("chryl")
     public void chryl(HttpServletResponse response) throws InterruptedException, IOException {
-        String loadYml = JSON.toJSONString(IVRInit.XCC_CONFIG_PROPERTY, JSONWriter.Feature.PrettyFormat);
+        String loadYml = JSON.toJSONString(IVRInit.CHRYL_CONFIG_PROPERTY, JSONWriter.Feature.PrettyFormat);
         log.info("loadYml : {}", loadYml);
         response.getWriter().write(loadYml);
         response.flushBuffer();
@@ -107,7 +107,7 @@ public class ChrylController {
 
     @GetMapping("testSocketTimeOutMethod")
     public String testSocketTimeOutMethod() throws InterruptedException {
-        String json = JSON.toJSONString(IVRInit.XCC_CONFIG_PROPERTY, JSONWriter.Feature.PrettyFormat);
+        String json = JSON.toJSONString(IVRInit.CHRYL_CONFIG_PROPERTY, JSONWriter.Feature.PrettyFormat);
         Thread.sleep(10000);
         return json;
     }

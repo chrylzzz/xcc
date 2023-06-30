@@ -1,7 +1,7 @@
 package com.haiyisoft.boot;
 
 import com.haiyisoft.config.XCCConfiguration;
-import com.haiyisoft.constant.XCCConfigProperty;
+import com.haiyisoft.chryl.ChrylConfigProperty;
 import com.haiyisoft.ivr.IVRController;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,10 +35,10 @@ public class IVRInit {
         };
     }
 
-    public static XCCConfigProperty XCC_CONFIG_PROPERTY;
+    public static ChrylConfigProperty CHRYL_CONFIG_PROPERTY;
 
     @Autowired
-    private XCCConfigProperty xccConfigProperty;
+    private ChrylConfigProperty chrylConfigProperty;
 
 
     /**
@@ -47,8 +47,8 @@ public class IVRInit {
      */
     @PostConstruct
     public void initialize() {
-        XCCConfiguration.xccConfig(this.xccConfigProperty);
-        XCC_CONFIG_PROPERTY = this.xccConfigProperty;
-        log.info("初始化 XCC_CONFIG_PROPERTY 完成");
+        XCCConfiguration.xccConfig(this.chrylConfigProperty);
+        CHRYL_CONFIG_PROPERTY = this.chrylConfigProperty;
+        log.info("初始化 CHRYL_CONFIG_PROPERTY 完成");
     }
 }

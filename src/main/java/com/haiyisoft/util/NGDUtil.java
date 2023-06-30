@@ -36,7 +36,7 @@ public class NGDUtil {
         JSONObject param = coreQueryStruct(queryText, sessionId, phone);
         log.info("开始调用,百度知识库接口入参:{}", JSON.toJSONString(param, JSONWriter.Feature.PrettyFormat));
         //invoke
-        String jsonStrResult = HttpClientUtil.doPostJsonForGxNgd(IVRInit.XCC_CONFIG_PROPERTY.getNgdCoreQueryUrl(), param.toJSONString());
+        String jsonStrResult = HttpClientUtil.doPostJsonForGxNgd(IVRInit.CHRYL_CONFIG_PROPERTY.getNgdCoreQueryUrl(), param.toJSONString());
         //res
         JSONObject parse = JSON.parseObject(jsonStrResult);
         log.info("结束调用,百度知识库接口返回: {}", parse);
@@ -53,7 +53,7 @@ public class NGDUtil {
             //是否解决
             boolean solved = jsonData.getBooleanValue("solved");
             //处理answer
-            answer = convertAnswer(jsonData, IVRInit.XCC_CONFIG_PROPERTY.isConvertSolved());
+            answer = convertAnswer(jsonData, IVRInit.CHRYL_CONFIG_PROPERTY.isConvertSolved());
             ngdEvent = NGDHandler.ngdEventSetVar(sessionId, code, msg, answer, source, solved);
             log.info("百度知识库返回正常 code: {} , msg: {} , answer: {}", code, msg, answer);
             //保存流程信息
@@ -202,15 +202,13 @@ public class NGDUtil {
             retKey = XCCConstants.YYSR;
             retValue = XCCConstants.XCC_MISSING_ANSWER;
         } else {
-            //转大写
-            String upperCase = todoText.toUpperCase();
-            if (!upperCase.contains(XCCConstants.NGD_SEPARATOR)) {//不带#的话术
+            if (!todoText.contains(XCCConstants.NGD_SEPARATOR)) {//不带#的话术
                 retKey = XCCConstants.YYSR;
-                retValue = upperCase;
+                retValue = todoText;
             } else {//带#的话术
-                String[] split = upperCase.split(XCCConstants.NGD_SEPARATOR);
+                String[] split = todoText.split(XCCConstants.NGD_SEPARATOR);
                 retKey = split[0];//指令
-                if (StringUtils.containsAny(retKey, XCCConstants.RET_KEY_STR_ARRAY)) {//有指令
+                if (StringUtils.containsAnyIgnoreCase(retKey, XCCConstants.RET_KEY_STR_ARRAY)) {//有指令
                     retValue = split[1];//内容
                 } else {//无指令
                     retKey = XCCConstants.YYSR;
@@ -218,12 +216,12 @@ public class NGDUtil {
                 }
             }
         }
-        ngdEvent.setRetKey(retKey);
+        //转大写
+        ngdEvent.setRetKey(retKey.toUpperCase());
         ngdEvent.setRetValue(retValue);
         log.info("convertText retKey: {} , retValue: {}", retKey, retValue);
         return ngdEvent;
     }
-
 
     /**
      * 测试ngd接口
@@ -263,7 +261,7 @@ public class NGDUtil {
         param.put("ext", ext);//ext
         param.put("context", context);//渠道标识，智能IVR为广西智能ivr标识
         log.info("开始调用百度知识库接口");
-        String jsonStrResult = HttpClientUtil.doPostJsonForGxNgd(IVRInit.XCC_CONFIG_PROPERTY.getNgdCoreQueryUrl(), param.toJSONString());
+        String jsonStrResult = HttpClientUtil.doPostJsonForGxNgd(IVRInit.CHRYL_CONFIG_PROPERTY.getNgdCoreQueryUrl(), param.toJSONString());
         return jsonStrResult;
     }
 
@@ -310,7 +308,7 @@ public class NGDUtil {
         JSONObject param = new JSONObject();
         JSONObject context = new JSONObject();
         JSONObject ext = new JSONObject();
-        context.put("channel", XCCConstants.CHANNEL_IVR);//渠道标识
+        param.put("channel", XCCConstants.CHANNEL_IVR);//渠道标识
         context.put(XCCConstants.IVR_PHONE, phone);
         param.put("queryText", queryText);//客户问题
         param.put("sessionId", sessionId);//会话id

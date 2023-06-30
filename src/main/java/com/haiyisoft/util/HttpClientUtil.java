@@ -23,7 +23,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created By Chryl on 2022-04-29.
+ * Created By Chr.yl on 2022-04-29.
+ *
+ * @author Chr.yl
  */
 @Slf4j
 public class HttpClientUtil {
@@ -218,7 +220,7 @@ public class HttpClientUtil {
             StringEntity entity = new StringEntity(json, ContentType.APPLICATION_JSON);
             httpPost.setEntity(entity);
             //设置广西ivr-bot id
-            httpPost.setHeader("Authorization", IVRInit.XCC_CONFIG_PROPERTY.getNgdBotToken());
+            httpPost.setHeader("Authorization", IVRInit.CHRYL_CONFIG_PROPERTY.getNgdBotToken());
 
             // 执行http请求
             response = httpClient.execute(httpPost);

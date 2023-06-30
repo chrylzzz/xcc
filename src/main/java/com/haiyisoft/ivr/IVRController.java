@@ -18,7 +18,9 @@ import java.time.Duration;
 
 /**
  * IVR Control
- * Created By Chryl on 2023-02-08.
+ * Created By Chr.yl on 2023-02-08.
+ *
+ * @author Chr.yl
  */
 @Slf4j
 @Component
@@ -37,9 +39,9 @@ public class IVRController {
     public void domain() {
         try {
             //获取nats连接
-            Connection nc = Nats.connect(IVRInit.XCC_CONFIG_PROPERTY.getNatsUrl());
+            Connection nc = Nats.connect(IVRInit.CHRYL_CONFIG_PROPERTY.getNatsUrl());
             //从nats获取订阅主题
-            Subscription sub = nc.subscribe(IVRInit.XCC_CONFIG_PROPERTY.getXctrlSubject());
+            Subscription sub = nc.subscribe(IVRInit.CHRYL_CONFIG_PROPERTY.getXctrlSubject());
             log.info("Ivr Controller started");
             while (true) {
                 //订阅消息
@@ -52,7 +54,9 @@ public class IVRController {
                     //XNode收到呼叫后，向NATS广播来话消息（Event.Channel（state = START）），Ctrl收到后进行处理。
                     String eventStr = new String(subMsg.getData(), StandardCharsets.UTF_8);
                     JSONObject eventJson = JSONObject.parseObject(eventStr);
-                    log.info("订阅事件 eventJson:{}", eventJson);
+
+//                    log.info("订阅事件 eventJson:{}", eventJson);
+
                     //event状态:Event.Channel（state=START）
                     String method = eventJson.getString("method");
                     if (XCCConstants.Event_Channel.equals(method)) {

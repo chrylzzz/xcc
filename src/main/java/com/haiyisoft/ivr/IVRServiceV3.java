@@ -19,7 +19,9 @@ import org.springframework.stereotype.Component;
  * 依托于百度知识库配置,注重与知识库配合使用
  * 流程区分客户是否输入(未输入则不进入知识库)
  * <p>
- * Created By Chryl on 2023-02-08.
+ * Created By Chr.yl on 2023-02-08.
+ *
+ * @author Chr.yl
  */
 @Slf4j
 @Component
