@@ -89,8 +89,8 @@ public class IVRServiceV4 {
                 log.info("CHANNEL_DESTROY this call channelId: {}", channelId);
             }
 
-            log.info("hangup ivrEvent data: {}", ivrEvent);
-            WebHookHandler.writehhjl(ivrEvent);
+            log.info("writeCDR ivrEvent data: {}", ivrEvent);
+            WebHookHandler.writeCDR(ivrEvent);
 
             //挂断双方
             XCCHandler.hangup(nc, channelEvent);

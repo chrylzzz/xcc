@@ -37,13 +37,14 @@ public class WebHookHandler {
 
     /**
      * 会话记录
+     * Save Call Detail Recording
      *
      * @param ivrEvent
      */
-    public static void writehhjl(IVREvent ivrEvent) {
+    public static void writeCDR(IVREvent ivrEvent) {
         JSONArray metadataArray = ivrEvent.getNgdNodeMetadataArray();
-        log.info("writeDhnr :{}", metadataArray);
-        String hhjl = "";
+        log.info("cdr array :{}", metadataArray);
+        String cdr = "";
         if (metadataArray != null) {
 //                metadataArray.forEach(metadata -> {
 //                    JSONObject jsonObject = (JSONObject) JSON.toJSON(metadata);
@@ -51,24 +52,24 @@ public class WebHookHandler {
 //                    String queryTime = jsonObject.getString("queryTime");
 //                    String answer = jsonObject.getString("answer");
 //                    String answerTime = jsonObject.getString("answerTime");
-//                    hhjl = hhjl + (XCCConstants.B + queryTime + query + XCCConstants.H + answerTime + answer);
+//                    cdr = cdr + (XCCConstants.B + queryTime + query + XCCConstants.H + answerTime + answer);
 //                });
-            JSONObject fitstJsonData = metadataArray.getJSONObject(0);
-            String welComeStr = fitstJsonData.getString("answer");
-            String welAnswerTime = fitstJsonData.getString("answerTime");
-            hhjl = XCCConstants.B + welAnswerTime + welAnswerTime;
+            JSONObject welcomeJsonData = metadataArray.getJSONObject(0);
+            String welcomeStr = welcomeJsonData.getString("answer");
+            String welcomeTime = welcomeJsonData.getString("answerTime");
+            cdr = XCCConstants.B + welcomeTime + welcomeStr;
             for (int i = 1; i < metadataArray.size(); i++) {
                 JSONObject jsonObject = metadataArray.getJSONObject(i);
                 String query = jsonObject.getString("query");
                 String queryTime = jsonObject.getString("queryTime");
                 String answer = jsonObject.getString("answer");
                 String answerTime = jsonObject.getString("answerTime");
-                hhjl = hhjl + (XCCConstants.B + queryTime + query + XCCConstants.H + answerTime + answer);
+                cdr = cdr + (XCCConstants.B + queryTime + query + XCCConstants.H + answerTime + answer);
             }
         }
 
-        //#B:2018-11-20 20:00:00欢迎致电95598.#H:2018-11-20 20:00:00你好我要查电费。#B:2018-11-20 20:00:00请A请按键输入您的用户编号。
-        log.info("================ hhjl:{} ", hhjl);
+        //标准格式:[#B:2018-11-20 20:00:00欢迎致电95598.#H:2018-11-20 20:00:00你好我要查电费。#B:2018-11-20 20:00:00请A请按键输入您的用户编号。]
+        log.info("================ CDR:{} ", cdr);
 
         //来电号码
         String cidNumber = ivrEvent.getCidNumber();
@@ -79,7 +80,7 @@ public class WebHookHandler {
         JSONObject context = new JSONObject();
         context.put("callid", icdCallerId);
         context.put("ldhm", cidNumber);
-        context.put("hhjl", hhjl);
+        context.put("cdr", cdr);
         //这里送后缀码
         context.put("dqbm", phoneAdsCode);
         context.put("gddwbm", phoneAdsCode);
