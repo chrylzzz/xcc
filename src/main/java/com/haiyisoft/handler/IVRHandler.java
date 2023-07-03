@@ -54,7 +54,7 @@ public class IVRHandler {
         } else if (XCCConstants.JZLC.equals(retKey)) {//转精准IVR
             xccEvent = XCCHandler.bridgeIVR(nc, channelEvent, retValue, ivrEvent, ngdEvent, callerIdNumber);
         } else if (XCCConstants.DXFS.equals(retKey)) {//短信发送
-            xccEvent = WebHookHandler.sendMessage(ivrEvent);
+            xccEvent = WebHookHandler.sendMessage(ivrEvent, retValue);
         } else {
             log.error("严格根据配置的指令开发");
             xccEvent = new XCCEvent();
