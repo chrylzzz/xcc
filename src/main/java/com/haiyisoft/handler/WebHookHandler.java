@@ -3,11 +3,9 @@ package com.haiyisoft.handler;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
-import com.haiyisoft.boot.IVRInit;
+import com.alibaba.fastjson2.JSONWriter;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.IVREvent;
-import com.haiyisoft.entry.XCCEvent;
-import com.haiyisoft.util.HttpClientUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -31,8 +29,9 @@ public class WebHookHandler {
         context.put("jssjh", cidNumber);
         context.put("dxnr", dxnr);
         JSONObject params = convertWebHookReqBody(XCCConstants.SEND_MESSAGE, context);
-        String resData = HttpClientUtil.doPostJson(IVRInit.CHRYL_CONFIG_PROPERTY.getWebHookUrl(), params.toJSONString());
-        log.info("sendMessage : {}", resData);
+        log.info("sendMessage,WebHook入参:{}", JSON.toJSONString(params, JSONWriter.Feature.PrettyFormat));
+//        String resData = HttpClientUtil.doPostJson(IVRInit.CHRYL_CONFIG_PROPERTY.getWebHookUrl(), params.toJSONString());
+//        log.info("sendMessage,WebHook入参:{}", resData);
     }
 
     /**
@@ -42,6 +41,7 @@ public class WebHookHandler {
      * @param ivrEvent
      */
     public static void writeCDR(IVREvent ivrEvent) {
+        String channelId = ivrEvent.getChannelId();
         JSONArray metadataArray = ivrEvent.getNgdNodeMetadataArray();
         log.info("cdr array :{}", metadataArray);
         String cdr = "";
@@ -69,7 +69,7 @@ public class WebHookHandler {
         }
 
         //标准格式:[#B:2018-11-20 20:00:00欢迎致电95598.#H:2018-11-20 20:00:00你好我要查电费。#B:2018-11-20 20:00:00请A请按键输入您的用户编号。]
-        log.info("================ CDR:{} ", cdr);
+        log.info("[{}]================ CDR:{} ", channelId, cdr);
 
         //来电号码
         String cidNumber = ivrEvent.getCidNumber();
@@ -80,13 +80,14 @@ public class WebHookHandler {
         JSONObject context = new JSONObject();
         context.put("callid", icdCallerId);
         context.put("ldhm", cidNumber);
-        context.put("cdr", cdr);
+        context.put("hhjl", cdr);
         //这里送后缀码
         context.put("dqbm", phoneAdsCode);
         context.put("gddwbm", phoneAdsCode);
         JSONObject params = convertWebHookReqBody(XCCConstants.I_HJZX_BCDHNR, context);
-        String resData = HttpClientUtil.doPostJson(IVRInit.CHRYL_CONFIG_PROPERTY.getWebHookUrl(), params.toJSONString());
-        log.info("I_HJZX_BCDHNR : {}", resData);
+        log.info("I_HJZX_BCDHNR,WebHook入参:{}", JSON.toJSONString(params, JSONWriter.Feature.PrettyFormat));
+//        String resData = HttpClientUtil.doPostJson(IVRInit.CHRYL_CONFIG_PROPERTY.getWebHookUrl(), params.toJSONString());
+//        log.info("I_HJZX_BCDHNR,WebHook接口入参:{}", resData);
     }
 
     /**

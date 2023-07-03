@@ -157,12 +157,12 @@ public class NGDUtil {
         String source = jsonData.getString("source");
         //是否解决
         boolean solved = jsonData.getBooleanValue("solved");
-        //问答时间
-        String queryTime = jsonData.getString("queryTime");
-        String answerTime = jsonData.getString("answerTime");
+        //问答时间(百度返回时间带有毫秒,营销不需要毫秒,遂去掉- -)
+        String queryTime = jsonData.getString("queryTime").substring(0, 19);
+        String answerTime = jsonData.getString("answerTime").substring(0, 19);
         NGDNodeMetaData ngdNodeMetaData = new NGDNodeMetaData();
 
-        if (XCCConstants.SOURCE_TASK_BASED.equals(source)) {//task_based
+        if (XCCConstants.SOURCE_TASK_BASED.equals(source)) {//task_based:只有流程有dialog
             JSONArray dialogsArray = jsonData.getJSONObject("answer").getJSONArray("dialogs");
             if (dialogsArray != null) {
                 dialogsArray.forEach(dialog -> {

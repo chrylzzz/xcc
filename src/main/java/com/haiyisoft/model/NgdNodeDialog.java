@@ -13,6 +13,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class NgdNodeDialog {
+
     //执行流程名
     private String processName;
     //节点名
