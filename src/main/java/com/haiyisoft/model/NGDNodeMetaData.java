@@ -1,7 +1,13 @@
 package com.haiyisoft.model;
 
 import com.alibaba.fastjson2.JSONArray;
+import com.haiyisoft.constant.XCCConstants;
+import com.haiyisoft.util.DateUtil;
 import lombok.Data;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * ngd node metadata
@@ -31,7 +37,22 @@ public class NGDNodeMetaData {
     }
 
     public NGDNodeMetaData(String query, String answer) {
+        this.dialogArray = new JSONArray();
         this.query = query;
+        this.queryTime = DateUtil.getLocalDateTime();
         this.answer = answer;
+        this.answerTime = DateUtil.getLocalDateTime();
+        ;
     }
+
+    public void setAnswer(String answer) {
+        //去除
+        if (answer.contains(XCCConstants.NGD_SEPARATOR)) {
+            this.answer = answer.split(XCCConstants.NGD_SEPARATOR)[1];
+        } else {
+            this.answer = answer;
+        }
+    }
+
+
 }

@@ -7,6 +7,7 @@ import com.haiyisoft.entry.NGDEvent;
 import com.haiyisoft.entry.XCCEvent;
 import com.haiyisoft.handler.IVRHandler;
 import com.haiyisoft.handler.NGDHandler;
+import com.haiyisoft.handler.WebHookHandler;
 import com.haiyisoft.handler.XCCHandler;
 import com.haiyisoft.model.NGDNodeMetaData;
 import io.nats.client.Connection;
@@ -55,23 +56,20 @@ public class IVRServiceV4 {
                     ngdEvent = NGDHandler.handlerNlu(xccRecognitionResult, channelId, callerIdNumber);
                     String retKey = ngdEvent.getRetKey();
                     String retValue = ngdEvent.getRetValue();
-                    //获取ngd node metadata
+                    //
                     NGDNodeMetaData ngdNodeMetaData = ngdEvent.getNgdNodeMetaData();
                     ivrEvent.getNgdNodeMetadataArray().add(ngdNodeMetaData);
-
-                    log.info("revert ivrEvent data: {}", ivrEvent);
 
                     xccEvent = IVRHandler.domain(nc, channelEvent, retKey, retValue, ivrEvent, ngdEvent, callerIdNumber);
 
                     //处理是否挂机
                     boolean handleHangup = XCCHandler.handleSomeHangup(xccEvent, channelId);
                     if (handleHangup) {//挂机
+                        //先存IVR对话日志,这里挂机不需要单独处理
                         log.info("挂断部分");
-                        //记录已挂机的IVR对话日志
-                        NGDNodeMetaData ngdNodeMetaDatMya = new NGDNodeMetaData(retValue, "");
-                        ivrEvent.getNgdNodeMetadataArray().add(ngdNodeMetaDatMya);
                         break;
                     }
+                    log.info("revert ivrEvent data: {}", ivrEvent);
 
                 }
 
@@ -91,25 +89,13 @@ public class IVRServiceV4 {
                 log.info("CHANNEL_DESTROY this call channelId: {}", channelId);
             }
 
+            log.info("hangup ivrEvent data: {}", ivrEvent);
+            WebHookHandler.writehhjl(ivrEvent);
+
             //挂断双方
             XCCHandler.hangup(nc, channelEvent);
             log.info("hangup this call channelId: {} ", channelId);
         }
-    }
-
-    public static void main(String[] args) {
-        IVREvent ivrEvent = new IVREvent("aaaa");
-        NGDNodeMetaData ngdNodeMetaData = new NGDNodeMetaData();
-        ngdNodeMetaData.setAnswer("1");
-        ngdNodeMetaData.setQuery("1");
-        ngdNodeMetaData.setSource("1");
-        ivrEvent.getNgdNodeMetadataArray().add(ngdNodeMetaData);
-
-//        JSONArray ngdNodeMetadataArr = ivrEvent.getNgdNodeMetadataArr();
-//        ngdNodeMetadataArr.add(ngdNodeMetaData);
-//        ivrEvent.setNgdNodeMetadataArr(ngdNodeMetadataArr);
-
-        System.out.println(ivrEvent);
     }
 
 }

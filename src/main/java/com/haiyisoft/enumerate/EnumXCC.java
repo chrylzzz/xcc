@@ -9,6 +9,8 @@ public enum EnumXCC implements CommonXCC {
 
     //ngd 是否通过身份校验流程
     USER_OK("userOK", "YES"),
+    USER_NO("userOK", "NO"),
+
 
 
     //

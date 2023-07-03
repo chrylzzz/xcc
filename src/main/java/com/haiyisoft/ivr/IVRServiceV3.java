@@ -59,8 +59,8 @@ public class IVRServiceV3 {
                     boolean handleHangup = XCCHandler.handleSomeHangup(xccEvent, channelId);
                     if (handleHangup) {//挂机
                         log.info("挂断部分");
-                        //记录已挂机的IVR对话日志
-                        NGDNodeMetaData ngdNodeMetaData = new NGDNodeMetaData(retValue, "");
+                        //TODO 记录已挂机的IVR对话日志
+                        NGDNodeMetaData ngdNodeMetaData = new NGDNodeMetaData("", retValue);
                         ivrEvent.getNgdNodeMetadataArray().add(ngdNodeMetaData);
                         break;
                     } else {//正常通话
@@ -74,7 +74,7 @@ public class IVRServiceV3 {
                             ngdEvent = NGDHandler.handlerNlu(xccRecognitionResult, channelId, callerIdNumber);
                             retKey = ngdEvent.getRetKey();
                             retValue = ngdEvent.getRetValue();
-                            //获取ngd node metadata
+                            //记录IVR日志
                             NGDNodeMetaData ngdNodeMetaData = ngdEvent.getNgdNodeMetaData();
                             ivrEvent.getNgdNodeMetadataArray().add(ngdNodeMetaData);
                         } else {//xcc未识别
@@ -102,26 +102,11 @@ public class IVRServiceV3 {
             } else if (XCCConstants.CHANNEL_DESTROY.equals(state)) {
                 log.info("CHANNEL_DESTROY this call channelId: {}", channelId);
             }
-
+            log.info("hangup ivrEvent data: {}", ivrEvent);
             //挂断双方
             XCCHandler.hangup(nc, channelEvent);
             log.info("hangup this call channelId: {} ", channelId);
         }
-    }
-
-    public static void main(String[] args) {
-        IVREvent ivrEvent = new IVREvent("aaaa");
-        NGDNodeMetaData ngdNodeMetaData = new NGDNodeMetaData();
-        ngdNodeMetaData.setAnswer("1");
-        ngdNodeMetaData.setQuery("1");
-        ngdNodeMetaData.setSource("1");
-        ivrEvent.getNgdNodeMetadataArray().add(ngdNodeMetaData);
-
-//        JSONArray ngdNodeMetadataArr = ivrEvent.getNgdNodeMetadataArr();
-//        ngdNodeMetadataArr.add(ngdNodeMetaData);
-//        ivrEvent.setNgdNodeMetadataArr(ngdNodeMetadataArr);
-
-        System.out.println(ivrEvent);
     }
 
 }

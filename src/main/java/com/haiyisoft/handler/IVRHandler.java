@@ -54,7 +54,8 @@ public class IVRHandler {
         } else if (XCCConstants.JZLC.equals(retKey)) {//转精准IVR
             xccEvent = XCCHandler.bridgeIVR(nc, channelEvent, retValue, ivrEvent, ngdEvent, callerIdNumber);
         } else if (XCCConstants.DXFS.equals(retKey)) {//短信发送
-            xccEvent = WebHookHandler.sendMessage(ivrEvent, retValue);
+            WebHookHandler.sendMessage(ivrEvent, retValue);
+            xccEvent = XCCHandler.detectSpeechPlayTTSNoDTMF(nc, channelEvent, "您咨询的问题, 详细信息已通过短信的方式发送到您的手机, 请问您还有什么问题?");
         } else {
             log.error("严格根据配置的指令开发");
             xccEvent = new XCCEvent();
@@ -149,21 +150,27 @@ public class IVRHandler {
         if (StringUtils.isBlank(u2U)) {
             log.info("convertIVREvent sip header User-to-User in null");
         } else {
-            //callId、手机号、来话手机所对应的后缀码
+            log.info("convertIVREvent sip header User-to-User : [{}]", u2U);
+            //icdCallId、手机号、来话手机所对应的后缀码
+            String icd_call_id = "";
+            String cid_number = "";
+            String phone_code = "";
             try {
+                //aaa|ccc|bbb
                 String[] splitU2U = u2U.split("\\|");
-                String icd_call_id = splitU2U[0];
-                String cid_number = splitU2U[1];
-                String phone_code = splitU2U[2];
-
-                ivrEvent.setIcdCallerId(icd_call_id);
-                ivrEvent.setCidNumber(cid_number);
-                ivrEvent.setPhoneAdsCode(phone_code);
-                log.info("convertIVREvent OK:{}", ivrEvent);
+                if (splitU2U.length >= 3) {
+                    icd_call_id = splitU2U[0];
+                    cid_number = splitU2U[1];
+                    phone_code = splitU2U[2];
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 log.error("convertIVREvent sip header User-to-User 报错啦, 无法解析u2u");
             }
+            ivrEvent.setIcdCallerId(icd_call_id);
+            ivrEvent.setCidNumber(cid_number);
+            ivrEvent.setPhoneAdsCode(phone_code);
+            log.info("convertIVREvent OK:{}", ivrEvent);
         }
         return ivrEvent;
     }

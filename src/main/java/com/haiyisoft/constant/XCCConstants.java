@@ -9,7 +9,7 @@ package com.haiyisoft.constant;
  */
 public class XCCConstants {
 
-    /********************************************xswitch相关********************************************/
+    /******************************************** XSwitch相关 ********************************************/
     //Nats 地址
     public static final String NATS_URL = "nats://hy:h8klu6bRwW@nats.xswitch.cn:4222";
     //Ctrl 订阅主题
@@ -155,9 +155,9 @@ public class XCCConstants {
     //NO_ROUTE_DESTINATION：找不到路由。
     public static final String NO_ROUTE_DESTINATION = "NO_ROUTE_DESTINATION";
 
-    /********************************************xswitch相关********************************************/
+    /******************************************** XSwitch相关 ********************************************/
 
-    /********************************************ngd相关********************************************/
+    /******************************************** NGD相关 ********************************************/
 
     //百度知识库测试环境地址
     public static final String NGD_QUERY_URL = "https://api-ngd.baidu.com/api/v2/core/query";
@@ -230,9 +230,9 @@ public class XCCConstants {
     //WebHook 地址
     public static final String WEBHOOK_URL = "nats://hy:h8klu6bRwW@nats.xswitch.cn:4222";
 
-    /********************************************ngd相关********************************************/
+    /******************************************** NGD相关 ********************************************/
 
-    /********************************************IVR相关********************************************/
+    /******************************************** IVR相关 ********************************************/
     //多节点配置
     public static final String NODE = "node";
     public static final String NATS = "nats";
@@ -271,10 +271,18 @@ public class XCCConstants {
     //XTTS
     public static final String XTTS = "%s";
     //机器
-    public static final String B = "#B";
+    public static final String B = "#B:";
     //客户
-    public static final String H = "#H";
+    public static final String H = "#H:";
 
-    /********************************************IVR相关********************************************/
+
+    /******************************************** IVR相关 ********************************************/
+
+    /******************************************** WebHook相关 ********************************************/
+    //发短信
+    public static final String SEND_MESSAGE = "sendMessage";
+    //对话记录接口
+    public static final String I_HJZX_BCDHNR = "I_HJZX_BCDHNR";
+    /******************************************** WebHook相关 ********************************************/
 
 }

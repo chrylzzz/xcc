@@ -127,7 +127,7 @@ public class XCCHandler {
 
 
     /**
-     * 有识别结果
+     * XSwitch有识别结果
      * 赋值xcc返回数据
      *
      * @param code
@@ -164,7 +164,7 @@ public class XCCHandler {
     }
 
     /**
-     * 无识别结果
+     * XSwitch无识别结果
      * 赋值xcc返回数据
      *
      * @param code

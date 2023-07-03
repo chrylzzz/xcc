@@ -56,6 +56,7 @@ public class IVRService {
                     //处理是否挂机
                     boolean handleHangup = XCCHandler.handleSomeHangup(xccEvent, channelId);
                     if (handleHangup) {//挂机
+                        //TODO 记录已挂机的IVR对话日志
                         log.info("挂断部分");
                         break;
                     } else {//正常通话
@@ -81,6 +82,7 @@ public class IVRService {
                                 //触发转人工规则
                                 ivrEvent = IVRHandler.transferRule(ivrEvent, channelEvent, nc);
                                 if (ivrEvent.isTransferFlag()) {
+                                    //TODO 记录已挂机的IVR对话日志
                                     //转人工后挂机
                                     break;
                                 }
@@ -95,6 +97,7 @@ public class IVRService {
                             //触发转人工规则
                             ivrEvent = IVRHandler.transferRule(ivrEvent, channelEvent, nc);
                             if (ivrEvent.isTransferFlag()) {
+                                //TODO 记录已挂机的IVR对话日志
                                 //转人工后挂机
                                 break;
                             }
@@ -107,7 +110,7 @@ public class IVRService {
                             }
 
                         }
-                        //获取ngd node metadata
+                        //记录IVR对话日志
                         NGDNodeMetaData ngdNodeMetaData = ngdEvent.getNgdNodeMetaData();
                         ivrEvent.getNgdNodeMetadataArray().add(ngdNodeMetaData);
                     }
@@ -130,6 +133,7 @@ public class IVRService {
             } else if (XCCConstants.CHANNEL_DESTROY.equals(state)) {
                 log.info("CHANNEL_DESTROY this call channelId: {}", channelId);
             }
+            log.info("hangup ivrEvent data: {}", ivrEvent);
 
             //挂断双方
             XCCHandler.hangup(nc, channelEvent);
