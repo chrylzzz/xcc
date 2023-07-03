@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.List;
 
 /**
- * 配置多台xswitch
+ * 配置多台XSwitch,注意服务器多个网卡问题
  * Created by Chr.yl on 2023/5/30.
  *
  * @author Chr.yl
@@ -27,7 +27,7 @@ public class XCCConfiguration {
                     if (IpUtil.INTERNET_IP.equals(node)) {
                         String natsUrl = nodeBean.getString(XCCConstants.NATS);
                         chrylConfigProperty.setNatsUrl(natsUrl);
-                        log.warn("多节点装配完成 node: [{}] , nats: [{}]", node, natsUrl);
+                        log.warn("节点装配完成 node: [{}] , nats: [{}]", node, natsUrl);
                         break;
                     }
                 }

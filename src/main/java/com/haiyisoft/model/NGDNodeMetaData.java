@@ -42,7 +42,6 @@ public class NGDNodeMetaData {
         this.queryTime = DateUtil.getLocalDateTime();
         this.answer = answer;
         this.answerTime = DateUtil.getLocalDateTime();
-        ;
     }
 
     public void setAnswer(String answer) {
