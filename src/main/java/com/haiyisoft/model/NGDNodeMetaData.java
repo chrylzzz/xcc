@@ -13,8 +13,12 @@ import lombok.Data;
 public class NGDNodeMetaData {
     //queryText
     private String query;
+    // query time
+    private String queryTime;
     //suggestAnswer 处理之后的
     private String answer;
+    // answer time
+    private String answerTime;
     //source
     private String source;
     //solved

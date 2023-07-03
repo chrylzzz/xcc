@@ -157,6 +157,9 @@ public class NGDUtil {
         String source = jsonData.getString("source");
         //是否解决
         boolean solved = jsonData.getBooleanValue("solved");
+        //问答时间
+        String queryTime = jsonData.getString("queryTime");
+        String answerTime = jsonData.getString("answerTime");
         NGDNodeMetaData ngdNodeMetaData = new NGDNodeMetaData();
 
         if (XCCConstants.SOURCE_TASK_BASED.equals(source)) {//task_based
@@ -179,7 +182,9 @@ public class NGDUtil {
         }
 
         ngdNodeMetaData.setQuery(query);
+        ngdNodeMetaData.setQueryTime(queryTime);
         ngdNodeMetaData.setAnswer(answer);
+        ngdNodeMetaData.setAnswerTime(answerTime);
         ngdNodeMetaData.setSource(source);
         ngdNodeMetaData.setSolved(solved);
         return ngdNodeMetaData;
@@ -192,7 +197,6 @@ public class NGDUtil {
      * @param ngdEvent
      * @return
      */
-
     public static NGDEvent convertText(NGDEvent ngdEvent) {
         String retKey;//指令
         String retValue;//播报内容
@@ -261,8 +265,7 @@ public class NGDUtil {
         param.put("ext", ext);//ext
         param.put("context", context);//渠道标识，智能IVR为广西智能ivr标识
         log.info("开始调用百度知识库接口");
-        String jsonStrResult = HttpClientUtil.doPostJsonForGxNgd(IVRInit.CHRYL_CONFIG_PROPERTY.getNgdCoreQueryUrl(), param.toJSONString());
-        return jsonStrResult;
+        return HttpClientUtil.doPostJsonForGxNgd(IVRInit.CHRYL_CONFIG_PROPERTY.getNgdCoreQueryUrl(), param.toJSONString());
     }
 
     /**
