@@ -43,7 +43,7 @@ chryl:
 # convert solved :ngd存在solved=false，是否选择处理，true开启
   convert-solved: false
 # webhook url
-  webhook-url: 10.100.104.30:8080/gddw/electric
+  webhook-url: http://10.100.104.30:8080/gddw/electric
 ######################################################################## NGD
 ######################################################################## ASR
 #  asr engine

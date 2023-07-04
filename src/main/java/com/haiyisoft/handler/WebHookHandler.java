@@ -4,8 +4,10 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.JSONWriter;
+import com.haiyisoft.boot.IVRInit;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.IVREvent;
+import com.haiyisoft.util.HttpClientUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -30,8 +32,8 @@ public class WebHookHandler {
         context.put("dxnr", dxnr);
         JSONObject params = convertWebHookReqBody(XCCConstants.SEND_MESSAGE, context);
         log.info("sendMessage,WebHook入参:{}", JSON.toJSONString(params, JSONWriter.Feature.PrettyFormat));
-//        String resData = HttpClientUtil.doPostJson(IVRInit.CHRYL_CONFIG_PROPERTY.getWebHookUrl(), params.toJSONString());
-//        log.info("sendMessage,WebHook入参:{}", resData);
+        String resData = HttpClientUtil.doPostJson(IVRInit.CHRYL_CONFIG_PROPERTY.getWebHookUrl(), params.toJSONString());
+        log.info("sendMessage,WebHook入参:{}", resData);
     }
 
     /**
@@ -86,8 +88,8 @@ public class WebHookHandler {
         context.put("gddwbm", phoneAdsCode);
         JSONObject params = convertWebHookReqBody(XCCConstants.I_HJZX_BCDHNR, context);
         log.info("I_HJZX_BCDHNR,WebHook入参:{}", JSON.toJSONString(params, JSONWriter.Feature.PrettyFormat));
-//        String resData = HttpClientUtil.doPostJson(IVRInit.CHRYL_CONFIG_PROPERTY.getWebHookUrl(), params.toJSONString());
-//        log.info("I_HJZX_BCDHNR,WebHook接口入参:{}", resData);
+        String resData = HttpClientUtil.doPostJson(IVRInit.CHRYL_CONFIG_PROPERTY.getWebHookUrl(), params.toJSONString());
+        log.info("I_HJZX_BCDHNR,WebHook接口入参:{}", resData);
     }
 
     /**

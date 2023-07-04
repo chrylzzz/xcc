@@ -59,6 +59,7 @@ public class NGDUtil {
             //保存流程信息
             NGDNodeMetaData ngdNodeMetaData = saveNgdNodeMateData(queryText, answer, jsonData);
             ngdEvent.setNgdNodeMetaData(ngdNodeMetaData);
+            log.info("本次节点信息为:{}", ngdNodeMetaData);
         } else {
             log.error("百度知识调用异常 code: {} , msg: {}", code, msg);
             answer = XCCConstants.XCC_MISSING_MSG;
@@ -158,8 +159,8 @@ public class NGDUtil {
         //是否解决
         boolean solved = jsonData.getBooleanValue("solved");
         //问答时间(百度返回时间带有毫秒,营销不需要毫秒,遂去掉- -)
-        String queryTime = jsonData.getString("queryTime").substring(0, 19);
-        String answerTime = jsonData.getString("answerTime").substring(0, 19);
+        String queryTime = DateUtil.parseLocalDateTime(jsonData.getString("queryTime"));
+        String answerTime = DateUtil.parseLocalDateTime(jsonData.getString("answerTime"));
         NGDNodeMetaData ngdNodeMetaData = new NGDNodeMetaData();
 
         if (XCCConstants.SOURCE_TASK_BASED.equals(source)) {//task_based:只有流程有dialog
