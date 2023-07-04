@@ -385,8 +385,8 @@ public class XCCUtil {
      * @param channelEvent
      * @return
      */
-    public static void writeLog(Connection nc, ChannelEvent channelEvent) {
-
+    public static void writeLog(Connection nc, ChannelEvent channelEvent, String level, String data) {
+//        XCCUtil.writeLog(nc, channelEvent);
         /*
         {
             "jsonrpc": "2.0",
@@ -407,12 +407,12 @@ public class XCCUtil {
         String channelId = channelEvent.getUuid();
         JSONObject params = new JSONObject();
         params.put("ctrl_uuid", "chryl-ivvr");
-        params.put("level", "ERR");
+        params.put("level", level);
         params.put("function", "xnode_status");
         params.put("file", "log.js");
         params.put("log_uuid", channelId);
         params.put("line", 69);
-        params.put("data", "XCC 执行挂断");
+        params.put("data", data);
 
         String service = IVRInit.CHRYL_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
         RequestUtil.natsRequestFutureByLog(nc, service, XCCConstants.LOG, params);

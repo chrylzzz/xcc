@@ -56,7 +56,7 @@ public class IVRServiceV4 {
                     ngdEvent = NGDHandler.handlerNlu(xccRecognitionResult, channelId, callerIdNumber);
                     String retKey = ngdEvent.getRetKey();
                     String retValue = ngdEvent.getRetValue();
-                    //
+                    //记录IVR日志
                     NGDNodeMetaData ngdNodeMetaData = ngdEvent.getNgdNodeMetaData();
                     ivrEvent.getNgdNodeMetadataArray().add(ngdNodeMetaData);
 
@@ -65,7 +65,7 @@ public class IVRServiceV4 {
                     //处理是否挂机
                     boolean handleHangup = XCCHandler.handleSomeHangup(xccEvent, channelId);
                     if (handleHangup) {//挂机
-                        //先存IVR对话日志,这里挂机不需要单独处理
+                        //先存的IVR对话日志,这里挂机不需要单独处理
                         log.info("挂断部分");
                         break;
                     }
