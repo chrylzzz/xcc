@@ -13,13 +13,6 @@ import lombok.Data;
 @Data
 public class IVREvent {
 
-    public IVREvent(String channelId) {
-        this.channelId = channelId;
-        this.transferTime = XCCConstants.DEFAULT_TRANSFER_TIME;
-        this.transferFlag = false;
-        this.ngdNodeMetadataArray = new JSONArray();
-    }
-
     //xcc call id
     private String channelId;
     //转人工次数 : 连续2次无法处理则转人工 ,默认值为1,transferTime == 3时transferFlag=true,转人工
@@ -29,7 +22,6 @@ public class IVREvent {
     //一通电话的json对话记录
     private JSONArray ngdNodeMetadataArray;
 
-
     //----------------华为平台sip解析数据
     //华为caller id
     private String icdCallerId;
@@ -38,5 +30,13 @@ public class IVREvent {
     //来电手机号码
     private String cidNumber;
     //----------------华为平台sip解析数据
+
+    public IVREvent(String channelId) {
+        this.channelId = channelId;
+        this.transferTime = XCCConstants.DEFAULT_TRANSFER_TIME;
+        this.transferFlag = false;
+        this.ngdNodeMetadataArray = new JSONArray();
+    }
+
 
 }
