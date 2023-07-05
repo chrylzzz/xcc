@@ -101,7 +101,11 @@ public class NGDUtil {
                         .getJSONObject("voice")
                         .getJSONArray("questions")
                         .getString(0);
+            } else if (XCCConstants.SOURCE_SYSTEM.equals(source)) {//system
+                answer = jsonData.getString(XCCConstants.SUGGEST_ANSWER);
             } else if (XCCConstants.CHITCHAT.equals(source)) {//chitchat
+                answer = jsonData.getString(XCCConstants.SUGGEST_ANSWER);
+            } else if (XCCConstants.SOURCE_NONE.equals(source)) {//none
                 answer = jsonData.getString(XCCConstants.SUGGEST_ANSWER);
             } else {//此处自定义,待发现新类型继续补充
                 answer = XCCConstants.XCC_MISSING_MSG;
@@ -118,6 +122,7 @@ public class NGDUtil {
     }
 
     /**
+     * 无是否处理
      * 根据百度知识库返回的数据取到合理的回复
      * 根据source取answer
      *
