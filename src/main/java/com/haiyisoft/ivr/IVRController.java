@@ -32,6 +32,8 @@ public class IVRController {
     private IVRServiceV2 ivrServiceV2;
     @Autowired
     private IVRServiceV4 ivrServiceV4;
+    @Autowired
+    private IVRServiceV5 ivrServiceV5;
 
     /**
      * waiting for incoming call
@@ -59,19 +61,17 @@ public class IVRController {
 
                     //event状态:Event.Channel（state=START）
                     String method = eventJson.getString("method");
-                    if (XCCConstants.Event_Channel.equals(method)) {
+                    if (XCCConstants.EVENT_CHANNEL.equals(method)) {
                         JSONObject params = eventJson.getJSONObject("params");
                         //convert param
                         ChannelEvent event = IVRHandler.convertParams(params);
                         //asr domain
-//                        ivrService.handlerChannelEvent(nc, event);
-//                        ivrServiceV2.handlerChannelEvent(nc, event);
-                        ivrServiceV4.handlerChannelEvent(nc, event);
+                        ivrServiceV5.handlerChannelEvent(nc, event);
 
-                    } else if (XCCConstants.Event_DetectedFace.equals(method)) {
+                    } else if (XCCConstants.EVENT_DETECTED_FACE.equals(method)) {
                         log.info("事件 event======Event-Name : {}", "Event.DetectedFace");
-                    } else if (XCCConstants.Event_NativeEvent.equals(method)) {
-                        log.info("事件 event======Event-Name : {}", "Event_NativeEvent");
+                    } else if (XCCConstants.EVENT_NATIVE_EVENT.equals(method)) {
+                        log.info("事件 event======Event-Name : {}", "EVENT_NATIVE_EVENT");
                     }
 
                 }

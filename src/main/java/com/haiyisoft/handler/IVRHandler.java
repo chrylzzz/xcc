@@ -68,10 +68,10 @@ public class IVRHandler {
      * ngd: 机器回复一次+1,连续两次机器回复转人工
      * xcc: 未识别一次+1,连续两次未识别转人工
      */
-    public static IVREvent transferRule(IVREvent ivrEvent, ChannelEvent channelEvent, Connection nc) {
+    public static IVREvent transferRule(IVREvent ivrEvent, ChannelEvent channelEvent, Connection nc, NGDEvent ngdEvent, String callerIdNumber) {
         boolean transferFlag = ivrEvent.isTransferFlag();
         if (transferFlag) {//转人工
-            XCCUtil.handleTransferArtificial(nc, channelEvent, XCCConstants.ARTIFICIAL_TEXT);
+            XCCHandler.bridgeArtificial(nc, channelEvent, XCCConstants.ARTIFICIAL_TEXT, ngdEvent, callerIdNumber);
         } else {
             //累加次数
             int transferTime = ivrEvent.getTransferTime();
@@ -79,7 +79,7 @@ public class IVRHandler {
             if (newTransferTime >= XCCConstants.TRANSFER_ARTIFICIAL_TIME) {
                 ivrEvent.setTransferFlag(true);
                 log.info("transferRule 次数 {} 已累加至 {} , 转人工 channelId : {}", XCCConstants.DEFAULT_TRANSFER_TIME, XCCConstants.TRANSFER_ARTIFICIAL_TIME, ivrEvent.getChannelId());
-                XCCUtil.handleTransferArtificial(nc, channelEvent, XCCConstants.ARTIFICIAL_TEXT);
+                XCCHandler.bridgeArtificial(nc, channelEvent, XCCConstants.ARTIFICIAL_TEXT, ngdEvent, callerIdNumber);
             } else {
                 log.info("transferRule 已累加 channelId : {} , transferTime : {} ,newTransferTime : {}", ivrEvent.getChannelId(), transferTime, newTransferTime);
                 ivrEvent.setTransferTime(newTransferTime);
@@ -96,7 +96,7 @@ public class IVRHandler {
      * @return
      */
     public static IVREvent transferRuleClean(IVREvent ivrEvent) {
-        ivrEvent.setTransferTime(1);
+        ivrEvent.setTransferTime(XCCConstants.DEFAULT_TRANSFER_TIME);
         ivrEvent.setTransferFlag(false);
         log.info("transferRuleClean 已重置 channelId : {} , transferTime : {}", ivrEvent.getChannelId(), ivrEvent.getTransferTime());
         return ivrEvent;

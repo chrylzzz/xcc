@@ -54,28 +54,28 @@ public class XCCConstants {
      * CHANNEL_DESTROY： 挂机
      */
     //START：来话第一个事件
-    public static final String Channel_START = "START";
+    public static final String CHANNEL_START = "START";
     //小会
     public static final String CHANNEL_DESTROY = "CHANNEL_DESTROY";
     //CALLING：去话第一个事件
-    public static final String Channel_CALLING = "CALLING";
+    public static final String CHANNEL_CALLING = "CALLING";
     //RINGING：振铃
-    public static final String Channel_RINGING = "RINGING";
+    public static final String CHANNEL_RINGING = "RINGING";
     //BRIDGE：桥接
-    public static final String Channel_BRIDGE = "BRIDGE";
+    public static final String CHANNEL_BRIDGE = "BRIDGE";
     //READY：就绪
-    public static final String Channel_READY = "READY";
+    public static final String CHANNEL_READY = "READY";
     //MEDIA：媒体建立
-    public static final String Channel_MEDIA = "MEDIA";
+    public static final String CHANNEL_MEDIA = "MEDIA";
     //Channel事件 , XCC-BINDINGS
     //
-    public static final String Event_Channel = "Event.Channel";
+    public static final String EVENT_CHANNEL = "Event.Channel";
     //
-    public static final String Event_NativeEvent = "Event.NativeEvent";
+    public static final String EVENT_NATIVE_EVENT = "Event.NativeEvent";
     //
-    public static final String Event_DetectedFace = "Event.DetectedFace";
+    public static final String EVENT_DETECTED_FACE = "Event.DetectedFace";
     //HEARTBEAT
-    public static final String Event_NodeUpdate = "Event.NodeUpdate";
+    public static final String EVENT_NODE_UPDATE = "Event.NodeUpdate";
 
     //不可打断 true 不可打断
     public static final boolean NO_BREAK = true;
@@ -163,15 +163,6 @@ public class XCCConstants {
     public static final String NGD_QUERY_URL = "https://api-ngd.baidu.com/api/v2/core/query";
     //百度NGD auth
     public static final String NGD_QUERY_AUTHORIZATION = "NGD 43b6f0be-4894-466f-a346-08046d935035";
-    //欢迎语
-    public static final String WELCOME_TEXT = "我是智能美美, 您要咨询什么问题, 您请说";
-    //    public static final String WELCOME_TEXT = "欢迎致电南方电网广西电网公司，我是智能用电管家美美，我可以为您查电费、查表码，请问您需要查询这些信息吗？";
-    //转人工话术
-    public static final String ARTIFICIAL_TEXT = "正在为您转接人工坐席, 请稍后";
-    //XCC返回失败话术
-    public static final String XCC_MISSING_MSG = "YYSR#您的问题我不理解，请换个问法。如需人工服务，请讲 转人工";
-    //XCC返回失败话术
-    public static final String XCC_MISSING_ANSWER = "您的问题我不理解，请换个问法。如需人工服务，请讲 转人工";
     //语音输入
     public static final String YYSR = "YYSR";
     //按键输入
@@ -200,28 +191,44 @@ public class XCCConstants {
     /**
      * "solved": true
      * source:为知识库返回问题来源
+     * task_based :任务式会话
      * faq : faq回复
-     * task_based :流程恢复
-     * clarify: 澄清
      * chitchat: 闲聊
+     * clarify: 澄清
      * <p>
      * "solved": false
+     * auto_fill: 暂未遇到
      * system: 机器回复
-     * none: 无
+     * none: 未匹配
      */
-    public static final String SOURCE_FAQ = "faq";
     public static final String SOURCE_TASK_BASED = "task_based";
+    public static final String SOURCE_FAQ = "faq";
+    public static final String CHITCHAT = "chitchat";
     public static final String SOURCE_CLARIFY = "clarify";
     public static final String SOURCE_SYSTEM = "system";
     public static final String SOURCE_NONE = "none";
-    public static final String CHITCHAT = "chitchat";
+    public static final String SOURCE_AUTO_FILL = "auto_fill";//暂未遇到
     //ngd建议话术
     public static final String SUGGEST_ANSWER = "suggestAnswer";
-    //ngd未触发答案
-    //NGD识别失败话术 "source":"task_based"
+    //第一次错误
+    public static final String NGD_FIRST_UNDERSTAND_MSG = "实在抱歉，美美没有明白您的问题，请您重新简单描述一下，谢谢您！";
+    //第二次错误
+    public static final String NGD_SECOND_UNDERSTAND_MSG = "哎呀，美美还是没有明白您的问题，请您重新简单描述一下，谢谢您！";
+    //欢迎语
+    public static final String WELCOME_TEXT = "我是智能美美, 您要咨询什么问题, 您请说";
+    //前导欢迎语
+    public static final String TEST_WELCOME_TEXT = "欢迎致电南方电网广西电网公司，我是智能用电管家美美，我可以为您查电费、查表码，请问您需要查询这些信息吗？";
+    //转人工话术
+    public static final String ARTIFICIAL_TEXT = "由于您咨询的问题美美多次不明白, 正在为您转接人工坐席, 请稍后";
+    //XCC返回失败话术
+    public static final String XCC_MISSING_MSG = "您的问题我不理解，请换个问法。如需人工服务，请讲 转人工";
+    //XCC返回失败话术
+    public static final String XCC_MISSING_ANSWER = "您的问题我不理解，请换个问法。如需人工服务，请讲 转人工";
+    //task_based未处理
     public static final String NGD_MISSING_MSG = "这个家伙很懒,没留下答案就跑了";
-    //"source": "system"
+    //"source": "none"
     public static final String NGD_UNDERSTAND_MSG = "抱歉,我不太理解您的意思";
+
     //ngd 用户请求过于频繁，请稍后再试
     public static final int NGD_REQUEST_TO_MUCH = 4000019;
     //bot token错误

@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 /**
  * V4版本:
  * 欢迎语在百度ngd流程配置(先调用百度)
+ * 未识话术别在知识库处理
  * <p>
  * Created By Chr.yl on 2023-02-08.
  *
@@ -45,24 +46,28 @@ public class IVRServiceV4 {
             log.info(" start this call channelId: {} , state :{} ", channelId, state);
             log.info(" start this call IVREvent: {}", ivrEvent);
 
-            if (XCCConstants.Channel_START.equals(state)) {
+            if (XCCConstants.CHANNEL_START.equals(state)) {
                 //开始接管,第一个指令必须是Accept或Answer
                 XCCHandler.answer(nc, channelEvent);
                 //
                 while (true) {
+
                     //xcc识别数据
                     String xccRecognitionResult = xccEvent.getXccRecognitionResult();
+
                     //获取指令和话术
                     ngdEvent = NGDHandler.handlerNlu(xccRecognitionResult, channelId, callerIdNumber);
+
                     String retKey = ngdEvent.getRetKey();
                     String retValue = ngdEvent.getRetValue();
+
                     //记录IVR日志
                     NGDNodeMetaData ngdNodeMetaData = ngdEvent.getNgdNodeMetaData();
                     ivrEvent.getNgdNodeMetadataArray().add(ngdNodeMetaData);
 
                     xccEvent = IVRHandler.domain(nc, channelEvent, retKey, retValue, ivrEvent, ngdEvent, callerIdNumber);
 
-                    //处理是否挂机
+                    //处理是否已挂机
                     boolean handleHangup = XCCHandler.handleSomeHangup(xccEvent, channelId);
                     if (handleHangup) {//挂机
                         //先存的IVR对话日志,这里挂机不需要单独处理
@@ -75,16 +80,16 @@ public class IVRServiceV4 {
 
                 //开发记录ngd节点
 
-            } else if (XCCConstants.Channel_CALLING.equals(state)) {
-                log.info("Channel_CALLING this call channelId: {}", channelId);
-            } else if (XCCConstants.Channel_RINGING.equals(state)) {
-                log.info("Channel_RINGING this call channelId: {}", channelId);
-            } else if (XCCConstants.Channel_BRIDGE.equals(state)) {
-                log.info("Channel_BRIDGE this call channelId: {}", channelId);
-            } else if (XCCConstants.Channel_READY.equals(state)) {
-                log.info("Channel_READY this call channelId: {}", channelId);
-            } else if (XCCConstants.Channel_MEDIA.equals(state)) {
-                log.info("Channel_MEDIA this call channelId: {}", channelId);
+            } else if (XCCConstants.CHANNEL_CALLING.equals(state)) {
+                log.info("CHANNEL_CALLING this call channelId: {}", channelId);
+            } else if (XCCConstants.CHANNEL_RINGING.equals(state)) {
+                log.info("CHANNEL_RINGING this call channelId: {}", channelId);
+            } else if (XCCConstants.CHANNEL_BRIDGE.equals(state)) {
+                log.info("CHANNEL_BRIDGE this call channelId: {}", channelId);
+            } else if (XCCConstants.CHANNEL_READY.equals(state)) {
+                log.info("CHANNEL_READY this call channelId: {}", channelId);
+            } else if (XCCConstants.CHANNEL_MEDIA.equals(state)) {
+                log.info("CHANNEL_MEDIA this call channelId: {}", channelId);
             } else if (XCCConstants.CHANNEL_DESTROY.equals(state)) {
                 log.info("CHANNEL_DESTROY this call channelId: {}", channelId);
             }

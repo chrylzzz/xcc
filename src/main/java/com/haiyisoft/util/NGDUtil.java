@@ -14,6 +14,8 @@ import com.haiyisoft.model.NgdNodeDialog;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Random;
+
 /**
  * 百度智能知识库
  * Created by Chr.yl on 2023/2/15.
@@ -28,7 +30,8 @@ public class NGDUtil {
      * queryText 若为空时暂时不做判断,依赖百度NGD BOT配置/处理;若有需求再修改方法逻辑;
      *
      * @param queryText
-     * @param sessionId call id
+     * @param sessionId caller id
+     * @param phone     caller phone
      * @return
      */
     public static NGDEvent coreQueryNGD(String queryText, String sessionId, String phone) {
@@ -66,7 +69,6 @@ public class NGDUtil {
             ngdEvent = NGDHandler.ngdEventSetErrorVar(sessionId, code, msg, answer);
         }
 
-
         JSONObject resContext = parse.getJSONObject("data").getJSONObject("context");//context
         //处理用户校验是否完成
         NGDEvent resNgdEvent = convertUserOk(resContext, ngdEvent);
@@ -96,25 +98,28 @@ public class NGDUtil {
                 answer = jsonData.getString(XCCConstants.SUGGEST_ANSWER);
             } else if (XCCConstants.SOURCE_FAQ.equals(source)) {//faq
                 answer = jsonData.getString(XCCConstants.SUGGEST_ANSWER);
+            } else if (XCCConstants.CHITCHAT.equals(source)) {//chitchat
+                answer = jsonData.getString(XCCConstants.SUGGEST_ANSWER);
             } else if (XCCConstants.SOURCE_CLARIFY.equals(source)) {//clarify
                 answer = jsonData.getJSONObject("clarifyQuestions")
                         .getJSONObject("voice")
                         .getJSONArray("questions")
                         .getString(0);
-            } else if (XCCConstants.SOURCE_SYSTEM.equals(source)) {//system
-                answer = jsonData.getString(XCCConstants.SUGGEST_ANSWER);
-            } else if (XCCConstants.CHITCHAT.equals(source)) {//chitchat
-                answer = jsonData.getString(XCCConstants.SUGGEST_ANSWER);
-            } else if (XCCConstants.SOURCE_NONE.equals(source)) {//none
-                answer = jsonData.getString(XCCConstants.SUGGEST_ANSWER);
             } else {//此处自定义,待发现新类型继续补充
                 answer = XCCConstants.XCC_MISSING_MSG;
             }
         } else {
             if (convertSolved) {//处理,使用自定义话术
-                answer = XCCConstants.XCC_MISSING_MSG;
+                answer = randomMissingMsg();
             } else {//不处理
-                answer = jsonData.getString(XCCConstants.SUGGEST_ANSWER);
+                //当前测试source=system/none时,solved为false
+                if (XCCConstants.SOURCE_SYSTEM.equals(source)) {//system
+                    answer = jsonData.getString(XCCConstants.SUGGEST_ANSWER);
+                } else if (XCCConstants.SOURCE_NONE.equals(source)) {//none
+                    answer = jsonData.getString(XCCConstants.SUGGEST_ANSWER);
+                } else {//此处自定义,待发现新类型继续补充
+                    answer = jsonData.getString(XCCConstants.SUGGEST_ANSWER);
+                }
             }
         }
         log.info("百度知识库命中 answer: {}", answer);
@@ -137,13 +142,13 @@ public class NGDUtil {
             answer = jsonData.getString(XCCConstants.SUGGEST_ANSWER);
         } else if (XCCConstants.SOURCE_FAQ.equals(source)) {//faq
             answer = jsonData.getString(XCCConstants.SUGGEST_ANSWER);
+        } else if (XCCConstants.CHITCHAT.equals(source)) {//chitchat
+            answer = jsonData.getString(XCCConstants.SUGGEST_ANSWER);
         } else if (XCCConstants.SOURCE_CLARIFY.equals(source)) {//clarify
             answer = jsonData.getJSONObject("clarifyQuestions")
                     .getJSONObject("voice")
                     .getJSONArray("questions")
                     .getString(0);
-        } else if (XCCConstants.CHITCHAT.equals(source)) {//chitchat
-            answer = jsonData.getString(XCCConstants.SUGGEST_ANSWER);
         } else if (XCCConstants.SOURCE_SYSTEM.equals(source)) {//system
             answer = XCCConstants.XCC_MISSING_MSG;
         } else if (XCCConstants.SOURCE_NONE.equals(source)) {//none
@@ -154,6 +159,23 @@ public class NGDUtil {
         return answer;
     }
 
+    private static Random random = new Random();
+
+    /**
+     * 获取随机话术
+     * 应用在none/system
+     *
+     * @return
+     */
+    public static String randomMissingMsg() {
+        String MissingMsg;
+        if (random.nextBoolean()) {
+            MissingMsg = XCCConstants.NGD_FIRST_UNDERSTAND_MSG;
+        } else {
+            MissingMsg = XCCConstants.NGD_SECOND_UNDERSTAND_MSG;
+        }
+        return MissingMsg;
+    }
 
     /**
      * 获取ngd节点流程

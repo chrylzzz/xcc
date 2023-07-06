@@ -261,7 +261,6 @@ public class XCCUtil {
     /**
      * 转人工测试
      * Transfer Artificial
-     * 待处理500,目前测试转人工未接听,返回500
      *
      * @param nc
      * @param channelEvent
@@ -272,10 +271,6 @@ public class XCCUtil {
         XCCEvent xccEvent = XCCUtil.bridgeExtension(nc, channelEvent, ttsContent);
         //转人工
 //        XCCEvent xccEvent = XCCUtil.bridgeArtificial(nc, channelEvent, ttsContent);
-        boolean someHangup = XCCHandler.handleSomeHangup(xccEvent, channelEvent.getUuid());
-        if (someHangup) {
-            hangup(nc, channelEvent);
-        }
     }
 
     /**
@@ -315,7 +310,6 @@ public class XCCUtil {
                 }
               }
             }
-
 
             ///
             https://docs.xswitch.cn/xcc-api/reference/#dial-string

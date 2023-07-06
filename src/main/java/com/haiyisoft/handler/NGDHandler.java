@@ -1,8 +1,11 @@
 package com.haiyisoft.handler;
 
+import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.NGDEvent;
 import com.haiyisoft.util.NGDUtil;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Random;
 
 /**
  * Created by Chr.yl on 2023/3/30.
@@ -31,16 +34,43 @@ public class NGDHandler {
 
 
     /**
-     * 校验机器回复
+     * 处理知识库回复
+     * 校验solved: true/false
+     *
+     * @param ngdEvent
+     * @return false 知识库错误回复, true 知识库正确回复
+     */
+    public static boolean handleSolved(NGDEvent ngdEvent) {
+        return ngdEvent.isSolved();
+    }
+
+    /**
+     * 校验source
      * system/none/
      * task_based/faq/clarify/
      *
      * @param ngdEvent
      * @return
      */
-    public static boolean handleSolved(NGDEvent ngdEvent) {
-        return ngdEvent.isSolved();
+    public static boolean handleSource(NGDEvent ngdEvent) {
+        boolean handleSource = false;
+        String source = ngdEvent.getSource();
+        if (XCCConstants.SOURCE_TASK_BASED.equals(source)) {//task_based
 
+        } else if (XCCConstants.SOURCE_FAQ.equals(source)) {//faq
+
+        } else if (XCCConstants.SOURCE_CLARIFY.equals(source)) {//clarify
+
+        } else if (XCCConstants.CHITCHAT.equals(source)) {//chitchat
+
+        } else if (XCCConstants.SOURCE_SYSTEM.equals(source)) {//system
+
+        } else if (XCCConstants.SOURCE_NONE.equals(source)) {//none
+
+        } else {
+
+        }
+        return handleSource;
     }
 
 
