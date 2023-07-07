@@ -65,7 +65,7 @@ public class NGDUtil {
             log.info("本次节点信息为:{}", ngdNodeMetaData);
         } else {
             log.error("百度知识调用异常 code: {} , msg: {}", code, msg);
-            answer = XCCConstants.XCC_MISSING_MSG;
+            answer = XCCConstants.XCC_MISSING_TEXT;
             ngdEvent = NGDHandler.ngdEventSetErrorVar(sessionId, code, msg, answer);
         }
 
@@ -106,7 +106,7 @@ public class NGDUtil {
                         .getJSONArray("questions")
                         .getString(0);
             } else {//此处自定义,待发现新类型继续补充
-                answer = XCCConstants.XCC_MISSING_MSG;
+                answer = XCCConstants.XCC_MISSING_TEXT;
             }
         } else {
             if (convertSolved) {//处理,使用自定义话术
@@ -150,11 +150,11 @@ public class NGDUtil {
                     .getJSONArray("questions")
                     .getString(0);
         } else if (XCCConstants.SOURCE_SYSTEM.equals(source)) {//system
-            answer = XCCConstants.XCC_MISSING_MSG;
+            answer = XCCConstants.XCC_MISSING_TEXT;
         } else if (XCCConstants.SOURCE_NONE.equals(source)) {//none
             answer = jsonData.getString(XCCConstants.SUGGEST_ANSWER);
         } else {
-            answer = XCCConstants.XCC_MISSING_MSG;
+            answer = XCCConstants.XCC_MISSING_TEXT;
         }
         return answer;
     }
@@ -170,9 +170,9 @@ public class NGDUtil {
     public static String randomMissingMsg() {
         String MissingMsg;
         if (random.nextBoolean()) {
-            MissingMsg = XCCConstants.NGD_FIRST_UNDERSTAND_MSG;
+            MissingMsg = XCCConstants.NGD_FIRST_UNDERSTAND_TEXT;
         } else {
-            MissingMsg = XCCConstants.NGD_SECOND_UNDERSTAND_MSG;
+            MissingMsg = XCCConstants.NGD_SECOND_UNDERSTAND_TEXT;
         }
         return MissingMsg;
     }
@@ -232,7 +232,7 @@ public class NGDUtil {
         log.info("convertText todoText: {}", todoText);
         if (StringUtils.isBlank(todoText)) {//话术为空
             retKey = XCCConstants.YYSR;
-            retValue = XCCConstants.XCC_MISSING_ANSWER;
+            retValue = XCCConstants.XCC_MISSING_ANSWER_TEXT;
         } else {
             if (!todoText.contains(XCCConstants.NGD_SEPARATOR)) {//不带#的话术
                 retKey = XCCConstants.YYSR;
@@ -244,7 +244,7 @@ public class NGDUtil {
                     retValue = split[1];//内容
                 } else {//无指令
                     retKey = XCCConstants.YYSR;
-                    retValue = XCCConstants.XCC_MISSING_ANSWER;
+                    retValue = XCCConstants.XCC_MISSING_ANSWER_TEXT;
                 }
             }
         }

@@ -32,9 +32,7 @@ public class IVRHandler {
      * @param callerIdNumber
      * @return
      */
-    public static XCCEvent domain(Connection nc, ChannelEvent channelEvent,
-                                  String retKey, String retValue,
-                                  IVREvent ivrEvent, NGDEvent ngdEvent, String callerIdNumber) {
+    public static XCCEvent domain(Connection nc, ChannelEvent channelEvent, String retKey, String retValue, IVREvent ivrEvent, NGDEvent ngdEvent, String callerIdNumber) {
         XCCEvent xccEvent;
         if (XCCConstants.YYSR.equals(retKey)) {//播报收音
             xccEvent = XCCHandler.detectSpeechPlayTTSNoDTMF(nc, channelEvent, retValue);
@@ -55,7 +53,7 @@ public class IVRHandler {
             xccEvent = XCCHandler.bridgeIVR(nc, channelEvent, retValue, ivrEvent, ngdEvent, callerIdNumber);
         } else if (XCCConstants.DXFS.equals(retKey)) {//短信发送
             WebHookHandler.sendMessage(ivrEvent, retValue);
-            xccEvent = XCCHandler.detectSpeechPlayTTSNoDTMF(nc, channelEvent, "您咨询的问题, 详细信息已通过短信的方式发送到您的手机, 请问您还有什么问题?");
+            xccEvent = XCCHandler.detectSpeechPlayTTSNoDTMF(nc, channelEvent, XCCConstants.FAQ_SEND_MESSAGE_TEXT);
         } else {
             log.error("严格根据配置的指令开发");
             xccEvent = new XCCEvent();
