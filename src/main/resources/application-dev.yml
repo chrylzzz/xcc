@@ -39,7 +39,7 @@ chryl:
 #  ngd bot token
   ngd-bot-token: NGD 88f20617-d6b5-4c4e-bf72-fde0c0db1d82
 # convert solved ,ngd存在solved=false，是否选择处理，true开启
-  convert-solved: false
+  convert-solved: true
 # webhook url
   webhook-url: http://10.100.104.30:8090/gddw/electric
 ######################################################################## NGD

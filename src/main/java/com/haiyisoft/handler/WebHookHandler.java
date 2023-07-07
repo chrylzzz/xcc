@@ -31,9 +31,9 @@ public class WebHookHandler {
         context.put("jssjh", cidNumber);
         context.put("dxnr", dxnr);
         JSONObject params = convertWebHookReqBody(XCCConstants.SEND_MESSAGE, context);
-        log.info("sendMessage,WebHook入参:{}", JSON.toJSONString(params, JSONWriter.Feature.PrettyFormat));
+        log.info("sendMessage,WebHook接口入参:{}", JSON.toJSONString(params, JSONWriter.Feature.PrettyFormat));
         String resData = HttpClientUtil.doPostJson(IVRInit.CHRYL_CONFIG_PROPERTY.getWebHookUrl(), params.toJSONString());
-        log.info("sendMessage,WebHook入参:{}", resData);
+        log.info("sendMessage,WebHook接口出参:{}", resData);
     }
 
     /**
@@ -59,7 +59,7 @@ public class WebHookHandler {
             JSONObject welcomeJsonData = metadataArray.getJSONObject(0);
             String welcomeStr = welcomeJsonData.getString("answer");
             String welcomeTime = welcomeJsonData.getString("answerTime");
-            cdr = XCCConstants.B + welcomeTime + welcomeStr;
+            cdr = XCCConstants.H + welcomeTime + welcomeStr;
             for (int i = 1; i < metadataArray.size(); i++) {
                 JSONObject jsonObject = metadataArray.getJSONObject(i);
                 String query = jsonObject.getString("query");
@@ -87,9 +87,9 @@ public class WebHookHandler {
         context.put("dqbm", phoneAdsCode);
         context.put("gddwbm", phoneAdsCode);
         JSONObject params = convertWebHookReqBody(XCCConstants.I_HJZX_BCDHNR, context);
-        log.info("I_HJZX_BCDHNR,WebHook入参:{}", JSON.toJSONString(params, JSONWriter.Feature.PrettyFormat));
+        log.info("I_HJZX_BCDHNR,WebHook接口入参:{}", JSON.toJSONString(params, JSONWriter.Feature.PrettyFormat));
         String resData = HttpClientUtil.doPostJson(IVRInit.CHRYL_CONFIG_PROPERTY.getWebHookUrl(), params.toJSONString());
-        log.info("I_HJZX_BCDHNR,WebHook接口入参:{}", resData);
+        log.info("I_HJZX_BCDHNR,WebHook接口出参:{}", resData);
     }
 
     /**
