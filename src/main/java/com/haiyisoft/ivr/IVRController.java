@@ -57,7 +57,7 @@ public class IVRController {
                     String eventStr = new String(subMsg.getData(), StandardCharsets.UTF_8);
                     JSONObject eventJson = JSONObject.parseObject(eventStr);
 
-//                    log.info("订阅事件 eventJson:{}", eventJson);
+                    //log.info("订阅事件 eventJson:{}", eventJson);
 
                     //event状态:Event.Channel（state=START）
                     String method = eventJson.getString("method");
