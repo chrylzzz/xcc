@@ -12,7 +12,7 @@ public enum EnumXCC implements CommonXCC {
     USER_NO("userOK", "NO"),
     //NGD错误码
     NGD_REQUEST_TO_MUCH("4000019", "ngd 用户请求过于频繁，请稍后再试"),
-    NGD_BOT_TOKEN_ERREO("4002409", "bot token错误"),
+    NGD_BOT_TOKEN_ERROR("4002409", "ngd bot token错误"),
 
 
     //
