@@ -2,6 +2,7 @@ package com.haiyisoft.entry;
 
 import com.alibaba.fastjson2.JSONArray;
 import com.haiyisoft.constant.XCCConstants;
+import com.haiyisoft.model.IVRModel;
 import lombok.Data;
 
 /**
@@ -11,13 +12,13 @@ import lombok.Data;
  * @author Chr.yl
  */
 @Data
-public class IVREvent {
+public class IVREvent extends IVRModel {
 
-    //xcc call id
+    //xcc caller id
     private String channelId;
-    //转人工次数 : 连续2次无法处理则转人工 ,默认值为1,transferTime == 3时transferFlag=true,转人工
+    //转人工次数 : 连续2次无法处理则转人工 ,默认值为1,transferTime >= 4时transferFlag=true,转人工
     private Integer transferTime;
-    //是否转人工 : true 转人工 , time=3时赋值true
+    //是否转人工 : true 转人工 , time=4时赋值true
     private boolean transferFlag;
     //一通电话的json对话记录
     private JSONArray ngdNodeMetadataArray;
@@ -37,6 +38,5 @@ public class IVREvent {
         this.transferFlag = false;
         this.ngdNodeMetadataArray = new JSONArray();
     }
-
 
 }
