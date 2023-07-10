@@ -42,10 +42,11 @@ public class WebHookHandler {
      *
      * @param ivrEvent
      */
-    public static void writeCDR(IVREvent ivrEvent) {
+    public static void saveCDR(IVREvent ivrEvent) {
         String channelId = ivrEvent.getChannelId();
         JSONArray metadataArray = ivrEvent.getNgdNodeMetadataArray();
         log.info("cdr array :{}", metadataArray);
+        //营销接口会话记录入参
         String cdr = "";
         if (metadataArray != null) {
 //                metadataArray.forEach(metadata -> {
@@ -71,7 +72,7 @@ public class WebHookHandler {
         }
 
         //标准格式:[#B:2018-11-20 20:00:00欢迎致电95598.#H:2018-11-20 20:00:00你好我要查电费。#B:2018-11-20 20:00:00请A请按键输入您的用户编号。]
-        log.info("[{}]================ CDR:{} ", channelId, cdr);
+        log.info("[{}]================ CDR:[{}] ", channelId, cdr);
 
         //来电号码
         String cidNumber = ivrEvent.getCidNumber();

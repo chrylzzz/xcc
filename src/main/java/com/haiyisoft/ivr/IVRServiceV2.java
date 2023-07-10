@@ -42,8 +42,7 @@ public class IVRServiceV2 {
             String channelId = ivrEvent.getChannelId();
             //来电号码
             String callerIdNumber = ivrEvent.getCidNumber();
-            log.info(" start this call channelId: {} , state :{} ", channelId, state);
-            log.info(" start this call IVREvent: {}", ivrEvent);
+            log.info(" start this call channelId: {} , state :{} , IVREvent: {}", channelId, state, ivrEvent);
 
             if (XCCConstants.CHANNEL_START.equals(state)) {
                 //开始接管,第一个指令必须是Accept或Answer
