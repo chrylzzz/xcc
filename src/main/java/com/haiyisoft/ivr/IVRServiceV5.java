@@ -110,11 +110,14 @@ public class IVRServiceV5 {
             log.info("saveCDR ivrEvent data: {}", ivrEvent);
             WebHookHandler.saveCDR(ivrEvent);
 
-            //保存意图记录
+            //保存意图
+
+            //保存通话数据
 
             //挂断双方
             XCCHandler.hangup(nc, channelEvent);
             log.info("hangup this call channelId: {} ", channelId);
+
         }
     }
 
