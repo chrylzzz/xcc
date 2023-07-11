@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSONArray;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.model.IVRModel;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * IVR业务实体
@@ -12,6 +13,7 @@ import lombok.Data;
  * @author Chr.yl
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class IVREvent extends IVRModel {
 
     //xcc caller id
@@ -33,6 +35,7 @@ public class IVREvent extends IVRModel {
     //----------------华为平台sip解析数据
 
     public IVREvent(String channelId) {
+        super();
         this.channelId = channelId;
         this.transferTime = XCCConstants.DEFAULT_TRANSFER_TIME;
         this.transferFlag = false;
