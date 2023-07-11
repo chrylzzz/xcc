@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * IVR业务实体
+ * IVR接收业务实体
  * Created by Chr.yl on 2023/3/7.
  *
  * @author Chr.yl
