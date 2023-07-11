@@ -41,61 +41,44 @@ public class IVRService {
             String callerIdNumber = ivrEvent.getCidNumber();
             log.info(" start this call channelId: {} , state :{} , IVREvent: {}", channelId, state, ivrEvent);
 
-            switch (state) {
-                case XCCConstants.CHANNEL_START:
-                    //开始接管,第一个指令必须是Accept或Answer
-                    XCCHandler.answer(nc, channelEvent);
-                    //
-                    String retKey = XCCConstants.YYSR;
-                    String retValue = XCCConstants.WELCOME_TEXT;
-                    while (true) {
+            if (state.equals(XCCConstants.CHANNEL_START)) {
+                //开始接管,第一个指令必须是Accept或Answer
+                XCCHandler.answer(nc, channelEvent);
+                //
+                String retKey = XCCConstants.YYSR;
+                String retValue = XCCConstants.WELCOME_TEXT;
+                while (true) {
 
-                        xccEvent = IVRHandler.domain(nc, channelEvent, retKey, retValue, ivrEvent, ngdEvent, callerIdNumber);
+                    xccEvent = IVRHandler.domain(nc, channelEvent, retKey, retValue, ivrEvent, ngdEvent, callerIdNumber);
 
-                        //处理是否已挂机
-                        boolean handleHangup = XCCHandler.handleSomeHangup(xccEvent, channelId);
-                        if (handleHangup) {//挂机
-                            //TODO 记录已挂机的IVR对话日志
-                            log.info("挂断部分");
-                            break;
-                        } else {//正常通话
+                    //处理是否已挂机
+                    boolean handleHangup = XCCHandler.handleSomeHangup(xccEvent, channelId);
+                    if (handleHangup) {//挂机
+                        //TODO 记录已挂机的IVR对话日志
+                        log.info("挂断部分");
+                        break;
+                    } else {//正常通话
 
-                            log.info("正常通话");
-                            //处理是否识别
-                            boolean xccInput = XCCHandler.handleXccInput(xccEvent);
-                            //判断是否识别到(dtmf/speech)
-                            if (xccInput) {//xcc已识别
+                        log.info("正常通话");
+                        //处理是否识别
+                        boolean xccInput = XCCHandler.handleXccInput(xccEvent);
+                        //判断是否识别到(dtmf/speech)
+                        if (xccInput) {//xcc已识别
 
-                                log.info("已识别到数据");
-                                //xcc识别数据
-                                String xccRecognitionResult = xccEvent.getXccRecognitionResult();
-                                //获取指令和话术
-                                ngdEvent = NGDHandler.handlerNlu(xccRecognitionResult, channelId, callerIdNumber);
+                            log.info("已识别到数据");
+                            //xcc识别数据
+                            String xccRecognitionResult = xccEvent.getXccRecognitionResult();
+                            //获取指令和话术
+                            ngdEvent = NGDHandler.handlerNlu(xccRecognitionResult, channelId, callerIdNumber);
 
-                                //handle ngd agent
-                                boolean handleSolved = NGDHandler.handleSolved(ngdEvent);
-                                //判断是否为机器回复
-                                if (handleSolved) {
-                                    log.info("人为回复");
-                                    ivrEvent = IVRHandler.transferRuleClean(ivrEvent);
-                                } else {
-                                    log.info("机器回复");
-                                    //触发转人工规则
-                                    ivrEvent = IVRHandler.transferRule(ivrEvent, channelEvent, nc, ngdEvent, callerIdNumber);
-                                    if (ivrEvent.isTransferFlag()) {
-                                        //TODO 记录已挂机的IVR对话日志
-                                        //转人工后挂机
-                                        break;
-                                    }
-
-                                }
-
-                                retKey = ngdEvent.getRetKey();
-                                retValue = ngdEvent.getRetValue();
-
-                            } else {//xcc未识别
-
-                                log.info("未识别到数据");
+                            //handle ngd agent
+                            boolean handleSolved = NGDHandler.handleSolved(ngdEvent);
+                            //判断是否为机器回复
+                            if (handleSolved) {
+                                log.info("人为回复");
+                                ivrEvent = IVRHandler.transferRuleClean(ivrEvent);
+                            } else {
+                                log.info("机器回复");
                                 //触发转人工规则
                                 ivrEvent = IVRHandler.transferRule(ivrEvent, channelEvent, nc, ngdEvent, callerIdNumber);
                                 if (ivrEvent.isTransferFlag()) {
@@ -103,45 +86,53 @@ public class IVRService {
                                     //转人工后挂机
                                     break;
                                 }
-                                if (XCCConstants.DETECT_SPEECH.equals(xccEvent.getXccMethod())) {
-                                    retKey = "YYSR";
-                                    retValue = "已检测到您没说话, 您请说";
-                                } else if (XCCConstants.READ_DTMF.equals(xccEvent.getXccMethod())) {
-                                    retKey = "AJSR";
-                                    retValue = "已检测到您未输入, 请输入";
-                                }
+
                             }
 
-                            //记录IVR对话日志
-                            NGDNodeMetaData ngdNodeMetaData = ngdEvent.getNgdNodeMetaData();
-                            ivrEvent.getNgdNodeMetadataArray().add(ngdNodeMetaData);
+                            retKey = ngdEvent.getRetKey();
+                            retValue = ngdEvent.getRetValue();
 
+                        } else {//xcc未识别
+
+                            log.info("未识别到数据");
+                            //触发转人工规则
+                            ivrEvent = IVRHandler.transferRule(ivrEvent, channelEvent, nc, ngdEvent, callerIdNumber);
+                            if (ivrEvent.isTransferFlag()) {
+                                //TODO 记录已挂机的IVR对话日志
+                                //转人工后挂机
+                                break;
+                            }
+                            if (XCCConstants.DETECT_SPEECH.equals(xccEvent.getXccMethod())) {
+                                retKey = "YYSR";
+                                retValue = "已检测到您没说话, 您请说";
+                            } else if (XCCConstants.READ_DTMF.equals(xccEvent.getXccMethod())) {
+                                retKey = "AJSR";
+                                retValue = "已检测到您未输入, 请输入";
+                            }
                         }
-                        log.info("revert ivrEvent data: {}", ivrEvent);
+
+                        //记录IVR对话日志
+                        NGDNodeMetaData ngdNodeMetaData = ngdEvent.getNgdNodeMetaData();
+                        ivrEvent.getNgdNodeMetadataArray().add(ngdNodeMetaData);
 
                     }
+                    log.info("revert ivrEvent data: {}", ivrEvent);
 
-                    //开发记录ngd节点
+                }
 
-                    break;
-                case XCCConstants.CHANNEL_CALLING:
-                    log.info("CHANNEL_CALLING this call channelId: {}", channelId);
-                    break;
-                case XCCConstants.CHANNEL_RINGING:
-                    log.info("CHANNEL_RINGING this call channelId: {}", channelId);
-                    break;
-                case XCCConstants.CHANNEL_BRIDGE:
-                    log.info("CHANNEL_BRIDGE this call channelId: {}", channelId);
-                    break;
-                case XCCConstants.CHANNEL_READY:
-                    log.info("CHANNEL_READY this call channelId: {}", channelId);
-                    break;
-                case XCCConstants.CHANNEL_MEDIA:
-                    log.info("CHANNEL_MEDIA this call channelId: {}", channelId);
-                    break;
-                case XCCConstants.CHANNEL_DESTROY:
-                    log.info("CHANNEL_DESTROY this call channelId: {}", channelId);
-                    break;
+                //开发记录ngd节点
+            } else if (state.equals(XCCConstants.CHANNEL_CALLING)) {
+                log.info("CHANNEL_CALLING this call channelId: {}", channelId);
+            } else if (state.equals(XCCConstants.CHANNEL_RINGING)) {
+                log.info("CHANNEL_RINGING this call channelId: {}", channelId);
+            } else if (state.equals(XCCConstants.CHANNEL_BRIDGE)) {
+                log.info("CHANNEL_BRIDGE this call channelId: {}", channelId);
+            } else if (state.equals(XCCConstants.CHANNEL_READY)) {
+                log.info("CHANNEL_READY this call channelId: {}", channelId);
+            } else if (state.equals(XCCConstants.CHANNEL_MEDIA)) {
+                log.info("CHANNEL_MEDIA this call channelId: {}", channelId);
+            } else if (state.equals(XCCConstants.CHANNEL_DESTROY)) {
+                log.info("CHANNEL_DESTROY this call channelId: {}", channelId);
             }
             log.info("hangup ivrEvent data: {}", ivrEvent);
 
