@@ -45,7 +45,7 @@ public class IVRServiceV4 {
             String callerIdNumber = ivrEvent.getCidNumber();
             log.info(" start this call channelId: {} , state :{} , IVREvent: {}", channelId, state, ivrEvent);
 
-            if (state.equals(XCCConstants.CHANNEL_START)) {
+            if (XCCConstants.CHANNEL_START.equals(state)) {
                 //开始接管,第一个指令必须是Accept或Answer
                 XCCHandler.answer(nc, channelEvent);
                 //
@@ -77,18 +77,17 @@ public class IVRServiceV4 {
 
                 }
 
-                //开发记录ngd节点
-            } else if (state.equals(XCCConstants.CHANNEL_CALLING)) {
+            } else if (XCCConstants.CHANNEL_CALLING.equals(state)) {
                 log.info("CHANNEL_CALLING this call channelId: {}", channelId);
-            } else if (state.equals(XCCConstants.CHANNEL_RINGING)) {
+            } else if (XCCConstants.CHANNEL_RINGING.equals(state)) {
                 log.info("CHANNEL_RINGING this call channelId: {}", channelId);
-            } else if (state.equals(XCCConstants.CHANNEL_BRIDGE)) {
+            } else if (XCCConstants.CHANNEL_BRIDGE.equals(state)) {
                 log.info("CHANNEL_BRIDGE this call channelId: {}", channelId);
-            } else if (state.equals(XCCConstants.CHANNEL_READY)) {
+            } else if (XCCConstants.CHANNEL_READY.equals(state)) {
                 log.info("CHANNEL_READY this call channelId: {}", channelId);
-            } else if (state.equals(XCCConstants.CHANNEL_MEDIA)) {
+            } else if (XCCConstants.CHANNEL_MEDIA.equals(state)) {
                 log.info("CHANNEL_MEDIA this call channelId: {}", channelId);
-            } else if (state.equals(XCCConstants.CHANNEL_DESTROY)) {
+            } else if (XCCConstants.CHANNEL_DESTROY.equals(state)) {
                 log.info("CHANNEL_DESTROY this call channelId: {}", channelId);
             }
 

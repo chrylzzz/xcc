@@ -5,17 +5,9 @@ import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.JSONWriter;
 import com.haiyisoft.boot.IVRInit;
 import com.haiyisoft.config.ThreadPoolConfig;
-import com.haiyisoft.ivr.IVRService;
-import com.haiyisoft.util.HttpClientUtil;
-import com.haiyisoft.util.IdGenerator;
 import com.haiyisoft.util.IpUtil;
-import com.haiyisoft.util.NGDUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -53,64 +45,15 @@ public class ChrylController {
      * info
      *
      * @return
-     * @throws InterruptedException
-     * @throws IOException
      */
     @GetMapping("info")
-    public JSONObject info() throws InterruptedException, IOException {
+    public JSONObject info() {
         JSONObject a = new JSONObject();
         a.put("cpu", ThreadPoolConfig.CPU_NUM);
         a.put("nei_ip", IpUtil.INTRANET_IP);
         a.put("wai_ip", IpUtil.INTERNET_IP);
+        log.info("info : {}", a);
         return a;
     }
-
-
-    //----------------------------测试http client
-    @GetMapping("/test/{queryText}")
-    public String xcc(@PathVariable String queryText) {
-        JSONObject a = new JSONObject();
-        a.put("code", 200);
-        String s = NGDUtil.testNGD(queryText, IdGenerator.randomUUID());
-        return s;
-
-    }
-
-    @Autowired
-    private ApplicationContext applicationContext;
-    @Autowired
-    private IVRService ivrService;
-    @Autowired
-    private IVRService ivrService2;
-
-    @GetMapping("c")
-    public void show() {
-        System.out.println(applicationContext);
-        AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext(IVRService.class);
-        IVRService person = ac.getBean(IVRService.class);
-        System.out.println("p:" + person);
-        System.out.println(ivrService);
-        System.out.println(ivrService2);
-    }
-
-
-    @GetMapping("/timeout")
-    public void testSocketTimeOut() {
-        JSONObject a = new JSONObject();
-        a.put("code", 200);
-        long start = System.currentTimeMillis();
-        String s = HttpClientUtil.doGetTest("http://127.0.0.1:8088/xcc/testSocketTimeOutMethod", null);
-        long end = System.currentTimeMillis();
-        System.out.println("所需时间 ms : " + (end - start));
-        System.out.println(s);
-    }
-
-    @GetMapping("testSocketTimeOutMethod")
-    public String testSocketTimeOutMethod() throws InterruptedException {
-        String json = JSON.toJSONString(IVRInit.CHRYL_CONFIG_PROPERTY, JSONWriter.Feature.PrettyFormat);
-        Thread.sleep(10000);
-        return json;
-    }
-    //----------------------------测试
 
 }

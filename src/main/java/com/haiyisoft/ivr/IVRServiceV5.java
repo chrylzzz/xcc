@@ -45,7 +45,7 @@ public class IVRServiceV5 {
             String callerIdNumber = ivrEvent.getCidNumber();
             log.info(" start this call channelId: {} , state :{} , IVREvent: {}", channelId, state, ivrEvent);
 
-            if (state.equals(XCCConstants.CHANNEL_START)) {
+            if (XCCConstants.CHANNEL_START.equals(state)) {
                 //开始接管,第一个指令必须是Accept或Answer
                 XCCHandler.answer(nc, channelEvent);
                 //
@@ -92,23 +92,25 @@ public class IVRServiceV5 {
                     log.info("revert ivrEvent data: {}", ivrEvent);
 
                 }
-            } else if (state.equals(XCCConstants.CHANNEL_CALLING)) {
+            } else if (XCCConstants.CHANNEL_CALLING.equals(state)) {
                 log.info("CHANNEL_CALLING this call channelId: {}", channelId);
-            } else if (state.equals(XCCConstants.CHANNEL_RINGING)) {
+            } else if (XCCConstants.CHANNEL_RINGING.equals(state)) {
                 log.info("CHANNEL_RINGING this call channelId: {}", channelId);
-            } else if (state.equals(XCCConstants.CHANNEL_BRIDGE)) {
+            } else if (XCCConstants.CHANNEL_BRIDGE.equals(state)) {
                 log.info("CHANNEL_BRIDGE this call channelId: {}", channelId);
-            } else if (state.equals(XCCConstants.CHANNEL_READY)) {
+            } else if (XCCConstants.CHANNEL_READY.equals(state)) {
                 log.info("CHANNEL_READY this call channelId: {}", channelId);
-            } else if (state.equals(XCCConstants.CHANNEL_MEDIA)) {
+            } else if (XCCConstants.CHANNEL_MEDIA.equals(state)) {
                 log.info("CHANNEL_MEDIA this call channelId: {}", channelId);
-            } else if (state.equals(XCCConstants.CHANNEL_DESTROY)) {
+            } else if (XCCConstants.CHANNEL_DESTROY.equals(state)) {
                 log.info("CHANNEL_DESTROY this call channelId: {}", channelId);
             }
 
             //保存会话记录
             log.info("saveCDR ivrEvent data: {}", ivrEvent);
             WebHookHandler.saveCDR(ivrEvent);
+
+            //保存意图记录
 
             //挂断双方
             XCCHandler.hangup(nc, channelEvent);

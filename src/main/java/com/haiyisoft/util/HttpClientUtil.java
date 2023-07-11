@@ -72,6 +72,7 @@ public class HttpClientUtil {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            log.error("你的代码报错啦: method: doGet , exception: {} ", e);
         } finally {
             try {
                 if (response != null) {
@@ -125,6 +126,7 @@ public class HttpClientUtil {
             resultString = EntityUtils.toString(response.getEntity(), "utf-8");
         } catch (Exception e) {
             e.printStackTrace();
+            log.error("你的代码报错啦: method: doPost , exception: {} ", e);
         } finally {
             try {
                 if (response != null) {
@@ -173,6 +175,7 @@ public class HttpClientUtil {
             resultString = EntityUtils.toString(response.getEntity(), "utf-8");
         } catch (Exception e) {
             e.printStackTrace();
+            log.error("你的代码报错啦: method: doPostJson , exception: {} ", e);
         } finally {
             try {
                 if (response != null) {
@@ -227,6 +230,7 @@ public class HttpClientUtil {
             resultString = EntityUtils.toString(response.getEntity(), "utf-8");
         } catch (Exception e) {
             e.printStackTrace();
+            log.error("你的代码报错啦: method: doPostJsonForGxNgd , exception: {} ", e);
         } finally {
             try {
                 if (response != null) {
@@ -240,68 +244,4 @@ public class HttpClientUtil {
         return resultString;
     }
 
-    /**
-     * 测试
-     *
-     * @param url
-     * @param param
-     * @return
-     */
-    public static String doGetTest(String url, Map<String, String> param) {
-        // 创建Httpclient对象
-        CloseableHttpClient httpclient = HttpClients.createDefault();
-
-        String resultString = "";
-        CloseableHttpResponse response = null;
-        try {
-            // 创建uri
-            URIBuilder builder = new URIBuilder(url);
-            if (param != null) {
-                for (String key : param.keySet()) {
-                    builder.addParameter(key, param.get(key));
-                }
-            }
-            URI uri = builder.build();
-
-            // 创建http GET请求
-            HttpGet httpGet = new HttpGet(uri);
-            //超时断开连接
-            //setConnectTimeout：设置连接超时时间，单位毫秒。
-            //setConnectionRequestTimeout：设置从connect Manager获取Connection 超时时间，单位毫秒。
-            //这个属性是新加的属性，因为目前版本是可以共享连接池的。
-            //setSocketTimeout：请求获取数据的超时时间，单位毫秒。
-            //如果访问一个接口，多少时间内无法返回数据，就直接放弃此次调用。
-            RequestConfig config = RequestConfig.custom()
-                    .setConnectTimeout(1000) //连接超时时间
-                    .setConnectionRequestTimeout(1000) //从线程池中获取线程超时时间
-                    .setSocketTimeout(3000) //设置数据超时时间
-
-                    .setStaleConnectionCheckEnabled(true) //提交请求前检查连接是否可用
-                    .build();
-
-            httpGet.setConfig(config);
-
-            long start = System.currentTimeMillis();
-            // 执行请求
-            response = httpclient.execute(httpGet);
-            long end = System.currentTimeMillis();
-            System.out.println("this 所需时间 ms : " + (end - start));
-            // 判断返回状态是否为200
-            if (response.getStatusLine().getStatusCode() == 200) {
-                resultString = EntityUtils.toString(response.getEntity(), "UTF-8");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (response != null) {
-                    response.close();
-                }
-                httpclient.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return resultString;
-    }
 }

@@ -31,7 +31,7 @@ public class IVRExceptionAdvice {
 //        xccEvent.setXccRecognitionResult("你的代码报错啦: " + xccEvent.getXccRecognitionResult());
 //        xccEvent.setType("你的代码报错啦: " + xccEvent.getType());
 //        xccEvent.setError("你的代码报错啦: " + xccEvent.getError());
-        log.info("handleException 异常处理 xccEvent: {}", xccEvent);
+        log.error("handleException 异常处理 xccEvent: {}", xccEvent);
         return xccEvent;
     }
 }
