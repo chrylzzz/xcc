@@ -461,7 +461,7 @@ public class XCCUtil {
 
         //呼叫参数
         JSONObject callParam = new JSONObject();
-        callParam.put("uuid", IdGenerator.simpleUUID());
+        callParam.put("uuid", IdGenerator.fastSimpleUUID());
         callParam.put("dial_string", dialStr);
         //Caller ID Number
         callParam.put("cid_number", cidNumber);
@@ -502,7 +502,7 @@ public class XCCUtil {
 
         //呼叫参数
         JSONObject callParam = new JSONObject();
-        callParam.put("uuid", IdGenerator.simpleUUID());
+        callParam.put("uuid", IdGenerator.fastSimpleUUID());
         callParam.put("dial_string", dialStr);
         callParam.put("params", callParamArr);
         //[{},{}]

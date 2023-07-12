@@ -7,12 +7,39 @@ package com.haiyisoft.enumerate;
  */
 public enum EnumXCC implements CommonXCC {
 
-    //NGD 是否通过身份校验流程
+    /**
+     * NGD是否通过身份校验流程
+     * YES 验证成功
+     * NO 验证失败
+     */
     USER_OK("userOK", "YES"),
     USER_NO("userOK", "NO"),
-    //NGD错误码
+    /**
+     * NGD错误码
+     */
     NGD_REQUEST_TO_MUCH("4000019", "ngd 用户请求过于频繁，请稍后再试"),
     NGD_BOT_TOKEN_ERROR("4002409", "ngd bot token错误"),
+    /**
+     * 是否有效通话,否
+     * 0 否
+     * 1 是
+     */
+    IVR_VALID_CALL_NO("sfyx", "0"),
+    IVR_VALID_CALL_YES("sfyx", "1"),
+    /**
+     * 是否转人工
+     * 0 否
+     * 1 是
+     */
+    IVR_ARTIFICIAL_NO("sfzrg", "0"),
+    IVR_ARTIFICIAL_YES("sfzrg", "1"),
+    /**
+     * 是否正常结束
+     * 0 否
+     * 1 是
+     */
+    IVR_FINISH_NO("sfzcjs", "0"),
+    IVR_FINISH_YES("sfzcjs", "0"),
 
 
     //

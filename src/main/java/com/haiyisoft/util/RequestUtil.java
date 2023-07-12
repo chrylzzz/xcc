@@ -49,7 +49,7 @@ public class RequestUtil {
         //JSON-RPC 2.0版本
         jsonRpc.put("jsonrpc", "2.0");
         //JSON-RPC id,每个请求一个，保证唯一. XSwitch要求该id必须是一个字符串类型
-        jsonRpc.put("id", IdGenerator.simpleUUID());
+        jsonRpc.put("id", IdGenerator.fastSimpleUUID());
         jsonRpc.put("method", method);
         jsonRpc.put("params", params);
         return jsonRpc;

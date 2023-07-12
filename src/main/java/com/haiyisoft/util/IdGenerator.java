@@ -10,6 +10,7 @@ import cn.hutool.core.util.RandomUtil;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * 基于糊涂工具包的雪花id
@@ -71,6 +72,23 @@ public class IdGenerator {
         return IdUtil.randomUUID();
     }
 
+    /**
+     * 获取随机UUID，使用性能更好的ThreadLocalRandom生成UUID
+     *
+     * @return
+     */
+    public static String fastUUID() {
+        return IdUtil.fastUUID();
+    }
+
+    /**
+     * 获取随机UUID，去掉了横线，使用性能更好的ThreadLocalRandom生成UUID
+     *
+     * @return
+     */
+    public static String fastSimpleUUID() {
+        return IdUtil.fastSimpleUUID();
+    }
 
     /**
      * 19位雪花id
@@ -105,10 +123,11 @@ public class IdGenerator {
         return ObjectId.next();
     }
 
-
     public static void main(String[] args) {
-        String s = IdUtil.fastSimpleUUID();
+        String s = IdUtil.fastUUID();
+        String s1 = IdUtil.fastSimpleUUID();
         System.out.println(s);
+        System.out.println(s1);
     }
 
 }

@@ -68,11 +68,11 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
-        <!-- hutool -->
+        <!-- hutool core -->
         <dependency>
             <groupId>cn.hutool</groupId>
-            <artifactId>hutool-captcha</artifactId>
-            <version>5.3.10</version>
+            <artifactId>hutool-core</artifactId>
+            <version>5.8.20</version>
         </dependency>
         <!-- commons -->
         <dependency>

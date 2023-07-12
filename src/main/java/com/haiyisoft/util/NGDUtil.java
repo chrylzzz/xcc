@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * 百度智能知识库
@@ -159,7 +160,7 @@ public class NGDUtil {
         return answer;
     }
 
-    private static Random random = new Random();
+    private static ThreadLocalRandom threadLocalRandom = ThreadLocalRandom.current();
 
     /**
      * 获取随机话术
@@ -169,7 +170,7 @@ public class NGDUtil {
      */
     public static String randomMissingMsg() {
         String MissingMsg;
-        if (random.nextBoolean()) {
+        if (threadLocalRandom.nextBoolean()) {
             MissingMsg = XCCConstants.NGD_FIRST_UNDERSTAND_TEXT;
         } else {
             MissingMsg = XCCConstants.NGD_SECOND_UNDERSTAND_TEXT;
