@@ -9,7 +9,7 @@ server:
 ####################################################################################################
 chryl:
 ######################################################################## XCC
-  #  xswitch config
+  #  XSwitch config
   nats-url: nats://hy:h8klu6bRwW@nats.xswitch.cn:4222
   xctrl-subject: cn.xswitch.ctrl
   xnode-subject-prefix: cn.xswitch.node

@@ -14,7 +14,6 @@ import com.haiyisoft.model.NgdNodeDialog;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -35,7 +34,7 @@ public class NGDUtil {
      * @param phone     caller phone
      * @return
      */
-    public static NGDEvent coreQueryNGD(String queryText, String sessionId, String phone) {
+    public static NGDEvent coreQuery(String queryText, String sessionId, String phone) {
         //package
         JSONObject param = coreQueryStruct(queryText, sessionId, phone);
         log.info("开始调用,百度知识库接口入参:{}", JSON.toJSONString(param, JSONWriter.Feature.PrettyFormat));
@@ -78,6 +77,61 @@ public class NGDUtil {
         return resNgdEvent;
     }
 
+    /**
+     * 广西知识库接口
+     * queryText 若为空时暂时不做判断,依赖百度NGD BOT配置/处理;若有需求再修改方法逻辑;
+     *
+     * @param queryText
+     * @param sessionId caller id
+     * @param phone     caller phone
+     * @return
+     */
+    public static JSONObject coreQueryJson(String queryText, String sessionId, String phone) {
+        //package
+        JSONObject param = coreQueryStruct(queryText, sessionId, phone);
+        log.info("开始调用,百度知识库接口入参:{}", JSON.toJSONString(param, JSONWriter.Feature.PrettyFormat));
+        //invoke
+        String jsonStrResult = HttpClientUtil.doPostJsonForGxNgd(IVRInit.CHRYL_CONFIG_PROPERTY.getNgdCoreQueryUrl(), param.toJSONString());
+        //res
+        JSONObject parse = JSON.parseObject(jsonStrResult);
+        log.info("结束调用,百度知识库接口返回: {}", parse);
+        return parse;
+    }
+
+    /**
+     * TODO 未做异常处理
+     * 处理用户校验是否完成
+     *
+     * @param result
+     * @param ngdEvent
+     * @return
+     */
+    public static NGDEvent checkUser(JSONObject result, NGDEvent ngdEvent) {
+        JSONObject resContext = result.getJSONObject("data").getJSONObject("context");//context
+        //处理用户校验是否完成
+        NGDEvent resNgdEvent = convertUserOk(resContext, ngdEvent);
+        log.info("checkUser ngdEvent: {}", ngdEvent);
+        return resNgdEvent;
+    }
+
+    /**
+     * TODO 未做异常处理
+     * 处理ngd节点数据
+     *
+     * @param query
+     * @param answer
+     * @param result
+     * @param ngdEvent
+     * @return
+     */
+    public static NGDEvent convertNgdNodeMateData(String query, String answer, JSONObject result, NGDEvent ngdEvent) {
+        JSONObject jsonData = result.getJSONObject("data");
+        //保存流程信息
+        NGDNodeMetaData ngdNodeMetaData = saveNgdNodeMateData(query, answer, jsonData);
+        ngdEvent.setNgdNodeMetaData(ngdNodeMetaData);
+        log.info("本次节点信息为:{}", ngdNodeMetaData);
+        return ngdEvent;
+    }
 
     /**
      * 根据百度知识库返回的数据取到合理的回复
@@ -180,6 +234,11 @@ public class NGDUtil {
 
     /**
      * 获取ngd节点流程
+     *
+     * @param query    问
+     * @param answer   答
+     * @param jsonData ngd数据
+     * @return
      */
     public static NGDNodeMetaData saveNgdNodeMateData(String query, String answer, JSONObject jsonData) {
         //答复来源
@@ -192,7 +251,9 @@ public class NGDUtil {
         NGDNodeMetaData ngdNodeMetaData = new NGDNodeMetaData();
 
         if (XCCConstants.SOURCE_TASK_BASED.equals(source)) {//task_based:只有流程有dialog
-            JSONArray dialogsArray = jsonData.getJSONObject("answer").getJSONArray("dialogs");
+            JSONObject answerDataJSONObject = jsonData.getJSONObject("answer");
+            //记录ngd流程
+            JSONArray dialogsArray = answerDataJSONObject.getJSONArray("dialogs");
             if (dialogsArray != null) {
                 dialogsArray.forEach(dialog -> {
                     JSONObject jsonObject = (JSONObject) JSON.toJSON(dialog);
@@ -371,9 +432,11 @@ public class NGDUtil {
             } else {
                 //未通过
                 ngdEvent.setUserOk(false);
+                ngdEvent.setUid("");
             }
         } else {
             ngdEvent.setUserOk(false);
+            ngdEvent.setUid("");
         }
         return ngdEvent;
 

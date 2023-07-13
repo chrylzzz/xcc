@@ -1,11 +1,11 @@
 package com.haiyisoft.handler;
 
+import com.alibaba.fastjson2.JSONObject;
+import com.haiyisoft.boot.IVRInit;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.NGDEvent;
 import com.haiyisoft.util.NGDUtil;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.Random;
 
 /**
  * Created by Chr.yl on 2023/3/30.
@@ -25,7 +25,43 @@ public class NGDHandler {
      */
     public static NGDEvent handlerNlu(String xccRecognitionResult, String channelId, String callNumber) {
         //调用百度知识库,获取answer
-        NGDEvent ngdEvent = NGDUtil.coreQueryNGD(xccRecognitionResult, channelId, callNumber);
+        NGDEvent ngdEvent = NGDUtil.coreQuery(xccRecognitionResult, channelId, callNumber);
+        //处理指令和话术,处理成retKey/retValue
+        ngdEvent = NGDUtil.convertText(ngdEvent);
+        log.info("handlerNlu ngdEvent :{}", ngdEvent);
+        return ngdEvent;
+    }
+
+    public static NGDEvent handler(String xccRecognitionResult, String channelId, String callNumber) {
+        //调用百度知识库
+        JSONObject result = NGDUtil.coreQueryJson(xccRecognitionResult, channelId, callNumber);
+
+        Integer code = result.getIntValue("code");//统一返回
+        String msg = result.getString("msg");//统一返回
+        NGDEvent ngdEvent;
+        String answer;
+        if (XCCConstants.OK == code) {
+            JSONObject jsonData = result.getJSONObject("data");
+            //答复来源
+            String source = jsonData.getString("source");
+            //是否解决
+            boolean solved = jsonData.getBooleanValue("solved");
+            //处理回复
+            answer = NGDUtil.convertAnswer(jsonData, IVRInit.CHRYL_CONFIG_PROPERTY.isConvertSolved());
+            ngdEvent = ngdEventSetVar(channelId, code, msg, answer, source, solved);
+            log.info("百度知识库返回正常 code: {} , msg: {} , answer: {}", code, msg, answer);
+        } else {
+            answer = XCCConstants.XCC_MISSING_TEXT;
+            ngdEvent = ngdEventSetErrorVar(channelId, code, msg, answer);
+            log.error("百度知识调用异常 code: {} , msg: {} , answer: {}", code, msg, answer);
+        }
+
+        //处理用户校验是否完成
+        ngdEvent = NGDUtil.checkUser(result, ngdEvent);
+
+        //记录会话
+        ngdEvent = NGDUtil.convertNgdNodeMateData(xccRecognitionResult, answer, result, ngdEvent);
+
         //处理指令和话术,处理成retKey/retValue
         ngdEvent = NGDUtil.convertText(ngdEvent);
         log.info("handlerNlu ngdEvent :{}", ngdEvent);
@@ -102,7 +138,7 @@ public class NGDHandler {
      * @return
      */
     public static NGDEvent ngdEventSetErrorVar(String sessionId, Integer code, String msg, String answer) {
-        return ngdEventSetVar(sessionId, code, msg, answer, "", false);
+        return ngdEventSetVar(sessionId, code, msg, answer, "ngd error", false);
     }
 
 }

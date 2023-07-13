@@ -20,26 +20,29 @@ public enum EnumXCC implements CommonXCC {
     NGD_REQUEST_TO_MUCH("4000019", "ngd 用户请求过于频繁，请稍后再试"),
     NGD_BOT_TOKEN_ERROR("4002409", "ngd bot token错误"),
     /**
+     * 报表
      * 是否有效通话,否
      * 0 否
      * 1 是
      */
-    IVR_VALID_CALL_NO("sfyx", "0"),
-    IVR_VALID_CALL_YES("sfyx", "1"),
+    IVR_VALID_CALL_FALSE("sfyx", "0"),
+    IVR_VALID_CALL_TRUE("sfyx", "1"),
     /**
+     * 报表
      * 是否转人工
      * 0 否
      * 1 是
      */
-    IVR_ARTIFICIAL_NO("sfzrg", "0"),
-    IVR_ARTIFICIAL_YES("sfzrg", "1"),
+    IVR_ARTIFICIAL_FALSE("sfzrg", "0"),
+    IVR_ARTIFICIAL_TRUE("sfzrg", "1"),
     /**
+     * 报表
      * 是否正常结束
      * 0 否
      * 1 是
      */
-    IVR_FINISH_NO("sfzcjs", "0"),
-    IVR_FINISH_YES("sfzcjs", "0"),
+    IVR_FINISH_FALSE("sfzcjs", "0"),
+    IVR_FINISH_TRUE("sfzcjs", "1"),
 
 
     //

@@ -6,7 +6,6 @@ import com.haiyisoft.entry.ChannelEvent;
 import com.haiyisoft.entry.IVREvent;
 import com.haiyisoft.entry.NGDEvent;
 import com.haiyisoft.entry.XCCEvent;
-import com.haiyisoft.util.XCCUtil;
 import io.nats.client.Connection;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
