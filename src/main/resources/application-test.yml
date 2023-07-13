@@ -39,7 +39,7 @@ chryl:
   #  ngd  query url
   ngd-core-query-url: http://10.100.104.20:8303/api/v2/core/query
   #  ngd bot token
-  ngd-bot-token: NGD 3591d885-df2a-48b9-9c1c-d46afde7e9b7
+  ngd-bot-token: NGD 218bbd82-2336-4561-8858-d3cca6e630ac
   # convert solved :ngd存在solved=false，是否选择处理，true开启
   convert-solved: true
 ######################################################################## NGD
