@@ -21,20 +21,23 @@ public class NGDHandler {
      * @param xccRecognitionResult xcc识别数据
      * @param channelId            call id
      * @param callNumber           来电号码
+     * @param icdCallerId          华为cid
+     * @param phoneAdsCode         来电后缀码
      * @return
      */
-    public static NGDEvent handlerNlu(String xccRecognitionResult, String channelId, String callNumber) {
+    public static NGDEvent handlerNlu(String xccRecognitionResult, String channelId,
+                                      String callNumber, String icdCallerId, String phoneAdsCode) {
         //调用百度知识库,获取answer
-        NGDEvent ngdEvent = NGDUtil.coreQuery(xccRecognitionResult, channelId, callNumber);
+        NGDEvent ngdEvent = NGDUtil.coreQuery(xccRecognitionResult, channelId, callNumber, icdCallerId, phoneAdsCode);
         //处理指令和话术,处理成retKey/retValue
         ngdEvent = NGDUtil.convertText(ngdEvent);
         log.info("handlerNlu ngdEvent :{}", ngdEvent);
         return ngdEvent;
     }
 
-    public static NGDEvent handler(String xccRecognitionResult, String channelId, String callNumber) {
+    public static NGDEvent handler(String xccRecognitionResult, String channelId, String callNumber, String icdCallerId, String phoneAdsCode) {
         //调用百度知识库
-        JSONObject result = NGDUtil.coreQueryJson(xccRecognitionResult, channelId, callNumber);
+        JSONObject result = NGDUtil.coreQueryJson(xccRecognitionResult, channelId, callNumber, icdCallerId, phoneAdsCode);
 
         Integer code = result.getIntValue("code");//统一返回
         String msg = result.getString("msg");//统一返回

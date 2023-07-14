@@ -38,10 +38,14 @@ public class IVRServiceV2 {
             IVREvent ivrEvent = IVRHandler.convertIVREvent(channelEvent);
             XCCEvent xccEvent = new XCCEvent();
             NGDEvent ngdEvent = new NGDEvent();
-            //fs call id
+            //fs caller id
             String channelId = ivrEvent.getChannelId();
+            //华为 caller id
+            String icdCallerId = ivrEvent.getIcdCallerId();
             //来电号码
             String callerIdNumber = ivrEvent.getCidNumber();
+            //后缀码
+            String phoneAdsCode = ivrEvent.getPhoneAdsCode();
             log.info(" start this call channelId: {} , state :{} , IVREvent: {}", channelId, state, ivrEvent);
 
             if (XCCConstants.CHANNEL_START.equals(state)) {
@@ -67,7 +71,7 @@ public class IVRServiceV2 {
                         //xcc识别数据
                         String xccRecognitionResult = xccEvent.getXccRecognitionResult();
                         //获取指令和话术
-                        ngdEvent = NGDHandler.handlerNlu(xccRecognitionResult, channelId, callerIdNumber);
+                        ngdEvent = NGDHandler.handlerNlu(xccRecognitionResult, channelId, callerIdNumber, icdCallerId, phoneAdsCode);
 
                         retKey = ngdEvent.getRetKey();
                         retValue = ngdEvent.getRetValue();

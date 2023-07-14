@@ -179,8 +179,14 @@ public class XCCConstants {
     public static final String[] RET_KEY_STR_ARRAY = {YYSR, AJSR, RGYT, YWAJ, JZLC, DXFS};
     //智能ivr渠道
     public static final String CHANNEL_IVR = "智能IVR";
-    //智能IVR call phone
+    //智能IVR NGD 来电号码
     public static final String IVR_PHONE = "ivr_phone";
+    //智能IVR NGD 来电后缀码
+    public static final String IVR_PHONE_ADS_CODE = "ivr_phoneAdsCode";
+    //智能IVR NGD 华为呼叫标识
+    public static final String IVR_ICD_CALLER_ID = "ivr_icdCallerId";
+    //智能IVR NGD 软交换呼叫标识
+    public static final String IVR_FS_CALLER_ID = "ivr_fsCallerId";
     //身份校验通过后赋值用户编号
     public static final String IVR_YHBH = "ivr_yhbh";
     //ngd话术分隔符

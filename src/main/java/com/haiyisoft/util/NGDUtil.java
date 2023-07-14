@@ -30,13 +30,15 @@ public class NGDUtil {
      * queryText 若为空时暂时不做判断,依赖百度NGD BOT配置/处理;若有需求再修改方法逻辑;
      *
      * @param queryText
-     * @param sessionId caller id
-     * @param phone     caller phone
+     * @param sessionId    caller id
+     * @param phone        caller number
+     * @param icdCallerId  icd caller id
+     * @param phoneAdsCode phone address code
      * @return
      */
-    public static NGDEvent coreQuery(String queryText, String sessionId, String phone) {
+    public static NGDEvent coreQuery(String queryText, String sessionId, String phone, String icdCallerId, String phoneAdsCode) {
         //package
-        JSONObject param = coreQueryStruct(queryText, sessionId, phone);
+        JSONObject param = coreQueryStruct(queryText, sessionId, phone, icdCallerId, phoneAdsCode);
         log.info("开始调用,百度知识库接口入参:{}", JSON.toJSONString(param, JSONWriter.Feature.PrettyFormat));
         //invoke
         String jsonStrResult = HttpClientUtil.doPostJsonForGxNgd(IVRInit.CHRYL_CONFIG_PROPERTY.getNgdCoreQueryUrl(), param.toJSONString());
@@ -82,13 +84,15 @@ public class NGDUtil {
      * queryText 若为空时暂时不做判断,依赖百度NGD BOT配置/处理;若有需求再修改方法逻辑;
      *
      * @param queryText
-     * @param sessionId caller id
-     * @param phone     caller phone
+     * @param sessionId    caller id
+     * @param phone        caller number
+     * @param icdCallerId  icd caller id
+     * @param phoneAdsCode phone address code
      * @return
      */
-    public static JSONObject coreQueryJson(String queryText, String sessionId, String phone) {
+    public static JSONObject coreQueryJson(String queryText, String sessionId, String phone, String icdCallerId, String phoneAdsCode) {
         //package
-        JSONObject param = coreQueryStruct(queryText, sessionId, phone);
+        JSONObject param = coreQueryStruct(queryText, sessionId, phone, icdCallerId, phoneAdsCode);
         log.info("开始调用,百度知识库接口入参:{}", JSON.toJSONString(param, JSONWriter.Feature.PrettyFormat));
         //invoke
         String jsonStrResult = HttpClientUtil.doPostJsonForGxNgd(IVRInit.CHRYL_CONFIG_PROPERTY.getNgdCoreQueryUrl(), param.toJSONString());
@@ -395,19 +399,25 @@ public class NGDUtil {
      * @param queryText
      * @param sessionId
      * @param phone
+     * @param icdCallerId  icd caller id
+     * @param phoneAdsCode phone address code
      * @return
      */
-    public static JSONObject coreQueryStruct(String queryText, String sessionId, String phone) {
+    public static JSONObject coreQueryStruct(String queryText, String sessionId, String phone, String icdCallerId, String phoneAdsCode) {
         JSONObject param = new JSONObject();
         JSONObject context = new JSONObject();
         JSONObject ext = new JSONObject();
         param.put("channel", XCCConstants.CHANNEL_IVR);//渠道标识
         context.put(XCCConstants.IVR_PHONE, phone);
+        context.put(XCCConstants.IVR_PHONE_ADS_CODE, phoneAdsCode);//后缀码
+        context.put(XCCConstants.IVR_ICD_CALLER_ID, icdCallerId);//icd
+        context.put(XCCConstants.IVR_FS_CALLER_ID, sessionId);//fs caller id = xcc channel id = session id
         param.put("queryText", queryText);//客户问题
         param.put("sessionId", sessionId);//会话id
         ext.put("exact", "true");
         param.put("ext", ext);//ext
         param.put("context", context);
+        log.info("coreQueryStruct param : {}", param);
         return param;
     }
 
