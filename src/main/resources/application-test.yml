@@ -24,7 +24,7 @@ chryl:
   # speech 未检测到语音超时
   speech-no-input-timeout: 8
   # speech 语音超时，即如果对方讲话一直不停超时
-  max-speech-timeout: 12
+  max-speech-timeout: 6
   #
   # 若有多台XSwitch,再开启,true开启
   cluster: true
