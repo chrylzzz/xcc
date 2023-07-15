@@ -50,12 +50,12 @@ public class ChrylController {
      */
     @GetMapping("info")
     public JSONObject info() {
-        JSONObject a = new JSONObject();
-        a.put("cpu", ThreadPoolConfig.CPU_NUM);
-        a.put("nei_ip", IpUtil.INTRANET_IP);
-        a.put("wai_ip", IpUtil.INTERNET_IP);
-        log.info("info : {}", a);
-        return a;
+        JSONObject infoJsonData = new JSONObject();
+        infoJsonData.put("cpu_num", ThreadPoolConfig.CPU_NUM);
+        infoJsonData.put("nei_ip", IpUtil.INTRANET_IP);
+        infoJsonData.put("wai_ip", IpUtil.INTERNET_IP);
+        log.info("info : {}", infoJsonData);
+        return infoJsonData;
     }
 
 }
