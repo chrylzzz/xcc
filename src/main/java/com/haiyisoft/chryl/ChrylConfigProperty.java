@@ -1,6 +1,8 @@
 package com.haiyisoft.chryl;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -15,7 +17,7 @@ import java.util.List;
  */
 @Data
 @ConfigurationProperties(prefix = "chryl")
-//@JsonNaming
+@JsonNaming(PropertyNamingStrategy.KebabCaseStrategy.class)
 public class ChrylConfigProperty {
 
     /******************************************** XCC ********************************************/

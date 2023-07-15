@@ -1,13 +1,9 @@
 package com.haiyisoft.controller;
 
-import com.alibaba.fastjson.serializer.SerializeConfig;
-import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
-import com.alibaba.fastjson2.JSONWriter;
-import com.alibaba.fastjson.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.haiyisoft.boot.IVRInit;
 import com.haiyisoft.config.ThreadPoolConfig;
-import com.haiyisoft.entry.IVREvent;
 import com.haiyisoft.util.IpUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,9 +32,12 @@ public class ChrylController {
      */
     @GetMapping("chryl")
     public void chryl(HttpServletResponse response) throws InterruptedException, IOException {
-        String loadYml = JSON.toJSONString(IVRInit.CHRYL_CONFIG_PROPERTY, JSONWriter.Feature.PrettyFormat);
-        log.info("loadYml : {}", loadYml);
-        response.getWriter().write(loadYml);
+//        String loadYml = JSON.toJSONString(IVRInit.CHRYL_CONFIG_PROPERTY, JSONWriter.Feature.PrettyFormat);
+        ObjectMapper mapper = new ObjectMapper();
+        String jackLoadYml = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(IVRInit.CHRYL_CONFIG_PROPERTY);
+
+        log.info("loadYml : {}", jackLoadYml);
+        response.getWriter().write(jackLoadYml);
         response.flushBuffer();
         response.getWriter().flush();
         response.getWriter().close();
