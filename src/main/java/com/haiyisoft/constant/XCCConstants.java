@@ -218,15 +218,15 @@ public class XCCConstants {
     public static final String SUGGEST_ANSWER = "suggestAnswer";
     public static final String FAQ_SEND_MESSAGE_TEXT = "您咨询的问题, 详细信息已通过短信的方式发送到您的手机, 请问您还有什么问题?";
     //第一次错误
-    public static final String NGD_FIRST_UNDERSTAND_TEXT = "实在抱歉，美美没有明白您的问题，请您重新简单描述一下，谢谢您！";
+    public static final String NGD_FIRST_UNDERSTAND_TEXT = "实在抱歉，我没有明白您的问题，请您重新简单描述一下，谢谢您！";
     //第二次错误
-    public static final String NGD_SECOND_UNDERSTAND_TEXT = "哎呀，美美还是没有明白您的问题，请您重新简单描述一下，谢谢您！";
+    public static final String NGD_SECOND_UNDERSTAND_TEXT = "我没有明白您的问题，请您重新简单描述一下，谢谢您！";
     //欢迎语
-    public static final String WELCOME_TEXT = "我是智能美美, 您要咨询什么问题, 您请说";
+    public static final String WELCOME_TEXT = "我是智能我, 您要咨询什么问题, 您请说";
     //前导欢迎语
-    public static final String TEST_WELCOME_TEXT = "欢迎致电南方电网广西电网公司，我是智能用电管家美美，我可以为您查电费、查表码，请问您需要查询这些信息吗？";
+    public static final String TEST_WELCOME_TEXT = "欢迎致电南方电网广西电网公司，我是智能用电管家我，我可以为您查电费、查表码，请问您需要查询这些信息吗？";
     //转人工话术
-    public static final String ARTIFICIAL_TEXT = "由于您咨询的问题美美多次不明白, 正在为您转接人工坐席, 请稍后";
+    public static final String ARTIFICIAL_TEXT = "由于您咨询的问题我多次不明白, 正在为您转接人工坐席, 请稍后";
     //XCC返回失败话术
     public static final String XCC_MISSING_TEXT = "您的问题我不理解，请换个问法。如需人工服务，请讲 转人工";
     //XCC返回失败话术
