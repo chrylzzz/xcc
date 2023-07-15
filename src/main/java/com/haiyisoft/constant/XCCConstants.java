@@ -175,6 +175,8 @@ public class XCCConstants {
     public static final String JZLC = "JZLC";
     //短信发送
     public static final String DXFS = "DXFS";
+    //语音广播
+    public static final String YYGB = "YYGB";
     //指令集合数组
     public static final String[] RET_KEY_STR_ARRAY = {YYSR, AJSR, RGYT, YWAJ, JZLC, DXFS};
     //智能ivr渠道
