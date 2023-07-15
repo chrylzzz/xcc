@@ -141,7 +141,7 @@ public class NGDHandler {
      * @return
      */
     public static NGDEvent ngdEventSetErrorVar(String sessionId, Integer code, String msg, String answer) {
-        return ngdEventSetVar(sessionId, code, msg, answer, "ngd error", false);
+        return ngdEventSetVar(sessionId, code, msg, answer, "ngd error source", false);
     }
 
 }
