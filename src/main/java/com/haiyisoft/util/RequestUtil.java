@@ -198,7 +198,7 @@ public class RequestUtil {
      * @param milliSeconds 毫秒
      * @return
      */
-    public static XCCEvent natsRequestFutureByDetectSpeech(Connection con, String service, String method, JSONObject params, long milliSeconds) {
+    public static XCCEvent natsRequestFutureByDetectSpeech(Connection con, String service, String method, JSONObject params, Long milliSeconds) {
         log.info("{} 执行开始", method);
         JSONObject jsonRpc = getJsonRpc(method, params);
         byte[] bytes = jsonRpc.toString().getBytes(StandardCharsets.UTF_8);
@@ -264,7 +264,7 @@ public class RequestUtil {
      * @return
      */
 
-    public static XCCEvent natsRequestFutureByReadDTMF(Connection con, String service, String method, JSONObject params, long milliSeconds) {
+    public static XCCEvent natsRequestFutureByReadDTMF(Connection con, String service, String method, JSONObject params, Long milliSeconds) {
         log.info("{} 执行开始时间为", method);
         JSONObject jsonRpc = getJsonRpc(method, params);
         byte[] bytes = jsonRpc.toString().getBytes(StandardCharsets.UTF_8);
@@ -285,8 +285,10 @@ public class RequestUtil {
             //识别返回数据,调用失败默认为""
             String dtmf = "";
             if (code == XCCConstants.OK) {
+                //收到的按键
                 dtmf = result.getString("dtmf");
             } else if (code == XCCConstants.JSONRPC_NOTIFY) {
+                //收到的按键
                 dtmf = result.getString("dtmf");
                 if (StringUtils.isBlank(dtmf)) {//未识别话术,参考深度解析返回event
                     type = XCCConstants.RECOGNITION_TYPE_ERROR;
