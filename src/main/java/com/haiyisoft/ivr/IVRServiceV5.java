@@ -59,7 +59,7 @@ public class IVRServiceV5 {
                     String xccRecognitionResult = xccEvent.getXccRecognitionResult();
 
                     //获取指令和话术
-                    ngdEvent = NGDHandler.handlerNlu(xccRecognitionResult, channelId, callerIdNumber, icdCallerId, phoneAdsCode);
+                    ngdEvent = NGDHandler.handler(xccRecognitionResult, channelId, callerIdNumber, icdCallerId, phoneAdsCode);
 
                     //记录IVR日志
                     NGDNodeMetaData ngdNodeMetaData = ngdEvent.getNgdNodeMetaData();

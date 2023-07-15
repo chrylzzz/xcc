@@ -532,7 +532,7 @@ public class XCCUtil {
         params.put("flow_control", XCCConstants.ANY);
         params.put("ringall", "false");
         params.put("destination", destination);
-
+        log.info("转接 params : {}", params);
         return params;
     }
 

@@ -47,6 +47,7 @@ public class ChannelHandler {
             //不处理使用,只加 |
             formatSipHeader = sipReqHeaderU2U + XCCConstants.SIP_HEADER_SEPARATOR;
         }
+        log.info("转接 sip header : {}", formatSipHeader);
         return formatSipHeader;
     }
 

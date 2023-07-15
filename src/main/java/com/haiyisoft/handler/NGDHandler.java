@@ -35,6 +35,16 @@ public class NGDHandler {
         return ngdEvent;
     }
 
+    /**
+     * NGD handler
+     *
+     * @param xccRecognitionResult xcc识别数据
+     * @param channelId            call id
+     * @param callNumber           来电号码
+     * @param icdCallerId          华为cid
+     * @param phoneAdsCode         来电后缀码
+     * @return
+     */
     public static NGDEvent handler(String xccRecognitionResult, String channelId, String callNumber, String icdCallerId, String phoneAdsCode) {
         //调用百度知识库
         JSONObject result = NGDUtil.coreQueryJson(xccRecognitionResult, channelId, callNumber, icdCallerId, phoneAdsCode);
