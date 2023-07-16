@@ -34,7 +34,7 @@ public class NGDUtil {
      * @param phone        caller number
      * @param icdCallerId  icd caller id
      * @param phoneAdsCode phone address code
-     * @return
+     * @return NGDEvent
      */
     public static NGDEvent coreQuery(String queryText, String sessionId, String phone, String icdCallerId, String phoneAdsCode) {
         //package
@@ -88,7 +88,7 @@ public class NGDUtil {
      * @param phone        caller number
      * @param icdCallerId  icd caller id
      * @param phoneAdsCode phone address code
-     * @return
+     * @return JSONObject
      */
     public static JSONObject coreQueryJson(String queryText, String sessionId, String phone, String icdCallerId, String phoneAdsCode) {
         //package

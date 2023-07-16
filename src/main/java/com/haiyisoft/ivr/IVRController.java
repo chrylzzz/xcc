@@ -28,12 +28,6 @@ public class IVRController {
 
     @Autowired
     private IVRService ivrService;
-    @Autowired
-    private IVRServiceV2 ivrServiceV2;
-    @Autowired
-    private IVRServiceV4 ivrServiceV4;
-    @Autowired
-    private IVRServiceV5 ivrServiceV5;
 
     /**
      * waiting for incoming call
@@ -66,7 +60,7 @@ public class IVRController {
                         //convert param
                         ChannelEvent event = IVRHandler.convertParams(params);
                         //asr domain
-                        ivrServiceV5.handlerChannelEvent(nc, event);
+                        ivrService.handlerChannelEvent(nc, event);
 
                     } else if (XCCConstants.EVENT_DETECTED_FACE.equals(method)) {
                         log.info("事件 event======Event-Name : {}", "Event.DetectedFace");

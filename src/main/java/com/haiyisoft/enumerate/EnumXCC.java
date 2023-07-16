@@ -17,8 +17,9 @@ public enum EnumXCC implements CommonXCC {
     /**
      * NGD错误码
      */
-    NGD_REQUEST_TO_MUCH("4000019", "ngd 用户请求过于频繁，请稍后再试"),
-    NGD_BOT_TOKEN_ERROR("4002409", "ngd bot token错误"),
+    NGD_REQUEST_TO_MUCH("4000019", "用户请求过于频繁，请稍后再试"),
+    NGD_REQUEST_FAIL("4002012", "服务器处理该请求失败，请检查请求是否合法"),
+    NGD_BOT_TOKEN_ERROR("4002409", "bot token错误"),
     /**
      * 报表
      * 是否有效通话,否

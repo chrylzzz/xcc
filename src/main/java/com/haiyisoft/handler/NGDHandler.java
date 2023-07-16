@@ -73,10 +73,10 @@ public class NGDHandler {
         ngdEvent = NGDUtil.checkUser(result, ngdEvent);
 
         //记录会话
-        ngdEvent = NGDUtil.convertNgdNodeMateData(xccRecognitionResult, answer, result, ngdEvent);
+        NGDUtil.convertNgdNodeMateData(xccRecognitionResult, answer, result, ngdEvent);
 
         //处理指令和话术,处理成retKey/retValue
-        ngdEvent = NGDUtil.convertText(ngdEvent);
+        NGDUtil.convertText(ngdEvent);
         log.info("handlerNlu ngdEvent :{}", ngdEvent);
         return ngdEvent;
     }
