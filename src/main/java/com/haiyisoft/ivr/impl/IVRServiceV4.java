@@ -9,6 +9,7 @@ import com.haiyisoft.handler.IVRHandler;
 import com.haiyisoft.handler.NGDHandler;
 import com.haiyisoft.handler.WebHookHandler;
 import com.haiyisoft.handler.XCCHandler;
+import com.haiyisoft.ivr.IVRService;
 import com.haiyisoft.model.NGDNodeMetaData;
 import io.nats.client.Connection;
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +27,8 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-public class IVRServiceV4 {
+public class IVRServiceV4 implements IVRService {
 
-    @Async
     public void handlerChannelEvent(Connection nc, ChannelEvent channelEvent) {
         String state = channelEvent.getState();
         if (state == null) {

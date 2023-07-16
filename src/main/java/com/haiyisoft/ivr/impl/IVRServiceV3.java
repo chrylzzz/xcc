@@ -8,10 +8,10 @@ import com.haiyisoft.entry.XCCEvent;
 import com.haiyisoft.handler.IVRHandler;
 import com.haiyisoft.handler.NGDHandler;
 import com.haiyisoft.handler.XCCHandler;
+import com.haiyisoft.ivr.IVRService;
 import com.haiyisoft.model.NGDNodeMetaData;
 import io.nats.client.Connection;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 /**
@@ -25,9 +25,8 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-public class IVRServiceV3 {
+public class IVRServiceV3 implements IVRService {
 
-    @Async
     public void handlerChannelEvent(Connection nc, ChannelEvent channelEvent) {
         String state = channelEvent.getState();
         if (state == null) {

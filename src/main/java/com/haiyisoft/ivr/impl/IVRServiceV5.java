@@ -13,7 +13,7 @@ import com.haiyisoft.ivr.IVRService;
 import com.haiyisoft.model.NGDNodeMetaData;
 import io.nats.client.Connection;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Async;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 /**
@@ -26,10 +26,10 @@ import org.springframework.stereotype.Component;
  * @author Chr.yl
  */
 @Slf4j
+@Primary
 @Component
 public class IVRServiceV5 implements IVRService {
 
-    //    @Async
     public void handlerChannelEvent(Connection nc, ChannelEvent channelEvent) {
         String state = channelEvent.getState();
         if (state == null) {
