@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class IVRServiceV1 implements IVRService {
 
-//    @Async
+    @Override
     public void handlerChannelEvent(Connection nc, ChannelEvent channelEvent) {
         String state = channelEvent.getState();
         if (state == null) {
