@@ -17,7 +17,7 @@ For further reference, please consider the following sections:
 * 发布命令:
   nohup java -jar chryl-xcc.jar &
 
-### 如何验证xcc启动成功 ###
+### 如何验证xcc部署成功 ###
 * 查看配置是否加载成功
   IP:8088/xcc/chryl
 
