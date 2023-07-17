@@ -30,6 +30,9 @@ For further reference, please consider the following sections:
 
 ### FreeSwitch ###
 
+* 此部分需要进入运行中断:
+  cd /usr/local/xswtich
+  make cli
 * 开启/关闭日志:
   sofia global siptrace on/off
 * 重置freeswitch.log:
@@ -80,5 +83,6 @@ For further reference, please consider the following sections:
   answer
   speak 早上好！欢迎到中山来，很高兴在中山见到你们，谢谢！这么多兄弟姐妹来到中山，我和牛新哲主席一直在谈到底我们用什么来欢迎大家，我想至少有三个理由。
 
-
+* SIP转接
+  originate [origination_caller_id_number=9000]sofia/default/4001@10.194.31.200:5060 &echo
 
