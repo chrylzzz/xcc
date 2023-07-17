@@ -8,6 +8,7 @@ For further reference, please consider the following sections:
 * [Spring Boot Maven Plugin Reference Guide](https://docs.spring.io/spring-boot/docs/2.7.8/maven-plugin/reference/html/)
 * [Create an OCI image](https://docs.spring.io/spring-boot/docs/2.7.8/maven-plugin/reference/html/#build-image)
 
+
 ### 部署 ###
 
 * freeswitch部署位置(10.194.31.200/202):
@@ -16,17 +17,21 @@ For further reference, please consider the following sections:
   /home/app/chryl/
 * 发布命令:
   nohup java -jar chryl-xcc.jar &
+
+### 如何验证xcc启动成功 ###
+* 查看配置是否加载成功
+  IP:8088/xcc/chryl
+
+### 日志 ###
+
+* xcc日志日志位置(日志文件保留30天):
+  /home/app/chryl/logs/xcc
 * 查看udp端口:
   nc -zvu IP PORT
 * 抓包
   tcpdump -i any -w /tmp/111.pcap
 * 监控话务(10.194.31.200/202):
   sngrep
-
-### 日志 ###
-
-* xcc日志日志位置(日志文件保留30天):
-  /home/app/chryl/logs/xcc
 
 ### FreeSwitch ###
 
