@@ -1,8 +1,11 @@
 # XSwitch / NGD 文档
 
-### xcc demo ###
+### Documentation ###
 
-https://git.xswitch.cn/xswitch/xcc-examples
+* [智能知识库-官网](https://login.bce.baidu.com)
+* [XSwitch-官网](https://docs.xswitch.cn)
+* [xcc-example](https://git.xswitch.cn/xswitch/xcc-examples)
+* [xcc-api](https://xswitch.cn/docs/xswitch-xcc.html)
 
 ### 知识库请求格式 ###
 
