@@ -73,7 +73,7 @@ public class NGDUtil {
 
         JSONObject resContext = parse.getJSONObject("data").getJSONObject("context");//context
         //处理用户校验是否完成
-        NGDEvent resNgdEvent = convertUserOk(resContext, ngdEvent);
+        NGDEvent resNgdEvent = checkUser(resContext, ngdEvent);
 
         log.info("coreQueryNGD ngdEvent: {}", resNgdEvent);
         return resNgdEvent;
@@ -103,19 +103,16 @@ public class NGDUtil {
     }
 
     /**
-     * TODO 未做异常处理
-     * 处理用户校验是否完成
+     * 保存用户意图
      *
-     * @param result
+     * @param context  context全局交互实体
      * @param ngdEvent
      * @return
      */
-    public static NGDEvent checkUser(JSONObject result, NGDEvent ngdEvent) {
-        JSONObject resContext = result.getJSONObject("data").getJSONObject("context");//context
-        //处理用户校验是否完成
-        NGDEvent resNgdEvent = convertUserOk(resContext, ngdEvent);
-        log.info("checkUser ngdEvent: {}", ngdEvent);
-        return resNgdEvent;
+    public static NGDEvent handlerIntent(JSONObject context, NGDEvent ngdEvent) {
+        String ytStr = context.getString(XCCConstants.IVR_YHDX);
+        ngdEvent.setYt(ytStr);
+        return ngdEvent;
     }
 
     /**
@@ -422,7 +419,7 @@ public class NGDUtil {
     }
 
     /**
-     * 身份校验配套流程
+     * 身份校验配套流程,判断用户校验是否完成
      * userOK is true :身份校验已通过,用户编号已确定
      * userOK is false :身份校验未通过,用户编号未确定
      *
@@ -430,7 +427,7 @@ public class NGDUtil {
      * @param ngdEvent
      * @return
      */
-    public static NGDEvent convertUserOk(JSONObject context, NGDEvent ngdEvent) {
+    public static NGDEvent checkUser(JSONObject context, NGDEvent ngdEvent) {
         if (context != null) {
             //判断用户校验是否完成
             String userOK = context.getString(EnumXCC.USER_OK.getProperty());
@@ -449,7 +446,6 @@ public class NGDUtil {
             ngdEvent.setUid("");
         }
         return ngdEvent;
-
-
     }
+
 }

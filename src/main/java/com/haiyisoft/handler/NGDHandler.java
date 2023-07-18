@@ -68,11 +68,14 @@ public class NGDHandler {
             ngdEvent = ngdEventSetErrorVar(channelId, code, msg, answer);
             log.error("百度知识调用异常 code: {} , msg: {} , answer: {}", code, msg, answer);
         }
+        //context全局交互实体
+        JSONObject context = result.getJSONObject("data").getJSONObject("context");//context
 
-        //处理用户校验是否完成
-        ngdEvent = NGDUtil.checkUser(result, ngdEvent);
-
-        //记录会话
+        //处理用户校验
+        NGDUtil.checkUser(context, ngdEvent);
+        //处理客户意图
+        NGDUtil.handlerIntent(context, ngdEvent);
+        //处理记录会话
         NGDUtil.convertNgdNodeMateData(xccRecognitionResult, answer, result, ngdEvent);
 
         //处理指令和话术,处理成retKey/retValue

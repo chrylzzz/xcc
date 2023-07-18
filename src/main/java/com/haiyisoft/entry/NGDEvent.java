@@ -43,12 +43,14 @@ public class NGDEvent {
     private JSONArray conversation;
     //记录完整的 ngd 节点
     private NGDNodeMetaData ngdNodeMetaData;
-
+    //----------------N G D业务变量
     //uid为用户编号
     private String uid;
     //是否通过身份验证流程,true通过 : userOk is true: NGD 已校验完成身份验证,可对SIP HEADER处理
     private boolean userOk;
-
+    //意图
+    private String yt;
+    //----------------N G D业务变量
 
     //----------------N G D交互标识
     //播报指令

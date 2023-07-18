@@ -5,10 +5,7 @@ import com.haiyisoft.entry.ChannelEvent;
 import com.haiyisoft.entry.IVREvent;
 import com.haiyisoft.entry.NGDEvent;
 import com.haiyisoft.entry.XCCEvent;
-import com.haiyisoft.handler.IVRHandler;
-import com.haiyisoft.handler.NGDHandler;
-import com.haiyisoft.handler.WebHookHandler;
-import com.haiyisoft.handler.XCCHandler;
+import com.haiyisoft.handler.*;
 import com.haiyisoft.ivr.IVRService;
 import com.haiyisoft.model.NGDNodeMetaData;
 import io.nats.client.Connection;
@@ -117,7 +114,7 @@ public class IVRServiceV5 implements IVRService {
             WebHookHandler.saveCDR(ivrEvent);
 
             //保存意图
-
+            PMSHandler.saveIntent(ivrEvent);
             //保存通话数据
 
             //挂断双方
