@@ -8,6 +8,7 @@ import com.haiyisoft.util.NGDUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
+ * ngd业务处理
  * Created by Chr.yl on 2023/3/30.
  *
  * @author Chr.yl
@@ -80,7 +81,7 @@ public class NGDHandler {
 
         //处理指令和话术,处理成retKey/retValue
         NGDUtil.convertText(ngdEvent);
-        log.info("handlerNlu ngdEvent :{}", ngdEvent);
+        log.info("handler ngdEvent :{}", ngdEvent);
         return ngdEvent;
     }
 

@@ -11,7 +11,7 @@ import com.haiyisoft.util.HttpClientUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Webhook
+ * Webhook业务处理
  * Created by Chr.yl on 2023/6/30.
  *
  * @author Chr.yl

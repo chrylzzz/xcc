@@ -10,7 +10,7 @@ import com.haiyisoft.util.HttpClientUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 营销系统
+ * 营销系统业务处理
  * Created by Chr.yl on 2023/7/11.
  *
  * @author Chr.yl
