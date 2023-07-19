@@ -27,9 +27,9 @@ public class WebHookHandler {
      */
     public static void sendMessage(IVREvent ivrEvent, String dxnr) {
         //来电号码
-        String cidNumber = ivrEvent.getCidNumber();
+        String cidPhoneNumber = ivrEvent.getCidPhoneNumber();
         JSONObject context = new JSONObject();
-        context.put("jssjh", cidNumber);
+        context.put("jssjh", cidPhoneNumber);
         context.put("dxnr", dxnr);
         JSONObject params = convertWebHookReqBody(XCCConstants.SEND_MESSAGE, context);
         log.info("sendMessage,WebHook接口入参:{}", JSON.toJSONString(params, JSONWriter.Feature.PrettyFormat));
@@ -76,14 +76,14 @@ public class WebHookHandler {
         log.info("[{}]================ CDR:[{}] ", channelId, cdr);
 
         //来电号码
-        String cidNumber = ivrEvent.getCidNumber();
+        String cidPhoneNumber = ivrEvent.getCidPhoneNumber();
         //华为会话标识
         String icdCallerId = ivrEvent.getIcdCallerId();
         //号码归属地
         String phoneAdsCode = ivrEvent.getPhoneAdsCode();
         JSONObject context = new JSONObject();
         context.put("callid", icdCallerId);
-        context.put("ldhm", cidNumber);
+        context.put("ldhm", cidPhoneNumber);
         context.put("hhjl", cdr);
         //这里送后缀码
         context.put("dqbm", phoneAdsCode);

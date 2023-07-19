@@ -12,18 +12,37 @@ import com.haiyisoft.model.IVRModel;
 public class PMSHandler {
 
     /**
-     * 保存意图信息
+     * 保存来话意图信息
+     *
+     * @param ivrEvent
      */
     public static void saveIntent(IVREvent ivrEvent) {
-//        String ivrStartTime = ivrEvent.getIvrStartTime();
-//        String fsCallerId = ivrEvent.getFsCallerId();
-//        String icdCallerId = ivrEvent.getIcdCallerId();
-//        boolean transferFlag = ivrEvent.isTransferFlag();
-//        IVRModel IVRModel;
-//        if (transferFlag) {
-//            new IVRModel(fsCallerId, icdCallerId, ivrStartTime, "1", "1", "1");
-//        } else {
-//            new IVRModel(fsCallerId, icdCallerId, ivrStartTime, "0", "0", "0");
-//        }
+        String ivrStartTime = ivrEvent.getIvrStartTime();
+        String cidPhoneNumber = ivrEvent.getCidPhoneNumber();
+        String fsCallerId = ivrEvent.getFsCallerId();
+        String icdCallerId = ivrEvent.getIcdCallerId();
+        boolean transferFlag = ivrEvent.isTransferFlag();
+        String zl = "";//指令
+//        (String cidPhoneNumber, String fsCallerId, String icdCallerId,
+//        String ivrStartTime, String ivrEndTime,
+//        String artificialType, String ivrValidCallType, String ivrFinishType)
+        String artificialType;//是否转人工
+        if (transferFlag) {
+            artificialType = "1";
+        } else {
+            artificialType = "0";
+        }
+//        new IVRModel()
+
     }
+
+    /**
+     * 保存通话数据信息
+     *
+     * @param ivrEvent
+     */
+    public static void saveCallData(IVREvent ivrEvent) {
+
+    }
+
 }

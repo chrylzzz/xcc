@@ -6,9 +6,10 @@ import com.haiyisoft.boot.IVRInit;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
 import com.haiyisoft.entry.XCCEvent;
-import com.haiyisoft.handler.XCCHandler;
+import com.haiyisoft.xcc.clinet.ChrylConnection;
 import io.nats.client.Connection;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -22,6 +23,8 @@ import java.util.Map;
  **/
 @Slf4j
 public class XCCUtil {
+    @Autowired
+    private ChrylConnection chrylConnection;
 
     /********************************************xswitch相关********************************************/
 
@@ -74,8 +77,7 @@ public class XCCUtil {
         String channelId = channelEvent.getUuid();
         params.put("uuid", channelId);
         String service = IVRInit.CHRYL_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
-        XCCEvent xccEvent = RequestUtil.natsRequestFutureByAnswer(nc, service, XCCConstants.ANSWER, params);
-        return xccEvent;
+        return RequestUtil.natsRequestFutureByAnswer(nc, service, XCCConstants.ANSWER, params);
     }
 
     /**
@@ -495,10 +497,10 @@ public class XCCUtil {
      * @param channelEvent
      * @param dialStr
      * @param sipHeader
-     * @param cidNumber
+     * @param cidPhoneNumber
      * @return
      */
-    public static JSONObject convertBridgeParams(ChannelEvent channelEvent, String dialStr, String sipHeader, String cidNumber) {
+    public static JSONObject convertBridgeParams(ChannelEvent channelEvent, String dialStr, String sipHeader, String cidPhoneNumber) {
         //全局参数
 //        JSONObject globalParam = new JSONObject();
 
@@ -514,7 +516,7 @@ public class XCCUtil {
         callParam.put("uuid", IdGenerator.fastSimpleUUID());
         callParam.put("dial_string", dialStr);
         //Caller ID Number
-        callParam.put("cid_number", cidNumber);
+        callParam.put("cid_number", cidPhoneNumber);
         callParam.put("params", callParamArr);
         //[{},{}]
         JSONArray callParamArray = new JSONArray();

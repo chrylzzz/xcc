@@ -150,14 +150,14 @@ public class IVRHandler {
             log.info("convertIVREvent sip header User-to-User : [{}]", u2U);
             //icdCallId、手机号、来话手机所对应的后缀码
             String icd_call_id = "";
-            String cid_number = "";
+            String cid_phone_number = "";
             String phone_code = "";
             try {
                 //aaa|ccc|bbb
                 String[] splitU2U = u2U.split("\\|");
                 if (splitU2U.length >= 3) {
                     icd_call_id = splitU2U[0];
-                    cid_number = splitU2U[1];
+                    cid_phone_number = splitU2U[1];
                     phone_code = splitU2U[2];
                 }
             } catch (Exception e) {
@@ -165,7 +165,7 @@ public class IVRHandler {
                 log.error("convertIVREvent sip header User-to-User 报错啦, 无法解析u2u");
             }
             ivrEvent.setIcdCallerId(icd_call_id);
-            ivrEvent.setCidNumber(cid_number);
+            ivrEvent.setCidPhoneNumber(cid_phone_number);
             ivrEvent.setPhoneAdsCode(phone_code);
             log.info("convertIVREvent OK:{}", ivrEvent);
         }

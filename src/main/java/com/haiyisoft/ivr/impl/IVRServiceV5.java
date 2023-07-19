@@ -43,7 +43,7 @@ public class IVRServiceV5 implements IVRService {
             //华为 caller id
             String icdCallerId = ivrEvent.getIcdCallerId();
             //来电号码
-            String callerIdNumber = ivrEvent.getCidNumber();
+            String callerIdNumber = ivrEvent.getCidPhoneNumber();
             //后缀码
             String phoneAdsCode = ivrEvent.getPhoneAdsCode();
             log.info(" start this call channelId: {} , state :{} , IVREvent: {}", channelId, state, ivrEvent);

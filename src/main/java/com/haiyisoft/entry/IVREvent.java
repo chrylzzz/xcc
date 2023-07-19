@@ -31,7 +31,7 @@ public class IVREvent extends IVRModel {
     //手机归属地编码
     private String phoneAdsCode;
     //来电手机号码
-    private String cidNumber;
+    private String cidPhoneNumber;
     //----------------华为平台sip解析数据
 
     public IVREvent(String channelId) {

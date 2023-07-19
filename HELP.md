@@ -13,12 +13,13 @@ For further reference, please consider the following sections:
 * freeswitch部署位置(10.194.31.200/202):
   /usr/local/xswtich
 * xcc部署位置:(10.194.31.201/203):
-  /home/app/chryl/
+  /home/app/chryl/chryl-xcc.jar
 * 发布命令:
   nohup java -jar chryl-xcc.jar &
 
 ### 如何验证xcc部署成功 ###
-* 查看配置是否加载成功
+
+* 查看配置是否加载成功(10.194.31.114):
   IP:8088/xcc/chryl
 
 ### 日志 ###

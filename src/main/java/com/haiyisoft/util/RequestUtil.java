@@ -66,7 +66,7 @@ public class RequestUtil {
      * @return
      */
     public static void natsRequestTimeOut(Connection con, String service, String method, JSONObject params, Duration timeout) {
-        log.info("{} 执行开始时间为", method);
+        log.info("{} 执行开始", method);
         JSONObject jsonRpc = getJsonRpc(method, params);
         byte[] bytes = jsonRpc.toString().getBytes(StandardCharsets.UTF_8);
         log.info("{} 请求信息 service:[{}], Serializer json:{}", method, service, JSON.toJSONString(jsonRpc, JSONWriter.Feature.PrettyFormat));
@@ -99,7 +99,7 @@ public class RequestUtil {
      * @return
      */
     public static void natsRequest(Connection con, String service, String method, JSONObject params) {
-        log.info("{} 执行开始时间为", method);
+        log.info("{} 执行开始", method);
         JSONObject jsonRpc = getJsonRpc(method, params);
         byte[] bytes = jsonRpc.toString().getBytes(StandardCharsets.UTF_8);
         log.info("{} 请求信息 service:[{}], Serializer json:{}", method, service, JSON.toJSONString(jsonRpc, JSONWriter.Feature.PrettyFormat));

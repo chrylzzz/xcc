@@ -13,7 +13,6 @@ import com.haiyisoft.ivr.IVRService;
 import com.haiyisoft.model.NGDNodeMetaData;
 import io.nats.client.Connection;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 /**
@@ -45,7 +44,7 @@ public class IVRServiceV4 implements IVRService {
             //华为 caller id
             String icdCallerId = ivrEvent.getIcdCallerId();
             //来电号码
-            String callerIdNumber = ivrEvent.getCidNumber();
+            String callerIdNumber = ivrEvent.getCidPhoneNumber();
             //后缀码
             String phoneAdsCode = ivrEvent.getPhoneAdsCode();
             log.info(" start this call channelId: {} , state :{} , IVREvent: {}", channelId, state, ivrEvent);
