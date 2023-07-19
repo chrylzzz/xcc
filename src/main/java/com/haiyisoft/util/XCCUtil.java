@@ -6,10 +6,8 @@ import com.haiyisoft.boot.IVRInit;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
 import com.haiyisoft.entry.XCCEvent;
-import com.haiyisoft.xcc.clinet.ChrylConnection;
 import io.nats.client.Connection;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -23,8 +21,6 @@ import java.util.Map;
  **/
 @Slf4j
 public class XCCUtil {
-    @Autowired
-    private ChrylConnection chrylConnection;
 
     /********************************************xswitch相关********************************************/
 

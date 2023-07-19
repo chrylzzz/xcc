@@ -49,7 +49,7 @@ public class NGDEvent {
     //是否通过身份验证流程,true通过 : userOk is true: NGD 已校验完成身份验证,可对SIP HEADER处理
     private boolean userOk;
     //意图
-    private String yt;
+    private String intent;
     //----------------N G D业务变量
 
     //----------------N G D交互标识

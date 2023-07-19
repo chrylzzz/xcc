@@ -39,12 +39,10 @@ public class IVRHandler {
             xccEvent = XCCHandler.playAndReadDTMF(nc, channelEvent, retValue, 18);
         } else if (XCCConstants.YWAJ.equals(retKey)) {//收集按键，一位按键
             xccEvent = XCCHandler.playAndReadDTMF(nc, channelEvent, retValue, 1);
+        } else if (XCCConstants.YYGB.equals(retKey)) {//语音广播
+            xccEvent = XCCHandler.detectSpeechPlayTTSNoDTMFNoBreak(nc, channelEvent, retValue);
         } else if (XCCConstants.RGYT.equals(retKey)) {//转人工
-            /**
-             * 需要设计转人工流程,不直接转
-             * 转到华为座席,然后挂断
-             */
-            //分机
+            //测试-分机
 //            xccEvent = XCCHandler.bridgeExtension(nc, channelEvent, retValue);
             //转人工
             xccEvent = XCCHandler.bridgeArtificial(nc, channelEvent, retValue, ngdEvent, callerIdNumber);

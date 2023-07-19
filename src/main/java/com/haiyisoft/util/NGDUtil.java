@@ -111,7 +111,7 @@ public class NGDUtil {
      */
     public static NGDEvent handlerIntent(JSONObject context, NGDEvent ngdEvent) {
         String ytStr = context.getString(XCCConstants.IVR_YHDX);
-        ngdEvent.setYt(ytStr);
+        ngdEvent.setIntent(ytStr);
         return ngdEvent;
     }
 

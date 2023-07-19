@@ -175,10 +175,12 @@ public class XCCConstants {
     public static final String JZLC = "JZLC";
     //短信发送
     public static final String DXFS = "DXFS";
-    //语音广播
+    //语音广播,不可打断
     public static final String YYGB = "YYGB";
+    //转分机
+    public static final String FJYT = "FJYT";
     //指令集合数组
-    public static final String[] RET_KEY_STR_ARRAY = {YYSR, AJSR, RGYT, YWAJ, JZLC, DXFS};
+    public static final String[] RET_KEY_STR_ARRAY = {YYSR, AJSR, YWAJ, YYGB, RGYT, JZLC, DXFS};
     //智能ivr渠道
     public static final String CHANNEL_IVR = "智能IVR";
     //智能IVR NGD 来电号码
@@ -302,5 +304,11 @@ public class XCCConstants {
     //对话记录接口
     public static final String I_HJZX_BCDHNR = "I_HJZX_BCDHNR";
     /******************************************** WebHook相关 ********************************************/
+    /******************************************** PMS相关 ********************************************/
+    //保存来话意图信息
+    public final static String SAVE_INTENT_URL = "/interface/saveLhyt/SaveZnIVRLhytForGx";
+    //保存通话数据信息
+    public final static String SAVE_CALL_DATA_URL = "/interface/saveThsj/SaveZnIVRThsjForGX";
+    /******************************************** PMS相关 ********************************************/
 
 }

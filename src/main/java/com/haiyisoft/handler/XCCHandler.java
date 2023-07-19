@@ -43,7 +43,7 @@ public class XCCHandler {
                 || XCCConstants.JSONRPC_CLIENT_ERROR == code//400
                 || XCCConstants.JSONRPC_SERVER_ERROR == code//500
                 || XCCConstants.CHRYL_ERROR_CODE == code//555
-                ) {
+        ) {
             log.info("handleXccAgent 执行挂机 channelId : [{}] , code : [{}]  ,", channelId, code);
             return true;
         }
@@ -186,28 +186,86 @@ public class XCCHandler {
     }
 
 
+    /**
+     * 应答
+     *
+     * @param nc
+     * @param channelEvent
+     * @return
+     */
     public static XCCEvent answer(Connection nc, ChannelEvent channelEvent) {
         return XCCUtil.answer(nc, channelEvent);
     }
 
+    /**
+     * 挂机
+     *
+     * @param nc
+     * @param channelEvent
+     */
     public static void hangup(Connection nc, ChannelEvent channelEvent) {
         XCCUtil.hangup(nc, channelEvent);
     }
 
+    /**
+     * 收音 不可按键
+     *
+     * @param nc
+     * @param channelEvent
+     * @param retValue
+     * @return
+     */
     public static XCCEvent detectSpeechPlayTTSNoDTMF(Connection nc, ChannelEvent channelEvent, String retValue) {
         return XCCUtil.detectSpeechPlayTTSNoDTMF(nc, channelEvent, retValue);
     }
 
+    /**
+     * 收音 不可按键 不可打断
+     *
+     * @param nc
+     * @param channelEvent
+     * @param retValue
+     * @return
+     */
+    public static XCCEvent detectSpeechPlayTTSNoDTMFNoBreak(Connection nc, ChannelEvent channelEvent, String retValue) {
+        return XCCUtil.detectSpeechPlayTTSNoDTMFNoBreak(nc, channelEvent, retValue);
+    }
+
+    /**
+     * 播报 收按键
+     *
+     * @param nc
+     * @param channelEvent
+     * @param retValue
+     * @param maxDigits
+     * @return
+     */
     public static XCCEvent playAndReadDTMF(Connection nc, ChannelEvent channelEvent, String retValue, int maxDigits) {
         return XCCUtil.playAndReadDTMF(nc, channelEvent, retValue, maxDigits);
     }
 
-    //转分机
+    /**
+     * 测试-转分机
+     *
+     * @param nc
+     * @param channelEvent
+     * @param retValue
+     * @return
+     */
     public static XCCEvent bridgeExtension(Connection nc, ChannelEvent channelEvent, String retValue) {
         return XCCUtil.bridgeExtension(nc, channelEvent, retValue);
     }
 
-    //转人工
+    /**
+     * 转人工
+     *
+     * @param nc
+     * @param channelEvent
+     * @param retValue
+     * @param ngdEvent
+     * @param callNumber
+     * @return
+     */
     public static XCCEvent bridgeArtificial(Connection nc, ChannelEvent channelEvent, String retValue, NGDEvent ngdEvent, String callNumber) {
         //呼叫字符串
         String dialStr = XCCUtil.convertDialStr(XCCConstants.HUAWEI_ARTIFICIAL_NUMBER);
@@ -215,11 +273,29 @@ public class XCCHandler {
         return XCCUtil.bridge(nc, channelEvent, retValue, dialStr, handleSipHeader, callNumber);
     }
 
+    /**
+     * 放音
+     *
+     * @param nc
+     * @param channelEvent
+     * @param ttsContent
+     * @return
+     */
     public static XCCEvent playTTS(Connection nc, ChannelEvent channelEvent, String ttsContent) {
         return XCCUtil.playTTS(nc, channelEvent, ttsContent);
     }
 
-    //转接到精准ivr
+    /**
+     * 转接到精准IVR
+     *
+     * @param nc
+     * @param channelEvent
+     * @param retValue
+     * @param ivrEvent
+     * @param ngdEvent
+     * @param callNumber
+     * @return
+     */
     public static XCCEvent bridgeIVR(Connection nc, ChannelEvent channelEvent, String retValue, IVREvent ivrEvent, NGDEvent ngdEvent, String callNumber) {
         //呼叫字符串,不使用4001,使用后缀码
         String phoneAdsCode = ivrEvent.getPhoneAdsCode();
