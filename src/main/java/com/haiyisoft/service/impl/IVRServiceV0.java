@@ -9,7 +9,7 @@ import com.haiyisoft.entry.XCCEvent;
 import com.haiyisoft.handler.*;
 import com.haiyisoft.model.NGDNodeMetaData;
 import com.haiyisoft.service.IVRService;
-import com.haiyisoft.xcc.client.ChrylConnection;
+import com.haiyisoft.chryl.client.ChrylConnection;
 import io.nats.client.Connection;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

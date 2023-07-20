@@ -258,7 +258,7 @@ public class XCCHandler {
     }
 
     /**
-     * 转人工
+     * 广西-转接华为人工
      *
      * @param nc
      * @param channelEvent
@@ -287,7 +287,7 @@ public class XCCHandler {
     }
 
     /**
-     * 转接到精准IVR
+     * 广西-转接到华为精准IVR
      *
      * @param nc
      * @param channelEvent

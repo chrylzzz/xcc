@@ -1,8 +1,9 @@
-package com.haiyisoft.xcc.client.impl;
+package com.haiyisoft.chryl.client.impl;
 
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.haiyisoft.boot.IVRInit;
+import com.haiyisoft.chryl.client.ChrylConnection;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
 import com.haiyisoft.entry.IVREvent;
@@ -13,7 +14,6 @@ import com.haiyisoft.util.IdGenerator;
 import com.haiyisoft.util.IpUtil;
 import com.haiyisoft.util.RequestUtil;
 import com.haiyisoft.util.XCCUtil;
-import com.haiyisoft.xcc.client.ChrylConnection;
 import io.nats.client.Connection;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -69,6 +69,13 @@ public class ChrylXCCConnection implements ChrylConnection {
         RequestUtil.natsRequest(nc, service, XCCConstants.ACCEPT, params);
     }
 
+    /**
+     * 应答
+     *
+     * @param nc
+     * @param channelEvent
+     * @return
+     */
     @Override
     public XCCEvent answer(Connection nc, ChannelEvent channelEvent) {
         JSONObject params = new JSONObject();
@@ -352,6 +359,16 @@ public class ChrylXCCConnection implements ChrylConnection {
         RequestUtil.natsRequestFutureByLog(nc, service, XCCConstants.LOG, params);
     }
 
+    /**
+     * 广西-转接华为人工
+     *
+     * @param nc
+     * @param channelEvent
+     * @param retValue
+     * @param ngdEvent
+     * @param callNumber
+     * @return
+     */
     @Override
     public XCCEvent bridgeArtificial(Connection nc, ChannelEvent channelEvent, String retValue, NGDEvent ngdEvent, String callNumber) {
         String dialStr = convertDialStr(XCCConstants.HUAWEI_ARTIFICIAL_NUMBER);
@@ -359,6 +376,16 @@ public class ChrylXCCConnection implements ChrylConnection {
         return bridge(nc, channelEvent, retValue, dialStr, handleSipHeader, callNumber);
     }
 
+    /**
+     * 广西-转接华为流程
+     *
+     * @param nc
+     * @param channelEvent
+     * @param retValue
+     * @param ngdEvent
+     * @param callNumber
+     * @return
+     */
     @Override
     public XCCEvent bridgeIVR(Connection nc, ChannelEvent channelEvent, String retValue, IVREvent ivrEvent, NGDEvent ngdEvent, String callNumber) {
         //呼叫字符串,不使用4001,使用后缀码

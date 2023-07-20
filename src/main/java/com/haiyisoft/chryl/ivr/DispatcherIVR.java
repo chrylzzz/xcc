@@ -6,7 +6,7 @@ import com.haiyisoft.entry.IVREvent;
 import com.haiyisoft.entry.NGDEvent;
 import com.haiyisoft.entry.XCCEvent;
 import com.haiyisoft.handler.WebHookHandler;
-import com.haiyisoft.xcc.client.ChrylConnection;
+import com.haiyisoft.chryl.client.ChrylConnection;
 import io.nats.client.Connection;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
