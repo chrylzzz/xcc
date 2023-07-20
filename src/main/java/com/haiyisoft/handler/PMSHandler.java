@@ -31,8 +31,7 @@ public class PMSHandler {
         String icdCallerId = ivrEvent.getIcdCallerId();
         String intent = ngdEvent.getIntent();
 
-        IVRModel ivrModel
-                = new IVRModel(cidPhoneNumber, fsCallerId, icdCallerId, ivrStartTime, intent, "", "", "");
+        IVRModel ivrModel = new IVRModel(cidPhoneNumber, fsCallerId, icdCallerId, ivrStartTime, intent, "", "", "");
         String jsonParam = JSON.toJSONString(ivrModel);
         log.info("SaveZnIVRLhytForGx,pms接口入参:{}", jsonParam);
         String postJson = HttpClientUtil.doPostJson(IVRInit.CHRYL_CONFIG_PROPERTY.getPmsUrl() + XCCConstants.SAVE_INTENT_URL, jsonParam);
@@ -50,14 +49,16 @@ public class PMSHandler {
         String fsCallerId = ivrEvent.getFsCallerId();
         String icdCallerId = ivrEvent.getIcdCallerId();
         boolean transferFlag = ivrEvent.isTransferFlag();
-        String artificialType, ivrValidCallType, ivrFinishType;//是否转人工,是否有效通话,是否正常结束: 0否1是
+        String artificialType, ivrValidCallType, ivrCallEndNormalType;//是否转人工,是否有效通话,是否正常结束: 0否1是
 
         if (transferFlag) {
             artificialType = "1";
         } else {
             artificialType = "0";
         }
-//        new IVRModel();
+        ivrValidCallType = "1";
+        ivrCallEndNormalType = "1";
+        new IVRModel(cidPhoneNumber, fsCallerId, icdCallerId, ivrStartTime, artificialType, ivrValidCallType, ivrCallEndNormalType);
 
     }
 

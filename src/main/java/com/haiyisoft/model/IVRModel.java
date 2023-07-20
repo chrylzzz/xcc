@@ -56,7 +56,7 @@ public class IVRModel {
      * 是否正常结束: 0否1是
      */
     @JSONField(name = "sfzcjs")
-    private String ivrFinishType;
+    private String ivrCallEndNormalType;
     /**
      * 意图对象
      */
@@ -117,9 +117,9 @@ public class IVRModel {
      * @param ivrStartTime
      * @param artificialType
      * @param ivrValidCallType
-     * @param ivrFinishType
+     * @param ivrCallEndNormalType
      */
-    public IVRModel(String cidPhoneNumber, String fsCallerId, String icdCallerId, String ivrStartTime, String artificialType, String ivrValidCallType, String ivrFinishType) {
+    public IVRModel(String cidPhoneNumber, String fsCallerId, String icdCallerId, String ivrStartTime, String artificialType, String ivrValidCallType, String ivrCallEndNormalType) {
         this.cidPhoneNumber = cidPhoneNumber;
         this.fsCallerId = fsCallerId;
         this.icdCallerId = icdCallerId;
@@ -127,15 +127,17 @@ public class IVRModel {
         this.ivrEndTime = DateUtil.getLocalDateTime();
         this.artificialType = artificialType;
         this.ivrValidCallType = ivrValidCallType;
-        this.ivrFinishType = ivrFinishType;
+        this.ivrCallEndNormalType = ivrCallEndNormalType;
     }
 
     public static void main(String[] args) {
-        IVRModel ivrModel = IVRModel.builder().cidPhoneNumber("12").fsCallerId("aaa-bbb-ccc").icdCallerId("1234-2244").ivrStartTime(DateUtil.getLocalDateTime()).ivrEndTime(DateUtil.getLocalDateTime()).artificialType("1").ivrValidCallType("1").ivrFinishType("1").intent("#sjdf").zl(null).areaCode(null).orgCode(null).build();
+        IVRModel ivrModel = IVRModel.builder().cidPhoneNumber("12").fsCallerId("aaa-bbb-ccc").icdCallerId("1234-2244").ivrStartTime(DateUtil.getLocalDateTime()).ivrEndTime(DateUtil.getLocalDateTime()).artificialType("1").ivrValidCallType("1").ivrCallEndNormalType("1").intent("#sjdf").zl(null).areaCode(null).orgCode(null).build();
 
         IVRModel ivrModel2 = new IVRModel("13344563332", "anbc", "akc", DateUtil.getLocalDateTime(), DateUtil.getLocalDateTime(), "1", "1", "1", "a", "zl", "0401", "040100");
-
-        String s = JSON.toJSONString(ivrModel);
+        IVRModel ivrModel3
+                = new IVRModel("15567895678", "454666-2883d", "355-22883sh211", DateUtil.getLocalDateTime(),
+                "#tdyt#djkf3#sjsjf", "", "", "");
+        String s = JSON.toJSONString(ivrModel3);
         System.out.println(s);
 
     }

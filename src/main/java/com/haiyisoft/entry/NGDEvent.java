@@ -2,7 +2,6 @@ package com.haiyisoft.entry;
 
 import com.alibaba.fastjson2.JSONArray;
 import com.haiyisoft.model.NGDNodeMetaData;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,9 +13,9 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class NGDEvent {
 
+    //----------------N G D API参数
     //sessionId == callId == xcc uuid == channelId == channel uuid
     private String sessionId;
     //ngd返回code
@@ -29,6 +28,7 @@ public class NGDEvent {
     private String answer;
     //ngd返回solved 是否解决
     private boolean solved;
+    //----------------N G D API参数
 
     public NGDEvent(String sessionId, Integer code, String msg, String source, String answer, boolean solved) {
         this.sessionId = sessionId;
@@ -39,25 +39,28 @@ public class NGDEvent {
         this.solved = solved;
     }
 
+    //----------------N G D 对话记录
     //对话日志
     private JSONArray conversation;
     //记录完整的 ngd 节点
     private NGDNodeMetaData ngdNodeMetaData;
-    //----------------N G D业务变量
+    //----------------N G D 对话记录
+
+    //----------------N G D 流程业务交互
     //uid为用户编号
     private String uid;
     //是否通过身份验证流程,true通过 : userOk is true: NGD 已校验完成身份验证,可对SIP HEADER处理
     private boolean userOk;
-    //意图
+    //意图:#DFYT#TDYT#
     private String intent;
-    //----------------N G D业务变量
+    //----------------N G D 流程业务交互
 
-    //----------------N G D交互标识
+    //----------------N G D 交互标识
     //播报指令
     private String retKey;
     //播报话术
     private String retValue;
-    //----------------N G D交互标识
+    //----------------N G D 交互标识
 
 
 }
