@@ -1,4 +1,4 @@
-package com.haiyisoft.ivr;
+package com.haiyisoft.service;
 
 import com.haiyisoft.entry.ChannelEvent;
 import io.nats.client.Connection;

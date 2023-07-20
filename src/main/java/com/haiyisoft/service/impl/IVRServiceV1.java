@@ -1,4 +1,4 @@
-package com.haiyisoft.ivr.impl;
+package com.haiyisoft.service.impl;
 
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
@@ -8,7 +8,7 @@ import com.haiyisoft.entry.XCCEvent;
 import com.haiyisoft.handler.IVRHandler;
 import com.haiyisoft.handler.NGDHandler;
 import com.haiyisoft.handler.XCCHandler;
-import com.haiyisoft.ivr.IVRService;
+import com.haiyisoft.service.IVRService;
 import com.haiyisoft.model.NGDNodeMetaData;
 import io.nats.client.Connection;
 import lombok.extern.slf4j.Slf4j;

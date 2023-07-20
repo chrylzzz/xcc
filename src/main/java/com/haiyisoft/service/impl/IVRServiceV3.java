@@ -1,4 +1,4 @@
-package com.haiyisoft.ivr.impl;
+package com.haiyisoft.service.impl;
 
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
@@ -7,17 +7,16 @@ import com.haiyisoft.entry.NGDEvent;
 import com.haiyisoft.entry.XCCEvent;
 import com.haiyisoft.handler.IVRHandler;
 import com.haiyisoft.handler.NGDHandler;
-import com.haiyisoft.handler.WebHookHandler;
 import com.haiyisoft.handler.XCCHandler;
-import com.haiyisoft.ivr.IVRService;
+import com.haiyisoft.service.IVRService;
 import com.haiyisoft.model.NGDNodeMetaData;
 import io.nats.client.Connection;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 /**
- * V4版本:
- * 欢迎语在百度ngd流程配置(先调用百度)
+ * V3版本:
+ * 手动处理是否输入(未输入则不进入知识库)
  * 未识话术别在知识库处理
  * <p>
  * Created By Chr.yl on 2023-02-08.
@@ -26,7 +25,7 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-public class IVRServiceV4 implements IVRService {
+public class IVRServiceV3 implements IVRService {
 
     @Override
     public void handlerChannelEvent(Connection nc, ChannelEvent channelEvent) {
@@ -53,33 +52,49 @@ public class IVRServiceV4 implements IVRService {
                 //开始接管,第一个指令必须是Accept或Answer
                 XCCHandler.answer(nc, channelEvent);
                 //
+                String retKey = XCCConstants.YYSR;
+                String retValue = XCCConstants.WELCOME_TEXT;
                 while (true) {
-
-                    //xcc识别数据
-                    String xccRecognitionResult = xccEvent.getXccRecognitionResult();
-
-                    //获取指令和话术
-                    ngdEvent = NGDHandler.handlerNlu(xccRecognitionResult, channelId, callerIdNumber, icdCallerId, phoneAdsCode);
-
-                    String retKey = ngdEvent.getRetKey();
-                    String retValue = ngdEvent.getRetValue();
-
-                    //记录IVR日志
-                    NGDNodeMetaData ngdNodeMetaData = ngdEvent.getNgdNodeMetaData();
-                    ivrEvent.getNgdNodeMetadataArray().add(ngdNodeMetaData);
 
                     xccEvent = IVRHandler.domain(nc, channelEvent, retKey, retValue, ivrEvent, ngdEvent, callerIdNumber);
 
                     //处理是否已挂机
                     boolean handleHangup = XCCHandler.handleSomeHangup(xccEvent, channelId);
                     if (handleHangup) {//挂机
-                        //先存的IVR对话日志,这里挂机不需要单独处理
                         log.info("挂断部分");
+                        //TODO 记录已挂机的IVR对话日志
+                        NGDNodeMetaData ngdNodeMetaData = new NGDNodeMetaData("", retValue);
+                        ivrEvent.getNgdNodeMetadataArray().add(ngdNodeMetaData);
                         break;
+                    } else {//正常通话
+                        //处理是否识别
+                        boolean xccInput = XCCHandler.handleXccInput(xccEvent);
+                        //判断是否识别到(dtmf/speech)
+                        if (xccInput) {//xcc已识别
+
+                            //xcc识别数据
+                            String xccRecognitionResult = xccEvent.getXccRecognitionResult();
+
+                            //获取指令和话术
+                            ngdEvent = NGDHandler.handlerNlu(xccRecognitionResult, channelId, callerIdNumber, icdCallerId, phoneAdsCode);
+
+                            retKey = ngdEvent.getRetKey();
+                            retValue = ngdEvent.getRetValue();
+
+                            //记录IVR日志
+                            NGDNodeMetaData ngdNodeMetaData = ngdEvent.getNgdNodeMetaData();
+                            ivrEvent.getNgdNodeMetadataArray().add(ngdNodeMetaData);
+                        } else {//xcc未识别
+                            retKey = "YYSR";
+                            retValue = "您未说话,请说出诉求";
+                        }
                     }
                     log.info("revert ivrEvent data: {}", ivrEvent);
 
+
                 }
+
+                //开发记录ngd节点
 
             } else if (XCCConstants.CHANNEL_CALLING.equals(state)) {
                 log.info("CHANNEL_CALLING this call channelId: {}", channelId);
@@ -94,14 +109,10 @@ public class IVRServiceV4 implements IVRService {
             } else if (XCCConstants.CHANNEL_DESTROY.equals(state)) {
                 log.info("CHANNEL_DESTROY this call channelId: {}", channelId);
             }
-
-            //保存会话记录
-            log.info("saveCDR ivrEvent data: {}", ivrEvent);
-            WebHookHandler.saveCDR(ivrEvent);
-
+            log.info("hangup ivrEvent data: {}", ivrEvent);
             //挂断双方
-            XCCHandler.hangup(nc, channelEvent);
             log.info("hangup this call channelId: {} ", channelId);
+            XCCHandler.hangup(nc, channelEvent);
         }
     }
 

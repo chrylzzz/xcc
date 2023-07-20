@@ -2,7 +2,7 @@ package com.haiyisoft.boot;
 
 import com.haiyisoft.config.XCCConfiguration;
 import com.haiyisoft.chryl.ChrylConfigProperty;
-import com.haiyisoft.ivr.IVRController;
+import com.haiyisoft.controller.IVRController;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
