@@ -17,8 +17,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * V4版本:
- * 欢迎语在百度ngd流程配置(先调用百度)
- * 未识话术别在知识库处理
+ * 使用connection调用xcc api
  * <p>
  * Created By Chr.yl on 2023-02-08.
  *
