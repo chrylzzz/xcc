@@ -3,7 +3,7 @@ package com.haiyisoft.chryl.client.impl;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.haiyisoft.boot.IVRInit;
-import com.haiyisoft.chryl.client.ChrylConnection;
+import com.haiyisoft.chryl.client.XCCConnection;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
 import com.haiyisoft.entry.IVREvent;
@@ -29,7 +29,7 @@ import java.util.Map;
  */
 @Slf4j
 @Component
-public class ChrylXCCConnection implements ChrylConnection {
+public class ChrylXCCConnection implements XCCConnection {
 
     @Override
     public void setVar(Connection nc, ChannelEvent channelEvent) {

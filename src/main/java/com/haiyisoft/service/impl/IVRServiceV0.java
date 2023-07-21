@@ -9,7 +9,7 @@ import com.haiyisoft.entry.XCCEvent;
 import com.haiyisoft.handler.*;
 import com.haiyisoft.model.NGDNodeMetaData;
 import com.haiyisoft.service.IVRService;
-import com.haiyisoft.chryl.client.ChrylConnection;
+import com.haiyisoft.chryl.client.XCCConnection;
 import io.nats.client.Connection;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class IVRServiceV0 implements IVRService {
     @Autowired
-    private ChrylConnection chrylConnection;
+    private XCCConnection XCCConnection;
     @Autowired
     private DispatcherIVR dispatcherIvr;
 
@@ -55,7 +55,7 @@ public class IVRServiceV0 implements IVRService {
 
             if (XCCConstants.CHANNEL_START.equals(state)) {
                 //开始接管,第一个指令必须是Accept或Answer
-                chrylConnection.answer(nc, channelEvent);
+                XCCConnection.answer(nc, channelEvent);
                 //
                 while (true) {
 

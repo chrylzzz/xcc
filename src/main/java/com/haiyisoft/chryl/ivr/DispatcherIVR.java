@@ -6,7 +6,7 @@ import com.haiyisoft.entry.IVREvent;
 import com.haiyisoft.entry.NGDEvent;
 import com.haiyisoft.entry.XCCEvent;
 import com.haiyisoft.handler.WebHookHandler;
-import com.haiyisoft.chryl.client.ChrylConnection;
+import com.haiyisoft.chryl.client.XCCConnection;
 import io.nats.client.Connection;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 public class DispatcherIVR {
 
     @Autowired
-    private ChrylConnection chrylConnection;
+    private XCCConnection xccConnection;
 
     /**
      * IVR INVOKE
@@ -40,23 +40,23 @@ public class DispatcherIVR {
     public XCCEvent doDispatch(Connection nc, ChannelEvent channelEvent, String retKey, String retValue, IVREvent ivrEvent, NGDEvent ngdEvent, String callerIdNumber) {
         XCCEvent xccEvent;
         if (XCCConstants.YYSR.equals(retKey)) {//播报收音
-            xccEvent = chrylConnection.detectSpeechPlayTTSNoDTMF(nc, channelEvent, retValue);
+            xccEvent = xccConnection.detectSpeechPlayTTSNoDTMF(nc, channelEvent, retValue);
         } else if (XCCConstants.AJSR.equals(retKey)) {//收集按键，多位按键
-            xccEvent = chrylConnection.playAndReadDTMF(nc, channelEvent, retValue, 18);
+            xccEvent = xccConnection.playAndReadDTMF(nc, channelEvent, retValue, 18);
         } else if (XCCConstants.YWAJ.equals(retKey)) {//收集按键，一位按键
-            xccEvent = chrylConnection.playAndReadDTMF(nc, channelEvent, retValue, 1);
+            xccEvent = xccConnection.playAndReadDTMF(nc, channelEvent, retValue, 1);
         } else if (XCCConstants.YYGB.equals(retKey)) {//语音广播
-            xccEvent = chrylConnection.detectSpeechPlayTTSNoDTMFNoBreak(nc, channelEvent, retValue);
+            xccEvent = xccConnection.detectSpeechPlayTTSNoDTMFNoBreak(nc, channelEvent, retValue);
         } else if (XCCConstants.RGYT.equals(retKey)) {//转人工
             //测试-分机
 //            xccEvent = XCCHandler.bridgeExtension(nc, channelEvent, retValue);
             //转人工
-            xccEvent = chrylConnection.bridgeArtificial(nc, channelEvent, retValue, ngdEvent, callerIdNumber);
+            xccEvent = xccConnection.bridgeArtificial(nc, channelEvent, retValue, ngdEvent, callerIdNumber);
         } else if (XCCConstants.JZLC.equals(retKey)) {//转精准IVR
-            xccEvent = chrylConnection.bridgeIVR(nc, channelEvent, retValue, ivrEvent, ngdEvent, callerIdNumber);
+            xccEvent = xccConnection.bridgeIVR(nc, channelEvent, retValue, ivrEvent, ngdEvent, callerIdNumber);
         } else if (XCCConstants.DXFS.equals(retKey)) {//短信发送
             WebHookHandler.sendMessage(ivrEvent, retValue);
-            xccEvent = chrylConnection.detectSpeechPlayTTSNoDTMF(nc, channelEvent, XCCConstants.FAQ_SEND_MESSAGE_TEXT);
+            xccEvent = xccConnection.detectSpeechPlayTTSNoDTMF(nc, channelEvent, XCCConstants.FAQ_SEND_MESSAGE_TEXT);
         } else {
             log.error("严格根据配置的指令开发");
             xccEvent = new XCCEvent();

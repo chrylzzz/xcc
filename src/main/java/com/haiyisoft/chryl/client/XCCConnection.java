@@ -7,11 +7,13 @@ import com.haiyisoft.entry.XCCEvent;
 import io.nats.client.Connection;
 
 /**
+ * The Connection class is at the heart of the XCC Java client
  * Created by Chr.yl on 2023/7/20.
  *
  * @author Chr.yl
  */
-public interface ChrylConnection {
+public interface XCCConnection {
+
     void setVar(Connection nc, ChannelEvent channelEvent);
 
     void getState(Connection nc, ChannelEvent channelEvent);
