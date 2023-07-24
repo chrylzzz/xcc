@@ -16,8 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * V4版本:
- * 使用connection调用xcc api
+ * V0版本:
+ * 基于V5使用connection调用xcc api
  * <p>
  * Created By Chr.yl on 2023-02-08.
  *
