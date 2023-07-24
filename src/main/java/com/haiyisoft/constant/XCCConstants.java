@@ -194,7 +194,7 @@ public class XCCConstants {
     //身份校验通过后赋值用户编号
     public static final String IVR_YHBH = "ivr_yhbh";
     //意图对象: #yt#yt#yt#
-    public static final String IVR_YHDX = "ivr_yhdx";
+    public static final String IVR_YTDX = "ivr_ytdx";
     //ngd话术分隔符
     public static final String NGD_SEPARATOR = "#";
     //unMatch : 百度知识库接口未匹配: 返回抱歉,我不太理解您的意思
