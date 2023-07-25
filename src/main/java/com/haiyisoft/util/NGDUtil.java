@@ -394,7 +394,7 @@ public class NGDUtil {
      * 组装core query
      *
      * @param queryText
-     * @param sessionId
+     * @param sessionId ngd session id
      * @param phone
      * @param icdCallerId  icd caller id
      * @param phoneAdsCode phone address code
@@ -407,8 +407,8 @@ public class NGDUtil {
         param.put("channel", XCCConstants.CHANNEL_IVR);//渠道标识
         context.put(XCCConstants.IVR_PHONE, phone);
         context.put(XCCConstants.IVR_PHONE_ADS_CODE, phoneAdsCode);//后缀码
-        context.put(XCCConstants.IVR_ICD_CALLER_ID, icdCallerId);//icd
-        context.put(XCCConstants.IVR_FS_CALLER_ID, sessionId);//fs caller id = xcc channel id = session id
+        context.put(XCCConstants.IVR_ICD_CALLER_ID, icdCallerId);//icd caller id
+        context.put(XCCConstants.IVR_FS_CALLER_ID, sessionId);//fs caller id = xcc channel id = ngd session id
         param.put("queryText", queryText);//客户问题
         param.put("sessionId", sessionId);//会话id
         ext.put("exact", "true");
