@@ -1,31 +1,31 @@
 package com.haiyisoft.service.impl;
 
+import com.haiyisoft.chryl.client.XCCConnection;
 import com.haiyisoft.chryl.ivr.DispatcherIVR;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
 import com.haiyisoft.entry.IVREvent;
 import com.haiyisoft.entry.NGDEvent;
 import com.haiyisoft.entry.XCCEvent;
-import com.haiyisoft.handler.*;
+import com.haiyisoft.handler.IVRHandler;
+import com.haiyisoft.handler.NGDHandler;
+import com.haiyisoft.handler.XCCHandler;
 import com.haiyisoft.model.NGDNodeMetaData;
 import com.haiyisoft.service.IVRService;
-import com.haiyisoft.chryl.client.XCCConnection;
 import io.nats.client.Connection;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * V0版本:
- * 基于V5使用connection调用xcc api
- * <p>
- * Created By Chr.yl on 2023-02-08.
+ * V6版本:
+ * 基于V0,欢迎语在IVR
  *
  * @author Chr.yl
  */
 @Slf4j
 @Component
-public class IVRServiceV0 implements IVRService {
+public class IVRServiceV6 implements IVRService {
     @Autowired
     private XCCConnection xccConnection;
     @Autowired
@@ -56,7 +56,11 @@ public class IVRServiceV0 implements IVRService {
                 //开始接管,第一个指令必须是Accept或Answer
                 xccConnection.answer(nc, channelEvent);
                 //
+                String retKey = XCCConstants.YYSR;
+                String retValue = XCCConstants.WELCOME_TEXT;
                 while (true) {
+
+                    xccEvent = dispatcherIvr.doDispatch(nc, channelEvent, retKey, retValue, ivrEvent, ngdEvent, callerIdNumber);
 
                     //xcc识别数据
                     String xccRecognitionResult = xccEvent.getXccRecognitionResult();
@@ -67,6 +71,14 @@ public class IVRServiceV0 implements IVRService {
                     //记录IVR日志
                     NGDNodeMetaData ngdNodeMetaData = ngdEvent.getNgdNodeMetaData();
                     ivrEvent.getNgdNodeMetadataArray().add(ngdNodeMetaData);
+
+                    //处理是否已挂机
+                    boolean handleHangup = XCCHandler.handleSomeHangup(xccEvent, channelId);
+                    if (handleHangup) {//挂机
+                        //先存的IVR对话日志,这里挂机不需要单独处理
+                        log.info("挂断部分");
+                        break;
+                    }
 
                     //handle ngd agent
                     boolean handleSolved = NGDHandler.handleSolved(ngdEvent);
@@ -84,18 +96,9 @@ public class IVRServiceV0 implements IVRService {
                         }
                     }
 
-                    String retKey = ngdEvent.getRetKey();
-                    String retValue = ngdEvent.getRetValue();
+                    retKey = ngdEvent.getRetKey();
+                    retValue = ngdEvent.getRetValue();
 
-                    xccEvent = dispatcherIvr.doDispatch(nc, channelEvent, retKey, retValue, ivrEvent, ngdEvent, callerIdNumber);
-
-                    //处理是否已挂机
-                    boolean handleHangup = XCCHandler.handleSomeHangup(xccEvent, channelId);
-                    if (handleHangup) {//挂机
-                        //先存的IVR对话日志,这里挂机不需要单独处理
-                        log.info("挂断部分");
-                        break;
-                    }
                     log.info("revert ivrEvent data: {}", ivrEvent);
 
                 }
@@ -119,7 +122,6 @@ public class IVRServiceV0 implements IVRService {
 
             log.info("this call completed: {},{}", ivrEvent, ngdEvent);
             IVRHandler.afterHangup(ivrEvent, ngdEvent);
-
         }
     }
 
