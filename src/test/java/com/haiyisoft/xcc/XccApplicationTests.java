@@ -1,5 +1,6 @@
 package com.haiyisoft.xcc;
 
+import com.haiyisoft.entry.NGDEvent;
 import com.haiyisoft.util.IdGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +20,13 @@ class XccApplicationTests {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+    }
+
+    @Test
+    void contextLoads2() {
+        NGDEvent ngdEvent = new NGDEvent();
+        System.out.println(ngdEvent.isUserOk());
 
     }
 

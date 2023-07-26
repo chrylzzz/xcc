@@ -179,7 +179,7 @@ public class IVRHandler {
      */
     public static void afterHangup(IVREvent ivrEvent, NGDEvent ngdEvent) {
         //保存会话记录
-        WebHookHandler.saveCDR(ivrEvent);
+//        WebHookHandler.saveCDR(ivrEvent);
         //保存意图
         PMSHandler.saveIntent(ivrEvent, ngdEvent);
         //保存通话数据

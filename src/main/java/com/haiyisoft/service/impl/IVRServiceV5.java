@@ -58,7 +58,7 @@ public class IVRServiceV5 implements IVRService {
                     String xccRecognitionResult = xccEvent.getXccRecognitionResult();
 
                     //获取指令和话术
-                    ngdEvent = NGDHandler.handler(xccRecognitionResult, channelId, callerIdNumber, icdCallerId, phoneAdsCode);
+                    ngdEvent = NGDHandler.handler(xccRecognitionResult, channelId, callerIdNumber, icdCallerId, phoneAdsCode, ngdEvent);
 
                     //记录IVR日志
                     NGDNodeMetaData ngdNodeMetaData = ngdEvent.getNgdNodeMetaData();
@@ -110,12 +110,9 @@ public class IVRServiceV5 implements IVRService {
             }
 
             //保存会话记录
-            log.info("ivrEvent completed: {}", ivrEvent);
-            WebHookHandler.saveCDR(ivrEvent);
-            //保存意图
-            PMSHandler.saveIntent(ivrEvent, ngdEvent);
-            //保存通话数据
-            PMSHandler.saveCallData(ivrEvent, ngdEvent);
+
+            log.info("this call completed: {} , {}", ivrEvent, ngdEvent);
+            IVRHandler.afterHangup(ivrEvent, ngdEvent);
             //挂断双方
             XCCHandler.hangup(nc, channelEvent);
             log.info("hangup this call channelId: {} ", channelId);
