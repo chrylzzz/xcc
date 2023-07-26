@@ -5,12 +5,13 @@ import com.haiyisoft.entry.ChannelEvent;
 import com.haiyisoft.entry.IVREvent;
 import com.haiyisoft.entry.NGDEvent;
 import com.haiyisoft.entry.XCCEvent;
-import com.haiyisoft.handler.*;
-import com.haiyisoft.service.IVRService;
+import com.haiyisoft.handler.IVRHandler;
+import com.haiyisoft.handler.NGDHandler;
+import com.haiyisoft.handler.XCCHandler;
 import com.haiyisoft.model.NGDNodeMetaData;
+import com.haiyisoft.service.IVRService;
 import io.nats.client.Connection;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 /**
@@ -23,7 +24,6 @@ import org.springframework.stereotype.Component;
  * @author Chr.yl
  */
 @Slf4j
-@Primary
 @Component
 public class IVRServiceV5 implements IVRService {
 
