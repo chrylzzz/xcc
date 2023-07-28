@@ -228,7 +228,7 @@ public class XCCConstants {
     //第二次错误
     public static final String NGD_SECOND_UNDERSTAND_TEXT = "您的意思我没有明白，麻烦您简要描述。";
     //欢迎语
-    public static final String WELCOME_TEXT = "我是智能我, 您要咨询什么问题, 您请说";
+    public static final String WELCOME_TEXT = "我是智能美美, 您要咨询什么问题, 您请说";
     //前导欢迎语
     public static final String TEST_WELCOME_TEXT = "欢迎致电南方电网广西电网公司，我是智能用电管家我，我可以为您查电费、查表码，请问您需要查询这些信息吗？";
     //转人工话术
