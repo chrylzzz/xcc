@@ -44,6 +44,7 @@ public class NGDHandler {
      * @param callNumber           来电号码
      * @param icdCallerId          华为cid
      * @param phoneAdsCode         来电后缀码
+     * @param reqNgdEvent          上一环节的ngdEvent
      * @return
      */
     public static NGDEvent handler(String xccRecognitionResult, String channelId, String callNumber, String icdCallerId, String phoneAdsCode, NGDEvent reqNgdEvent) {
