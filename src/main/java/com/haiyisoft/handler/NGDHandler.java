@@ -81,7 +81,7 @@ public class NGDHandler {
             NGDUtil.handlerIntent(context, resNgdEvent);
         } else {
             //处理全局参数
-            resNgdEvent = convertNgdEvent(reqNgdEvent, resNgdEvent);
+            convertNgdEvent(reqNgdEvent, resNgdEvent);
         }
 
         //处理记录会话
