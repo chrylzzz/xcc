@@ -5,9 +5,11 @@ import com.haiyisoft.boot.IVRInit;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.IVREvent;
 import com.haiyisoft.entry.NGDEvent;
+import com.haiyisoft.enumerate.EnumXCC;
 import com.haiyisoft.model.IVRModel;
 import com.haiyisoft.util.HttpClientUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * 营销系统业务处理
@@ -61,5 +63,28 @@ public class PMSHandler {
         new IVRModel(cidPhoneNumber, fsCallerId, icdCallerId, ivrStartTime, artificialType, ivrValidCallType, ivrCallEndNormalType);
 
     }
+
+    /**
+     * 保存满意度
+     *
+     * @param ivrEvent
+     * @param ngdEvent
+     */
+    public static void saveRate(IVREvent ivrEvent, NGDEvent ngdEvent) {
+        String cidPhoneNumber = ivrEvent.getCidPhoneNumber();
+        String fsCallerId = ivrEvent.getFsCallerId();
+        String icdCallerId = ivrEvent.getIcdCallerId();
+        String rate = ngdEvent.getRate();
+        if (StringUtils.isBlank(rate)) {
+            rate = EnumXCC.IVR_RATE_NEUTRAL.getValue();
+        }
+        IVRModel ivrModel = new IVRModel(cidPhoneNumber, fsCallerId, icdCallerId, "", "", rate);
+        String jsonParam = JSON.toJSONString(ivrModel);
+        log.info("SAVE_RATE_DATA_URL, pms接口入参:{}", jsonParam);
+        String postJson = HttpClientUtil.doPostJson(IVRInit.CHRYL_CONFIG_PROPERTY.getPmsUrl() + XCCConstants.SAVE_RATE_DATA_URL, jsonParam);
+        log.info("SAVE_RATE_DATA_URL, pms接口出参:{}", postJson);
+
+    }
+
 
 }

@@ -17,8 +17,10 @@ chryl:
   no-break: false
   # XML数据需要自己处理, JSON数据XSwitch已深度解析, true开启自助解析
   handle-engine-data: true
-  # DTMF 输入超时
+  # DTMF 输入超时(多位按键输入)
   dtmf-no-input-timeout: 30
+  # DTMF 输入超时(少位按键输入)
+  dtmf-chryl-no-input-timeout: 5
   # DTMF 位间超时
   digit-timeout: 13
   # speech 未检测到语音超时(秒)
