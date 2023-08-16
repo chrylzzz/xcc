@@ -246,6 +246,19 @@ public class XCCHandler {
     }
 
     /**
+     * 播报 收按键(收集少位按键)
+     *
+     * @param nc
+     * @param channelEvent
+     * @param retValue
+     * @param maxDigits
+     * @return
+     */
+    public static XCCEvent playAndReadDTMFChryl(Connection nc, ChannelEvent channelEvent, String retValue, int maxDigits) {
+        return XCCUtil.playAndReadDTMFChryl(nc, channelEvent, retValue, maxDigits);
+    }
+
+    /**
      * 测试-转分机
      *
      * @param nc
