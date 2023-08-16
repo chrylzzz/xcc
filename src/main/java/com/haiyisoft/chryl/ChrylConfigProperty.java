@@ -47,8 +47,11 @@ public class ChrylConfigProperty {
     // nats list
     private List<JSONObject> natsList;
 
-    // DTMF 输入超时
+    // DTMF 按键输入超时(收集多位按键)
     private int dtmfNoInputTimeout;
+
+    // DTMF 按键输入超时(收集少位按键)
+    private int dtmfChrylNoInputTimeout;
 
     // DTMF 位间超时
     private int digitTimeout;
@@ -64,6 +67,10 @@ public class ChrylConfigProperty {
 
     public void setDtmfNoInputTimeout(int dtmfNoInputTimeout) {
         this.dtmfNoInputTimeout = dtmfNoInputTimeout * 1000;
+    }
+
+    public void setDtmfChrylNoInputTimeout(int dtmfChrylNoInputTimeout) {
+        this.dtmfChrylNoInputTimeout = dtmfChrylNoInputTimeout * 1000;
     }
 
     public void setDigitTimeout(int digitTimeout) {
