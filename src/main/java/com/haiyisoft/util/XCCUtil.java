@@ -157,7 +157,7 @@ public class XCCUtil {
     }
 
     /**
-     * 播报并收集按键
+     * 播报并收集按键(多位)
      *
      * @param nc
      * @param channelEvent
@@ -173,6 +173,27 @@ public class XCCUtil {
 //        terminator：结束符，如果有的话。
 //        本接口将在收到第一个DTMF按键后打断当前的播放。
         JSONObject params = getDTMF(maxDigits);
+        params.put("ctrl_uuid", "chryl-ivvr");
+        //当前channel 的uuid
+        String channelId = channelEvent.getUuid();
+        params.put("uuid", channelId);
+        JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
+        params.put("media", media);
+        String service = IVRInit.CHRYL_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
+        return RequestUtil.natsRequestFutureByReadDTMF(nc, service, XCCConstants.READ_DTMF, params, null);
+    }
+
+    /**
+     * 播报并收集按键(少位)
+     *
+     * @param nc
+     * @param channelEvent
+     * @param ttsContent   播报内容
+     * @param maxDigits    最大位长
+     * @return
+     */
+    public static XCCEvent playAndReadDTMFChryl(Connection nc, ChannelEvent channelEvent, String ttsContent, int maxDigits) {
+        JSONObject params = getDTMFChryl(maxDigits);
         params.put("ctrl_uuid", "chryl-ivvr");
         //当前channel 的uuid
         String channelId = channelEvent.getUuid();
@@ -383,16 +404,38 @@ public class XCCUtil {
     }
 
     /**
-     * 获取按键对象
+     * 收集按键(多位按键)
      *
      * @param maxDigits 最大位长
      * @return
      */
     public static JSONObject getDTMF(int maxDigits) {
+        return getDTMFBody(maxDigits, IVRInit.CHRYL_CONFIG_PROPERTY.getDtmfNoInputTimeout());
+    }
+
+    /**
+     * 收集按键(少位按键)
+     *
+     * @param maxDigits 最大位长
+     * @return
+     */
+    public static JSONObject getDTMFChryl(int maxDigits) {
+        return getDTMFBody(maxDigits, IVRInit.CHRYL_CONFIG_PROPERTY.getDtmfChrylNoInputTimeout());
+    }
+
+    /**
+     * 获取按键对象
+     *
+     * @param maxDigits
+     * @param timeout
+     * @return
+     */
+    public static JSONObject getDTMFBody(int maxDigits, int timeout) {
         JSONObject dtmf = new JSONObject();
         dtmf.put("min_digits", 1);//min_digits：最小位长。
         dtmf.put("max_digits", maxDigits);//max_digits：最大位长。
-        dtmf.put("timeout", IVRInit.CHRYL_CONFIG_PROPERTY.getDtmfNoInputTimeout());//timeout：超时，默认5000ms。
+//        dtmf.put("timeout", IVRInit.CHRYL_CONFIG_PROPERTY.getDtmfNoInputTimeout());//timeout：超时，默认5000ms。
+        dtmf.put("timeout", timeout);//timeout：超时，默认5000ms。
         dtmf.put("digit_timeout", IVRInit.CHRYL_CONFIG_PROPERTY.getDigitTimeout());//digit_timeout：位间超时，默认2000ms。
         dtmf.put("terminators", XCCConstants.DTMF_TERMINATORS);//terminators：结束符，如#。
         return dtmf;

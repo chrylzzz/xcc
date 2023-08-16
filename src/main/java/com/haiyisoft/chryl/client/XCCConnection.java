@@ -75,7 +75,7 @@ public interface XCCConnection {
     XCCEvent detectSpeechPlayTTSNoDTMFNoBreak(Connection nc, ChannelEvent channelEvent, String ttsContent);
 
     /**
-     * 播报并收集按键
+     * 播报并收集按键(多位按键)
      *
      * @param nc
      * @param channelEvent
@@ -84,6 +84,17 @@ public interface XCCConnection {
      * @return
      */
     XCCEvent playAndReadDTMF(Connection nc, ChannelEvent channelEvent, String ttsContent, int maxDigits);
+
+    /**
+     * 播报并收集按键(少位按键)
+     *
+     * @param nc
+     * @param channelEvent
+     * @param ttsContent   播报内容
+     * @param maxDigits    最大位长
+     * @return
+     */
+    XCCEvent playAndReadDTMFChryl(Connection nc, ChannelEvent channelEvent, String ttsContent, int maxDigits);
 
     /**
      * 转人工测试
