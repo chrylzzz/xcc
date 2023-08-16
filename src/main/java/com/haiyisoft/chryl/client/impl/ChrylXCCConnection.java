@@ -1,6 +1,5 @@
 package com.haiyisoft.chryl.client.impl;
 
-import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.haiyisoft.boot.IVRInit;
 import com.haiyisoft.chryl.client.XCCConnection;
@@ -10,8 +9,6 @@ import com.haiyisoft.entry.IVREvent;
 import com.haiyisoft.entry.NGDEvent;
 import com.haiyisoft.entry.XCCEvent;
 import com.haiyisoft.handler.ChannelHandler;
-import com.haiyisoft.util.IdGenerator;
-import com.haiyisoft.util.IpUtil;
 import com.haiyisoft.util.RequestUtil;
 import com.haiyisoft.util.XCCUtil;
 import io.nats.client.Connection;
