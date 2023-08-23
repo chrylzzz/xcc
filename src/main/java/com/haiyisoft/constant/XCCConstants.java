@@ -55,6 +55,8 @@ public class XCCConstants {
      */
     //START：来话第一个事件
     public static final String CHANNEL_START = "START";
+    //ANSWERED: 应答
+    public static final String CHANNEL_ANSWERED = "ANSWERED";
     //小会
     public static final String CHANNEL_DESTROY = "CHANNEL_DESTROY";
     //CALLING：去话第一个事件
@@ -74,8 +76,13 @@ public class XCCConstants {
     public static final String EVENT_NATIVE_EVENT = "Event.NativeEvent";
     //
     public static final String EVENT_DETECTED_FACE = "Event.DetectedFace";
+    public static final String DETECTED_FACE = "DETECTED_FACE";
     //HEARTBEAT
     public static final String EVENT_NODE_UPDATE = "Event.NodeUpdate";
+    public static final String NODE_UPDATE = "NODE_UPDATE";
+    //DETECTED_SPEECH
+    public static final String EVENT_DETECTED_SPEECH = "Event.DetectedSpeech";
+    public static final String DETECTED_SPEECH = "DETECTED_SPEECH";
 
     //不可打断 true 不可打断
     public static final boolean NO_BREAK = true;
