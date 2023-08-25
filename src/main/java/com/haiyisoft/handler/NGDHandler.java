@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.haiyisoft.boot.IVRInit;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.NGDEvent;
+import com.haiyisoft.enumerate.EnumXCC;
 import com.haiyisoft.util.NGDUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,8 +52,17 @@ public class NGDHandler {
         //调用百度知识库
         JSONObject result = NGDUtil.coreQueryJson(xccRecognitionResult, channelId, callNumber, icdCallerId, phoneAdsCode);
 
-        Integer code = result.getIntValue("code");//统一返回
-        String msg = result.getString("msg");//统一返回
+        int code;
+        String msg;
+        //NGD 存在SocketTimeoutException
+        if (result == null) {
+            code = EnumXCC.NGD_BOT_RES_ERROR.keyParseIntValue();
+            msg = EnumXCC.NGD_BOT_RES_ERROR.getValue();
+        } else {
+            code = result.getIntValue("code");//统一返回
+            msg = result.getString("msg");//统一返回
+        }
+
         NGDEvent resNgdEvent;
         String answer;
         if (XCCConstants.OK == code) {
@@ -72,9 +82,9 @@ public class NGDHandler {
             log.error("百度知识调用异常 code: {} , msg: {} , answer: {}", code, msg, answer);
         }
         //context全局交互实体
-        JSONObject context = result.getJSONObject("data").getJSONObject("context");
+        JSONObject context = getContext(result);
         //测试发现闲聊时,无context
-        if (context != null) {
+        if (context.size() > 0) {
             log.info("context:{}", context);
             //处理用户校验
             NGDUtil.checkUser(context, resNgdEvent);
@@ -187,6 +197,28 @@ public class NGDHandler {
      */
     public static NGDEvent ngdEventSetErrorVar(String sessionId, Integer code, String msg, String answer) {
         return ngdEventSetVar(sessionId, code, msg, answer, "ngd error source", false);
+    }
+
+    /**
+     * 获取context全局交互实体
+     *
+     * @param result
+     * @return
+     */
+    public static JSONObject getContext(JSONObject result) {
+        JSONObject context;
+        if (result != null) {
+            JSONObject data = result.getJSONObject("data");
+            if (data != null) {
+                context = data.getJSONObject("context");
+            } else {
+                context = new JSONObject();
+            }
+        } else {
+            context = new JSONObject();
+        }
+
+        return context;
     }
 
 }
