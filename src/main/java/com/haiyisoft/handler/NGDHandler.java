@@ -212,10 +212,10 @@ public class NGDHandler {
             if (data != null) {
                 context = data.getJSONObject("context");
             } else {
-                context = new JSONObject();
+                context = new JSONObject(0);
             }
         } else {
-            context = new JSONObject();
+            context = new JSONObject(0);
         }
 
         return context;
