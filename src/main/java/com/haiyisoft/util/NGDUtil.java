@@ -134,11 +134,27 @@ public class NGDUtil {
      *
      * @param query
      * @param answer
+     * @param code
      * @param result
      * @param ngdEvent
      * @return
      */
-    public static NGDEvent convertNgdNodeMateData(String query, String answer, JSONObject result, NGDEvent ngdEvent) {
+    public static NGDEvent convertNgdNodeMateData(String query, String answer, int code, JSONObject result, NGDEvent ngdEvent) {
+
+//        if (result == null) {
+//            log.error("本次节点信息无法统计result=null,知识库返回异常");
+//            return ngdEvent;
+//        }
+//        JSONObject jsonData = result.getJSONObject("data");
+//        if (jsonData == null) {
+//            log.error("本次节点信息无法统计data=null,知识库返回异常:{}", result);
+//            return ngdEvent;
+//        }
+
+        if (XCCConstants.OK != code) {
+            log.error("本次节点信息无法统计,知识库返回异常 code: {},result: {}", code, result);
+            return ngdEvent;
+        }
         JSONObject jsonData = result.getJSONObject("data");
         //保存流程信息
         NGDNodeMetaData ngdNodeMetaData = saveNgdNodeMateData(query, answer, jsonData);
