@@ -189,7 +189,7 @@ public class XCCConstants {
     //指令集合数组
     public static final String[] RET_KEY_STR_ARRAY = {YYSR, AJSR, YWAJ, YYGB, RGYT, JZLC, DXFS};
     //过滤回复数组
-    public static final String[] REPLY_FILTER_ARRAY = {"image", "url"};
+    public static final String[] REPLY_FILTER_ARRAY = {"image", "img", "url", "src", "<p>", "<br>"};
     /**
      * **********************************************交互变量
      */
