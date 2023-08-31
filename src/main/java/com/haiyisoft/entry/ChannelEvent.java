@@ -17,7 +17,7 @@ public class ChannelEvent {
 
     //xswitch node id
     private String nodeUuid;
-    //channel id
+    //channel id = session id
     private String uuid;
     //Channel state
     private String state;
@@ -33,6 +33,10 @@ public class ChannelEvent {
      */
     private String sipResHeaderU2U;
 
+    //----------------channel param
+    //one channel id one voice name
+    private String cidVoiceName;
+    //----------------channel param
 }
 
 
