@@ -177,10 +177,11 @@ public class XCCUtil {
         //当前channel 的uuid
         String channelId = channelEvent.getUuid();
         params.put("uuid", channelId);
+        log.info("TTS播报内容为 : {}", ttsContent);
         JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent, channelEvent.getCidVoiceName());
         params.put("media", media);
         String service = IVRInit.CHRYL_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
-        return RequestUtil.natsRequestFutureByReadDTMF(nc, service, XCCConstants.READ_DTMF, params, null);
+        return RequestUtil.natsRequestFutureByReadDTMF(nc, service, XCCConstants.READ_DTMF, params, convertPlayContentToMilliSeconds(ttsContent));
     }
 
     /**
@@ -198,10 +199,11 @@ public class XCCUtil {
         //当前channel 的uuid
         String channelId = channelEvent.getUuid();
         params.put("uuid", channelId);
+        log.info("TTS播报内容为 : {}", ttsContent);
         JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent, channelEvent.getCidVoiceName());
         params.put("media", media);
         String service = IVRInit.CHRYL_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
-        return RequestUtil.natsRequestFutureByReadDTMF(nc, service, XCCConstants.READ_DTMF, params, null);
+        return RequestUtil.natsRequestFutureByReadDTMF(nc, service, XCCConstants.READ_DTMF, params, convertPlayContentToMilliSeconds(ttsContent));
     }
 
 
@@ -380,7 +382,9 @@ public class XCCUtil {
          *        SSML：TTS，SSML格式支持（并非所有引擎都支持SSML）
          */
         media.put("type", playType);
-        media.put("data", "[" + IVRInit.CHRYL_CONFIG_PROPERTY.getXttsS() + "]" + content);
+        //适配ifly tts
+//        media.put("data", "[" + IVRInit.CHRYL_CONFIG_PROPERTY.getXttsS() + "]" + content);
+        media.put("data", content);
 //        media.put("data", content);
         //引擎TTS engine,若使用xswitch配置unimrcp,则为unimrcp:profile
         media.put("engine", IVRInit.CHRYL_CONFIG_PROPERTY.getTtsEngine());
@@ -405,7 +409,9 @@ public class XCCUtil {
          *        SSML：TTS，SSML格式支持（并非所有引擎都支持SSML）
          */
         media.put("type", playType);
-        media.put("data", "[" + IVRInit.CHRYL_CONFIG_PROPERTY.getXttsS() + "]" + content);
+        //适配ifly tts
+//        media.put("data", "[" + IVRInit.CHRYL_CONFIG_PROPERTY.getXttsS() + "]" + content);
+        media.put("data", content);
 //        media.put("data", content);
         //引擎TTS engine,若使用xswitch配置unimrcp,则为unimrcp:profile
         media.put("engine", IVRInit.CHRYL_CONFIG_PROPERTY.getTtsEngine());
@@ -539,12 +545,27 @@ public class XCCUtil {
 //        JSONObject speech = getSpeech();
         params.put("speech", speech);
         String service = IVRInit.CHRYL_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
-        return RequestUtil.natsRequestFutureByDetectSpeech(nc, service, XCCConstants.DETECT_SPEECH, params, null);
+        return RequestUtil.natsRequestFutureByDetectSpeech(nc, service, XCCConstants.DETECT_SPEECH, params, convertPlayContentToMilliSeconds(ttsContent));
     }
 
     /********************************************请求体***********************************************/
 
     /********************************************数据处理********************************************/
+
+    /**
+     * 根据播报内容获取播报时间
+     * 播报时间=(播报时间+语音超时时间)
+     *
+     * @param ttsContent 播报内容
+     * @return
+     */
+    public static long convertPlayContentToMilliSeconds(String ttsContent) {
+        int length = ttsContent.length();
+        long playContentMilliSeconds = ((length / 4) + 1) * 1000L;
+        long sec = playContentMilliSeconds + IVRInit.CHRYL_CONFIG_PROPERTY.getSpeechNoInputTimeout();
+        log.info("本次语音收集等待时间: {} ms , 播报文本长度: {} , 播报话术所需时间: {} ms", sec, length, playContentMilliSeconds);
+        return sec;
+    }
 
     /**
      * 转人工和转精准ivr

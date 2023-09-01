@@ -123,7 +123,7 @@ public class IVRServiceV6 implements IVRService {
             log.info("hangup this call channelId: {} ", channelId);
 
             log.info("this call completed: {} , {}", ivrEvent, ngdEvent);
-            IVRHandler.afterHangup(ivrEvent, ngdEvent);
+//            IVRHandler.afterHangup(ivrEvent, ngdEvent);
         }
     }
 

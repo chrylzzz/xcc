@@ -16,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created By Chr.yl on 2023-02-08.
@@ -198,7 +199,7 @@ public class RequestUtil {
      * @param milliSeconds 毫秒
      * @return
      */
-    public static XCCEvent natsRequestFutureByDetectSpeech(Connection con, String service, String method, JSONObject params, Long milliSeconds) {
+    public static XCCEvent natsRequestFutureByDetectSpeech(Connection con, String service, String method, JSONObject params, long milliSeconds) {
         log.info("{} 执行开始", method);
         JSONObject jsonRpc = getJsonRpc(method, params);
         byte[] bytes = jsonRpc.toString().getBytes(StandardCharsets.UTF_8);
@@ -264,7 +265,7 @@ public class RequestUtil {
      * @return
      */
 
-    public static XCCEvent natsRequestFutureByReadDTMF(Connection con, String service, String method, JSONObject params, Long milliSeconds) {
+    public static XCCEvent natsRequestFutureByReadDTMF(Connection con, String service, String method, JSONObject params, long milliSeconds) {
         log.info("{} 执行开始时间为", method);
         JSONObject jsonRpc = getJsonRpc(method, params);
         byte[] bytes = jsonRpc.toString().getBytes(StandardCharsets.UTF_8);
