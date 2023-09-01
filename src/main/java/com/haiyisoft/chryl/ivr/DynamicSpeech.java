@@ -27,7 +27,8 @@ public class DynamicSpeech {
      */
     public static long convertPlayContentToMilliSeconds(String ttsContent) {
         int length = ttsContent.length();
-        long playContentMilliSeconds = ((length / 4) + 1) * 1000L;
+//        long playContentMilliSeconds = ((length / 4) + 1) * 1000L;
+        long playContentMilliSeconds = ((length / 4) + 5) * 1000L;
         long sec = playContentMilliSeconds + IVRInit.CHRYL_CONFIG_PROPERTY.getSpeechNoInputTimeout();
         log.info("本次语音收集等待时间: {} ms , 播报文本长度: {} , 播报话术所需时间: {} ms", sec, length, playContentMilliSeconds);
         return sec;
