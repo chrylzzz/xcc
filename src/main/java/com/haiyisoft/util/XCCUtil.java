@@ -3,6 +3,7 @@ package com.haiyisoft.util;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.haiyisoft.boot.IVRInit;
+import com.haiyisoft.chryl.ivr.DynamicSpeech;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
 import com.haiyisoft.entry.XCCEvent;
@@ -181,7 +182,7 @@ public class XCCUtil {
         JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent, channelEvent.getCidVoiceName());
         params.put("media", media);
         String service = IVRInit.CHRYL_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
-        return RequestUtil.natsRequestFutureByReadDTMF(nc, service, XCCConstants.READ_DTMF, params, convertPlayContentToMilliSeconds(ttsContent));
+        return RequestUtil.natsRequestFutureByReadDTMF(nc, service, XCCConstants.READ_DTMF, params, DynamicSpeech.convertPlayContentToMilliSeconds(ttsContent));
     }
 
     /**
@@ -203,7 +204,7 @@ public class XCCUtil {
         JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent, channelEvent.getCidVoiceName());
         params.put("media", media);
         String service = IVRInit.CHRYL_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
-        return RequestUtil.natsRequestFutureByReadDTMF(nc, service, XCCConstants.READ_DTMF, params, convertPlayContentToMilliSeconds(ttsContent));
+        return RequestUtil.natsRequestFutureByReadDTMF(nc, service, XCCConstants.READ_DTMF, params, DynamicSpeech.convertPlayContentToMilliSeconds(ttsContent));
     }
 
 
@@ -420,17 +421,6 @@ public class XCCUtil {
         return media;
     }
 
-    /**
-     * 根据是否开启tts多voice规则,返回tts-voice
-     */
-    public static String returnVoiceElement() {
-        if (IVRInit.CHRYL_CONFIG_PROPERTY.isTtsVoiceRule()) {
-            List<String> ttsVoiceList = IVRInit.CHRYL_CONFIG_PROPERTY.getTtsVoiceList();
-            return ttsVoiceList.get(NGDUtil.threadLocalRandom.nextInt(ttsVoiceList.size()));
-        } else {
-            return IVRInit.CHRYL_CONFIG_PROPERTY.getTtsVoice();
-        }
-    }
 
     /**
      * 收集按键(多位按键)
@@ -545,27 +535,12 @@ public class XCCUtil {
 //        JSONObject speech = getSpeech();
         params.put("speech", speech);
         String service = IVRInit.CHRYL_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
-        return RequestUtil.natsRequestFutureByDetectSpeech(nc, service, XCCConstants.DETECT_SPEECH, params, convertPlayContentToMilliSeconds(ttsContent));
+        return RequestUtil.natsRequestFutureByDetectSpeech(nc, service, XCCConstants.DETECT_SPEECH, params, DynamicSpeech.convertPlayContentToMilliSeconds(ttsContent));
     }
 
     /********************************************请求体***********************************************/
 
     /********************************************数据处理********************************************/
-
-    /**
-     * 根据播报内容获取播报时间
-     * 播报时间=(播报时间+语音超时时间)
-     *
-     * @param ttsContent 播报内容
-     * @return
-     */
-    public static long convertPlayContentToMilliSeconds(String ttsContent) {
-        int length = ttsContent.length();
-        long playContentMilliSeconds = ((length / 4) + 1) * 1000L;
-        long sec = playContentMilliSeconds + IVRInit.CHRYL_CONFIG_PROPERTY.getSpeechNoInputTimeout();
-        log.info("本次语音收集等待时间: {} ms , 播报文本长度: {} , 播报话术所需时间: {} ms", sec, length, playContentMilliSeconds);
-        return sec;
-    }
 
     /**
      * 转人工和转精准ivr

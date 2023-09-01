@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class RequestUtil {
 
+    private static boolean DYNAMIC_SPEECH = IVRInit.CHRYL_CONFIG_PROPERTY.isDynamicSpeech();
 
     /**
      * 构造JSON-RPC对象
@@ -207,8 +208,12 @@ public class RequestUtil {
         XCCEvent xccEvent;
         try {
             Future<Message> incoming = con.request(service, bytes);
-            Message msg = incoming.get();
-//            Message msg = incoming.get(milliSeconds, TimeUnit.MILLISECONDS);
+            Message msg;
+            if (DYNAMIC_SPEECH) {
+                msg = incoming.get(milliSeconds, TimeUnit.MILLISECONDS);
+            } else {
+                msg = incoming.get();
+            }
             String response = new String(msg.getData(), StandardCharsets.UTF_8);
             log.info("{} 返回信息:{}", method, response);
             JSONObject result = JSONObject.parseObject(response).getJSONObject("result");
@@ -273,8 +278,12 @@ public class RequestUtil {
         XCCEvent xccEvent;
         try {
             Future<Message> incoming = con.request(service, bytes);
-            Message msg = incoming.get();
-//            Message msg = incoming.get(milliSeconds, TimeUnit.MILLISECONDS);
+            Message msg;
+            if (DYNAMIC_SPEECH) {
+                msg = incoming.get(milliSeconds, TimeUnit.MILLISECONDS);
+            } else {
+                msg = incoming.get();
+            }
             String response = new String(msg.getData(), StandardCharsets.UTF_8);
             log.info("{} 返回信息:{}", method, response);
             JSONObject result = JSONObject.parseObject(response).getJSONObject("result");

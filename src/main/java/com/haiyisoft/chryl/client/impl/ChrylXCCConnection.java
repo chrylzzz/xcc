@@ -3,6 +3,7 @@ package com.haiyisoft.chryl.client.impl;
 import com.alibaba.fastjson2.JSONObject;
 import com.haiyisoft.boot.IVRInit;
 import com.haiyisoft.chryl.client.XCCConnection;
+import com.haiyisoft.chryl.ivr.DynamicSpeech;
 import com.haiyisoft.constant.XCCConstants;
 import com.haiyisoft.entry.ChannelEvent;
 import com.haiyisoft.entry.IVREvent;
@@ -193,7 +194,7 @@ public class ChrylXCCConnection implements XCCConnection {
         JSONObject media = XCCUtil.getPlayMedia(XCCConstants.PLAY_TTS, ttsContent, channelEvent.getCidVoiceName());
         params.put("media", media);
         String service = IVRInit.CHRYL_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
-        return RequestUtil.natsRequestFutureByReadDTMF(nc, service, XCCConstants.READ_DTMF, params, XCCUtil.convertPlayContentToMilliSeconds(ttsContent));
+        return RequestUtil.natsRequestFutureByReadDTMF(nc, service, XCCConstants.READ_DTMF, params, DynamicSpeech.convertPlayContentToMilliSeconds(ttsContent));
     }
 
     /**
@@ -214,7 +215,7 @@ public class ChrylXCCConnection implements XCCConnection {
         JSONObject media = XCCUtil.getPlayMedia(XCCConstants.PLAY_TTS, ttsContent, channelEvent.getCidVoiceName());
         params.put("media", media);
         String service = IVRInit.CHRYL_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
-        return RequestUtil.natsRequestFutureByReadDTMF(nc, service, XCCConstants.READ_DTMF, params, XCCUtil.convertPlayContentToMilliSeconds(ttsContent));
+        return RequestUtil.natsRequestFutureByReadDTMF(nc, service, XCCConstants.READ_DTMF, params, DynamicSpeech.convertPlayContentToMilliSeconds(ttsContent));
     }
 
     /**
