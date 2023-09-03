@@ -367,7 +367,7 @@ public class XCCUtil {
     /********************************************请求体*************************************************/
 
     /**
-     * 获取媒体对象
+     * 获取媒体对象:自定义
      *
      * @param playType  play类型
      * @param content   播报内容,可为string,file
@@ -384,9 +384,9 @@ public class XCCUtil {
          */
         media.put("type", playType);
         //适配ifly tts
+//        media.put("data", IVRInit.CHRYL_CONFIG_PROPERTY.getXttsS() + content);
 //        media.put("data", "[" + IVRInit.CHRYL_CONFIG_PROPERTY.getXttsS() + "]" + content);
         media.put("data", content);
-//        media.put("data", content);
         //引擎TTS engine,若使用xswitch配置unimrcp,则为unimrcp:profile
         media.put("engine", IVRInit.CHRYL_CONFIG_PROPERTY.getTtsEngine());
         //嗓音Voice-Name，由TTS引擎决定，默认为default。
@@ -395,7 +395,7 @@ public class XCCUtil {
     }
 
     /**
-     * 获取媒体对象
+     * 获取媒体对象:使用配置项
      *
      * @param playType play类型
      * @param content  播报内容,可为string,file
@@ -411,8 +411,9 @@ public class XCCUtil {
          */
         media.put("type", playType);
         //适配ifly tts
+        media.put("data", IVRInit.CHRYL_CONFIG_PROPERTY.getXttsS() + content);
 //        media.put("data", "[" + IVRInit.CHRYL_CONFIG_PROPERTY.getXttsS() + "]" + content);
-        media.put("data", content);
+//        media.put("data", content);
 //        media.put("data", content);
         //引擎TTS engine,若使用xswitch配置unimrcp,则为unimrcp:profile
         media.put("engine", IVRInit.CHRYL_CONFIG_PROPERTY.getTtsEngine());
