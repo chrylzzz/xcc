@@ -194,7 +194,7 @@ public class ChrylXCCConnection implements XCCConnection {
         JSONObject media = XCCUtil.getPlayMedia(XCCConstants.PLAY_TTS, ttsContent, channelEvent.getCidVoiceName());
         params.put("media", media);
         String service = IVRInit.CHRYL_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
-        return RequestUtil.natsRequestFutureByReadDTMF(nc, service, XCCConstants.READ_DTMF, params, DynamicSpeech.convertPlayContentToMilliSeconds(ttsContent));
+        return RequestUtil.natsRequestFutureByReadDTMF(nc, service, XCCConstants.READ_DTMF, params, 0);
     }
 
     /**
@@ -215,7 +215,7 @@ public class ChrylXCCConnection implements XCCConnection {
         JSONObject media = XCCUtil.getPlayMedia(XCCConstants.PLAY_TTS, ttsContent, channelEvent.getCidVoiceName());
         params.put("media", media);
         String service = IVRInit.CHRYL_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
-        return RequestUtil.natsRequestFutureByReadDTMF(nc, service, XCCConstants.READ_DTMF, params, DynamicSpeech.convertPlayContentToMilliSeconds(ttsContent));
+        return RequestUtil.natsRequestFutureByReadDTMF(nc, service, XCCConstants.READ_DTMF, params, 0);
     }
 
     /**
