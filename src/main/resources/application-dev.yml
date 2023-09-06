@@ -17,9 +17,9 @@ chryl:
   xnode-subject-prefix: cn.xswitch.node
   # no break 是否打断放音, true 不可打断
   no-break: true
-  # XML数据需要自己处理, JSON数据XSwitch已深度解析, true开启
+  # XML数据需要自己处理, JSON数据XSwitch已深度解析, true 开启
   handle-engine-data: false
-  # 动态语音配置(因fs存在识别问题:ASR识别成功,但是fs返回超时)
+  # 动态语音配置(因fs存在识别问题:ASR识别成功,但是fs返回超时), true 开启
   dynamic-speech: false
   # DTMF 输入超时(多位按键输入)
   dtmf-no-input-timeout: 30
@@ -34,7 +34,7 @@ chryl:
   # 语音最大超时，和参数speech_timeout作用相同，如果max_speech_timeout的值大于speech_timeout，则以max_speech_timeout为主，用于一些特殊场景的语音时长设置。
   max-speech-timeout: 8
   #
-  # 若有多台XSwitch,再开启,true开启
+  # 若有多台XSwitch,再开启, true 开启
   cluster: false
   #配置多节点
   nats-list:
@@ -48,7 +48,7 @@ chryl:
   ngd-core-query-url: https://api-ngd.baidu.com/api/v2/core/query
   #  ngd bot token
   ngd-bot-token: NGD 88f20617-d6b5-4c4e-bf72-fde0c0db1d82
-  # convert solved ,ngd存在solved=false，是否选择处理，true开启
+  # convert solved ,ngd存在solved=false，是否选择处理，true 开启
   convert-solved: true
   ######################################################################## NGD
   ######################################################################## ASR
@@ -60,7 +60,7 @@ chryl:
   tts-engine: ali
   #  Voice-Name
   tts-voice: default
-  # 是否开启多tts voice规则,true开启
+  # 是否开启多tts voice规则, true 开启
   tts-voice-rule: false
   # voice list
   tts-voice-list:
