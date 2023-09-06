@@ -490,6 +490,7 @@ public class XCCUtil {
         speech.put("partial_event", true);
         //默认会发送Event.DetectedData事件，如果为true则不发送。
         speech.put("disable_detected_data_event", true);
+//        speech.put("disable_detected_data_event", false);
         return speech;
     }
 
