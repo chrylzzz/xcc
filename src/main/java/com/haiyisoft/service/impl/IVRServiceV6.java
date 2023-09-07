@@ -82,6 +82,7 @@ public class IVRServiceV6 implements IVRService {
                     NGDNodeMetaData ngdNodeMetaData = ngdEvent.getNgdNodeMetaData();
                     ivrEvent.getNgdNodeMetadataArray().add(ngdNodeMetaData);
 
+
                     //handle ngd agent
                     boolean handleSolved = NGDHandler.handleSolved(ngdEvent);
                     //判断是否为机器回复
