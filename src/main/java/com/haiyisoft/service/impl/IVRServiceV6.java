@@ -58,8 +58,7 @@ public class IVRServiceV6 implements IVRService {
                 //开始接管,第一个指令必须是Accept或Answer
                 xccConnection.answer(nc, channelEvent);
                 //
-//                String retKey = XCCConstants.YYSR;
-                String retKey = XCCConstants.AJSR;
+                String retKey = XCCConstants.YYSR;
                 String retValue = XCCConstants.WELCOME_TEXT;
                 while (true) {
 
