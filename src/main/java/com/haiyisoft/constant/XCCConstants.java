@@ -249,11 +249,16 @@ public class XCCConstants {
     //第二次错误
     public static final String NGD_SECOND_UNDERSTAND_TEXT = "您的意思我没有明白，麻烦您简要描述。";
     //欢迎语
-    public static final String WELCOME_TEXT = "我是智能美美,现是前导流程, 您要咨询什么问题, 您请说";
-//    public static final String WELCOME_TEXT = "我是智能美美,现是前导流程, 请按键测试";
+//    public static final String WELCOME_TEXT = "我是智能美美,现是前导流程, 您要咨询什么问题, 您请说";
+    public static final String WELCOME_TEXT = "我是智能美美,现是前导流程, 请按键测试";
 //    public static final String WELCOME_TEXT = "我是智能美美,现是前导流程, 您要咨询什么问题, 您请说,主要是他是朋友这一户，但是他没有拿这一户去查过电费，然后而且他现在发过来那个电费，他也不是发最新的，也不是发那个七月的，他发的是六月的。因为我们绑定，虽然说绑这一户，但这几天都没有查过这一户的任何那个信息，没有拿这一户来查过电费，查过停电都没有查，又莫名其妙，今天下午整整三点钟就突然就发过来。";
 //    public static final String WELCOME_TEXT = "我收拾好行李，踏上了回家的路。一路上，我浮想联翩，心中不时激荡起一阵阵思念。回想起我艰苦的求学之路，不禁吟起了思乡的诗句“自在飞花轻似梦，无边丝雨细如愁。”“明月有情应识我，年年相见在他乡。”是啊！几年在异乡艰苦的学习，今天终于让我用汗水换来了荣誉，此时，我的身体还在列车上，可心却早已飞回了我梦寐以回的故乡——美丽的漯河。";
 
+    /**
+     * 测试一秒播报多少字
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         System.out.println(WELCOME_TEXT.length());
         System.out.println(WELCOME_TEXT.length() / 32);

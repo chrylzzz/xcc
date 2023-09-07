@@ -26,8 +26,16 @@ public class XCCUtil {
 
     /********************************************xswitch相关********************************************/
 
+    //连通性测试
+    public static XCCEvent connectionCheckEnabled(Connection nc, ChannelEvent channelEvent) {
+        JSONObject params = new JSONObject();
+        params.put("ctrl_uuid", "chryl-ivvr");
+        params.put("uuid", channelEvent.getUuid());
+        String service = IVRInit.CHRYL_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
+        return RequestUtil.natsRequestFutureByAnswer(nc, service, XCCConstants.GET_STATE, params);
+    }
+
     public void setVar(Connection nc, ChannelEvent channelEvent) {
-        RequestUtil request = new RequestUtil();
         JSONObject params = new JSONObject();
         Map<String, String> data = new HashMap<>();
         data.put("disable_img_fit", "true");
@@ -41,7 +49,6 @@ public class XCCUtil {
 
     //获取当前通道状态
     public static void getState(Connection nc, ChannelEvent channelEvent) {
-        RequestUtil request = new RequestUtil();
         JSONObject params = new JSONObject();
         params.put("ctrl_uuid", "chryl-ivvr");
         params.put("uuid", channelEvent.getUuid());

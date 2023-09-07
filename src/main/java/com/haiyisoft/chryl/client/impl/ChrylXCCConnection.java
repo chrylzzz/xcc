@@ -29,9 +29,23 @@ import java.util.Map;
 @Component
 public class ChrylXCCConnection implements XCCConnection {
 
+    /**
+     * 仅用作连通性测试
+     *
+     * @param nc
+     * @param channelEvent
+     */
+    @Override
+    public void connectionCheckEnabled(Connection nc, ChannelEvent channelEvent) {
+        JSONObject params = new JSONObject();
+        params.put("ctrl_uuid", "chryl-ivvr");
+        params.put("uuid", channelEvent.getUuid());
+        String service = IVRInit.CHRYL_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
+        RequestUtil.natsRequestFutureByAnswer(nc, service, XCCConstants.GET_STATE, params);
+    }
+
     @Override
     public void setVar(Connection nc, ChannelEvent channelEvent) {
-        RequestUtil request = new RequestUtil();
         JSONObject params = new JSONObject();
         Map<String, String> data = new HashMap<>();
         data.put("disable_img_fit", "true");
@@ -46,7 +60,6 @@ public class ChrylXCCConnection implements XCCConnection {
     //获取当前通道状态
     @Override
     public void getState(Connection nc, ChannelEvent channelEvent) {
-        RequestUtil request = new RequestUtil();
         JSONObject params = new JSONObject();
         params.put("ctrl_uuid", "chryl-ivvr");
         params.put("uuid", channelEvent.getUuid());
