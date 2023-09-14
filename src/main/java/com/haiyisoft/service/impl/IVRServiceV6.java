@@ -104,6 +104,7 @@ public class IVRServiceV6 implements IVRService {
                     log.info("revert ivrEvent data: {}", ivrEvent);
 
                 }
+
             } else if (XCCConstants.CHANNEL_CALLING.equals(state)) {
                 log.info("CHANNEL_CALLING this call channelId: {}", channelId);
             } else if (XCCConstants.CHANNEL_RINGING.equals(state)) {
@@ -124,6 +125,7 @@ public class IVRServiceV6 implements IVRService {
 
             log.info("this call completed: {} , {}", ivrEvent, ngdEvent);
 //            IVRHandler.afterHangup(ivrEvent, ngdEvent);
+
         }
     }
 
