@@ -52,7 +52,7 @@ public class IVRServiceV6 implements IVRService {
             String callerIdNumber = ivrEvent.getCidPhoneNumber();
             //后缀码
             String phoneAdsCode = ivrEvent.getPhoneAdsCode();
-            log.info(" start this call channelId: {} , state :{} , IVREvent: {}", channelId, state, ivrEvent);
+            log.info("start this call channelId: {} , icdCallerId: {} , state:{} , IVREvent: {}", channelId, icdCallerId, state, ivrEvent);
 
             if (XCCConstants.CHANNEL_START.equals(state)) {
                 //开始接管,第一个指令必须是Accept或Answer
@@ -121,7 +121,7 @@ public class IVRServiceV6 implements IVRService {
 
             //挂断双方
             xccConnection.hangup(nc, channelEvent);
-            log.info("hangup this call channelId: {} ", channelId);
+            log.info("hangup this call channelId: {} ,icdCallerId: {}", channelId, icdCallerId);
 
             log.info("this call completed: {} , {}", ivrEvent, ngdEvent);
 //            IVRHandler.afterHangup(ivrEvent, ngdEvent);
