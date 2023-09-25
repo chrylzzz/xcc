@@ -32,7 +32,9 @@ public class PMSHandler {
         String fsCallerId = ivrEvent.getChannelId();
         String icdCallerId = ivrEvent.getIcdCallerId();
         String intent = ngdEvent.getIntent();
-
+        if (StringUtils.isBlank(intent)) {
+            intent = EnumXCC.IVR_INTENT_QT.getValue();
+        }
         IVRModel ivrModel = new IVRModel(cidPhoneNumber, fsCallerId, icdCallerId, ivrStartTime, intent, "", "", "");
         String jsonParam = JSON.toJSONString(ivrModel);
         log.info("SaveZnIVRLhytForGx,pms接口入参:{}", jsonParam);
