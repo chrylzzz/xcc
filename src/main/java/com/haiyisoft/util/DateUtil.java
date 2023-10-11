@@ -3,10 +3,9 @@ package com.haiyisoft.util;
 import cn.hutool.core.date.DatePattern;
 
 import java.text.ParseException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 /**
  * Created by Chr.yl on 2023/7/3.
@@ -69,6 +68,25 @@ public class DateUtil {
         LocalDateTime localDateTime = LocalDateTime.parse(dateStr, DTF_LOCAL_DATETIME_MS_PATTERN);
         return localDateTime.format(DTF_LOCAL_DATETIME_PATTERN);
     }
+
+    /**
+     *
+     * @param date
+     */
+    public void dateConvertLocalDate(Date date) {
+        Instant instant = date.toInstant();
+        ZoneId zoneId = ZoneId.systemDefault();
+        // atZone()方法返回在指定时区从此Instant生成的ZonedDateTime。
+        LocalDate localDate = instant.atZone(zoneId).toLocalDate();
+    }
+
+    public void localDateConvertDate(LocalDate  localDate) {
+        ZoneId zoneId = ZoneId.systemDefault();
+        ZonedDateTime zdt = localDate.atStartOfDay(zoneId);
+        Date date = Date.from(zdt.toInstant());
+
+    }
+
 
     public static void main(String[] args) throws ParseException {
         System.out.println(getLocalDate());
