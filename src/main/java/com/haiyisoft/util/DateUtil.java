@@ -1,8 +1,11 @@
 package com.haiyisoft.util;
 
 import cn.hutool.core.date.DatePattern;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -12,6 +15,7 @@ import java.util.Date;
  *
  * @author Chr.yl
  */
+@Slf4j
 public class DateUtil {
     //yyyy-MM-dd HH:mm:ss.SSS
     public static final String LOCAL_DATETIME_MS_PATTERN = DatePattern.NORM_DATETIME_MS_PATTERN;
@@ -26,6 +30,8 @@ public class DateUtil {
     //yyyy-MM-dd
     public static final String LOCAL_DATE_PATTERN = DatePattern.NORM_DATE_PATTERN;
     private static final DateTimeFormatter DTF_LOCAL_DATE_PATTERN = DateTimeFormatter.ofPattern(LOCAL_DATE_PATTERN);
+
+    public static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMM");
 
     /**
      * 获取当前时间
@@ -70,21 +76,50 @@ public class DateUtil {
     }
 
     /**
+     * Date转为LocalDate
      *
      * @param date
      */
-    public void dateConvertLocalDate(Date date) {
+    public LocalDate dateConvertLocalDate(Date date) {
         Instant instant = date.toInstant();
         ZoneId zoneId = ZoneId.systemDefault();
         // atZone()方法返回在指定时区从此Instant生成的ZonedDateTime。
         LocalDate localDate = instant.atZone(zoneId).toLocalDate();
+        return localDate;
     }
 
-    public void localDateConvertDate(LocalDate  localDate) {
+    /**
+     * LocalDate转为Date
+     *
+     * @param localDate
+     */
+    public Date localDateConvertDate(LocalDate localDate) {
         ZoneId zoneId = ZoneId.systemDefault();
         ZonedDateTime zdt = localDate.atStartOfDay(zoneId);
         Date date = Date.from(zdt.toInstant());
+        return date;
+    }
 
+    /**
+     * 时间字符串转为LocalDate
+     *
+     * @param dateStr
+     * @return
+     * @throws ParseException
+     */
+    public static LocalDate dateStrConvertLocalDate(String dateStr) throws ParseException {
+        if (StringUtils.isBlank(dateStr)) {
+            log.info("dateStrConvertLocalDate 日期不能为空");
+            return LocalDate.now();
+        }
+        //字符串转日期
+        Date date = simpleDateFormat.parse(dateStr);
+        Instant instant = date.toInstant();
+        ZoneId zoneId = ZoneId.systemDefault();
+        // atZone()方法返回在指定时区从此Instant生成的ZonedDateTime。
+        LocalDate localDate = instant.atZone(zoneId).toLocalDate();
+        System.out.println(localDate);
+        return localDate;
     }
 
 
