@@ -327,6 +327,8 @@ public class XCCConstants {
     public static final String USER2USER = "User-to-User";
     //返回后缀
     public static final String RES_SIP_SUFFIX = "|%s|1";
+    //无户号后缀
+    public static final String RES_SIP_NULL_UID_SUFFIX = "||1";
     //XTTS
     public static final String XTTS = "%s";
     //机器

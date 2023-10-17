@@ -36,6 +36,7 @@ public class ChannelHandler {
             if (StringUtils.isBlank(uid)) {
                 //不处理使用,只加 |
                 formatSipHeader = sipReqHeaderU2U + XCCConstants.SIP_HEADER_SEPARATOR;
+//                formatSipHeader = sipReqHeaderU2U + XCCConstants.RES_SIP_NULL_UID_SUFFIX;
             } else {
                 //处理,替换用户编号
                 //当前使用1业务类型
@@ -46,6 +47,7 @@ public class ChannelHandler {
         } else {
             //不处理使用,只加 |
             formatSipHeader = sipReqHeaderU2U + XCCConstants.SIP_HEADER_SEPARATOR;
+//            formatSipHeader = sipReqHeaderU2U + XCCConstants.RES_SIP_NULL_UID_SUFFIX;
         }
         log.info("转接 sip header : {}", formatSipHeader);
         return formatSipHeader;
