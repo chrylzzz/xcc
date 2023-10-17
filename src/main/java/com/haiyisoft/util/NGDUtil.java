@@ -112,9 +112,9 @@ public class NGDUtil {
     public static NGDEvent handlerIntent(JSONObject context, NGDEvent ngdEvent) {
         String ytStr;
         if (context == null) {
-            ytStr = "";
+            ytStr = EnumXCC.IVR_INTENT_QT.getValue();
         } else {
-            ytStr = context.getOrDefault(XCCConstants.IVR_YTDX, "").toString();
+            ytStr = context.getOrDefault(XCCConstants.IVR_YTDX, EnumXCC.IVR_INTENT_QT.getValue()).toString();
         }
         ngdEvent.setIntent(ytStr);
         return ngdEvent;
@@ -130,9 +130,9 @@ public class NGDUtil {
     public static NGDEvent handlerRate(JSONObject context, NGDEvent ngdEvent) {
         String rate;
         if (context == null) {
-            rate = "";
+            rate = EnumXCC.IVR_RATE_NEUTRAL.getValue();
         } else {
-            rate = context.getOrDefault(XCCConstants.IVR_MYD, "").toString();
+            rate = context.getOrDefault(XCCConstants.IVR_MYD, EnumXCC.IVR_RATE_NEUTRAL.getValue()).toString();
         }
         ngdEvent.setRate(rate);
         return ngdEvent;
