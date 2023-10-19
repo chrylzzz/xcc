@@ -88,5 +88,10 @@ public enum EnumXCC implements CommonXCC {
         return Integer.parseInt(this.property);
     }
 
+    @Override
+    public int valueParseIntValue() {
+        return Integer.parseInt(this.value);
+    }
+
 
 }

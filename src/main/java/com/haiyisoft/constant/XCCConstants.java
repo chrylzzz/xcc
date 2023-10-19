@@ -352,6 +352,8 @@ public class XCCConstants {
     public final static String SAVE_CALL_DATA_URL = "/interface/saveThsj/SaveZnIVRThsjForGX";
     //保存满意度信息
     public final static String SAVE_RATE_DATA_URL = "/interface/savePjjg/SaveZnIVRPjjgForGx";
+    //查询播报话术
+    public final static String QUERY_BBHS__URL = "/interface/queryBbhsxx/QueryZnIVRBbhsxxForGx";
     /******************************************** PMS相关 ********************************************/
 
 }
