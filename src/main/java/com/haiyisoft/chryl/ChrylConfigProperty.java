@@ -127,6 +127,9 @@ public class ChrylConfigProperty {
 //        if (StringUtils.isBlank(xttsS)) {
 //            this.xttsS = "[s5]";
 //        }
+//        if (StringUtils.isBlank(xttsS)) {
+//            this.xttsS = xttsS;
+//        }
         this.xttsS = "[" + xttsS + "]";
     }
 
