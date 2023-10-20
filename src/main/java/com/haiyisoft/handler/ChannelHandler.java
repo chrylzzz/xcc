@@ -28,6 +28,7 @@ public class ChannelHandler {
         //校验通过处理sip header
         //req
         String sipReqHeaderU2U = channelEvent.getSipReqHeaderU2U();
+//        String transferCode = ngdEvent.getTransferCode();
 
         String formatSipHeader = "";
         if (ngdEvent.isUserOk()) {

@@ -139,6 +139,25 @@ public class NGDUtil {
     }
 
     /**
+     * 转人工队列编码
+     *
+     * @param context  context全局交互实体
+     * @param ngdEvent
+     * @return
+     */
+    public static NGDEvent handlerTransferQueue(JSONObject context, NGDEvent ngdEvent) {
+        String transferCode;
+        if (context == null) {
+            //默认使用队列 1
+            transferCode = EnumXCC.IVR_TRANSFER_CODE_NO_COMPLAINT.getValue();
+        } else {
+            transferCode = context.getOrDefault(XCCConstants.IVR_TRANSFER_CODE, EnumXCC.IVR_TRANSFER_CODE_NO_COMPLAINT.getValue()).toString();
+        }
+        ngdEvent.setTransferCode(transferCode);
+        return ngdEvent;
+    }
+
+    /**
      * TODO 未做异常处理
      * 处理ngd节点数据
      *

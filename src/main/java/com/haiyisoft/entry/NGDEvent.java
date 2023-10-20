@@ -55,6 +55,8 @@ public class NGDEvent {
     private String intent;
     //满意度:
     private String rate;
+    //转人工队列编码
+    private String transferCode;
     //----------------N G D 流程业务交互变量(全局)
 
     //----------------N G D 交互标识

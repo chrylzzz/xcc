@@ -213,6 +213,8 @@ public class XCCConstants {
     public static final String IVR_YTDX = "ivr_ytdx";
     //满意度
     public static final String IVR_MYD = "ivr_myd";
+    //转人工技能队列编码
+    public static final String IVR_TRANSFER_CODE = "ivr_transfer_code";
     //ngd话术分隔符
     public static final String NGD_SEPARATOR = "#";
     /**
