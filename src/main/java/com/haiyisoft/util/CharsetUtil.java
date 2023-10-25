@@ -13,7 +13,7 @@ public class CharsetUtil {
      * @return
      */
     public static Charset charsetGBK() {
-        return Charset.forName("gbk");
+        return Charset.forName("GBK");
     }
 
 }
