@@ -197,7 +197,7 @@ public class XCCConstants {
     public static final String CHANNEL_IVR = "智能IVR";
     //智能IVR NGD 来电号码
     public static final String IVR_PHONE = "ivr_phone";
-    //智能IVR NGD 来电后缀码
+    //智能IVR NGD 来电后缀码:95598+040100
     public static final String IVR_PHONE_ADS_CODE = "ivr_phoneAdsCode";
     //智能IVR NGD 华为呼叫标识
     public static final String IVR_ICD_CALLER_ID = "ivr_icdCallerId";
@@ -207,6 +207,8 @@ public class XCCConstants {
     public static final String IVR_YHBH = "ivr_yhbh";
     //身份校验通过后赋值地区编码
     public static final String IVR_DQBM = "ivr_dqbm";
+    //来电区域识别码:040100
+    public static final String IVR_INCOMING_REGION_CODE = "ivr_region_code";
     //身份校验通过后赋值供电单位编码
     public static final String IVR_GDDWBM = "ivr_gddwbm";
     //意图对象: #yt#yt#yt#
