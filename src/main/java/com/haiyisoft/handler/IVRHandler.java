@@ -192,7 +192,7 @@ public class IVRHandler {
 //            saveData(ivrEvent, ngdEvent);
 //        }
 
-        //后续发布要测试
+        //全部保存
         saveData(ivrEvent, ngdEvent);
     }
 
