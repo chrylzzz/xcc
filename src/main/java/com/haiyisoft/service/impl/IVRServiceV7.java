@@ -9,14 +9,12 @@ import com.haiyisoft.entry.NGDEvent;
 import com.haiyisoft.entry.XCCEvent;
 import com.haiyisoft.handler.IVRHandler;
 import com.haiyisoft.handler.NGDHandler;
-import com.haiyisoft.handler.PMSHandler;
 import com.haiyisoft.handler.XCCHandler;
 import com.haiyisoft.model.NGDNodeMetaData;
 import com.haiyisoft.service.IVRService;
 import io.nats.client.Connection;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 /**
@@ -26,7 +24,6 @@ import org.springframework.stereotype.Component;
  * @author Chr.yl
  */
 @Slf4j
-@Primary
 @Component
 public class IVRServiceV7 implements IVRService {
     @Autowired
@@ -96,7 +93,6 @@ public class IVRServiceV7 implements IVRService {
                         //触发转人工规则
                         ivrEvent = IVRHandler.transferRule(ivrEvent, channelEvent, nc, ngdEvent, callerIdNumber);
                         if (ivrEvent.isTransferFlag()) {
-                            ivrEvent = IVRHandler.convertTransferNgdNodeMetadata(ivrEvent, ngdNodeMetaData);
                             log.info("this call transferRule ,ivrEvent: {}", ivrEvent);
                             //转人工后挂机
                             break;

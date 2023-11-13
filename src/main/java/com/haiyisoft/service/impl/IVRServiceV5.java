@@ -110,7 +110,6 @@ public class IVRServiceV5 implements IVRService {
             }
 
             //保存会话记录
-
             log.info("this call completed: {} , {}", ivrEvent, ngdEvent);
             IVRHandler.afterHangup(ivrEvent, ngdEvent);
             //挂断双方

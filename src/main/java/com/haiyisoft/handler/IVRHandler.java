@@ -232,9 +232,14 @@ public class IVRHandler {
 
     /**
      * 转人工前执
+     *
+     * @param ivrEvent
+     * @param ngdEvent
+     * @param ngdNodeMetaData
      */
-    public static void beforeTransfer() {
-
+    public static void beforeTransfer(IVREvent ivrEvent, NGDEvent ngdEvent, NGDNodeMetaData ngdNodeMetaData) {
+        ivrEvent = convertTransferNgdNodeMetadata(ivrEvent, ngdNodeMetaData);
+        saveData(ivrEvent, ngdEvent);
     }
 
     /**

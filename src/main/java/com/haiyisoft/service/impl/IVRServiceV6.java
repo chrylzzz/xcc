@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
  * @author Chr.yl
  */
 @Slf4j
-//@Primary
+@Primary
 @Component
 public class IVRServiceV6 implements IVRService {
     @Autowired
@@ -93,6 +93,9 @@ public class IVRServiceV6 implements IVRService {
                         //触发转人工规则
                         ivrEvent = IVRHandler.transferRule(ivrEvent, channelEvent, nc, ngdEvent, callerIdNumber);
                         if (ivrEvent.isTransferFlag()) {
+                            log.info("this call transferRule ,ivrEvent: {}", ivrEvent);
+                            //保存触发规则转人工话术
+                            ivrEvent = IVRHandler.convertTransferNgdNodeMetadata(ivrEvent, ngdNodeMetaData);
                             //转人工后挂机
                             break;
                         }
@@ -124,10 +127,8 @@ public class IVRServiceV6 implements IVRService {
             log.info("hangup this call channelId: {} ,icdCallerId: {}", channelId, icdCallerId);
 
             log.info("this call completed: {} , {}", ivrEvent, ngdEvent);
-//            IVRHandler.afterHangup(ivrEvent, ngdEvent);
+            IVRHandler.afterHangup(ivrEvent, ngdEvent);
 
-            //2023-09-22前生产环境,ngd可查看号码
-//            NGDHandler.handler("用户已挂机,会话结束,后续对话记录无需关注,本次来电号码为: " + callerIdNumber + " ，所属地区后缀码为: " + phoneAdsCode, channelId, callerIdNumber, icdCallerId, phoneAdsCode, ngdEvent);
         }
     }
 
