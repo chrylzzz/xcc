@@ -7,6 +7,7 @@ import com.haiyisoft.entry.ChannelEvent;
 import com.haiyisoft.entry.IVREvent;
 import com.haiyisoft.entry.NGDEvent;
 import com.haiyisoft.entry.XCCEvent;
+import com.haiyisoft.model.NGDNodeMetaData;
 import io.nats.client.Connection;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -220,6 +221,33 @@ public class IVRHandler {
      */
     public static void beforeAnswer(IVREvent ivrEvent) {
 
+    }
+
+    /**
+     * 转人工后执
+     */
+    public static void afterTransfer() {
+
+    }
+
+    /**
+     * 转人工前执
+     */
+    public static void beforeTransfer() {
+
+    }
+
+    /**
+     * 校验三次规则后转人工,应答话术处理
+     *
+     * @param ivrEvent
+     * @param ngdNodeMetaData
+     */
+    public static IVREvent convertTransferNgdNodeMetadata(IVREvent ivrEvent, NGDNodeMetaData ngdNodeMetaData) {
+        ivrEvent.getNgdNodeMetadataArray().remove(ngdNodeMetaData);
+        ngdNodeMetaData.setAnswer(XCCConstants.ARTIFICIAL_TEXT);
+        ivrEvent.getNgdNodeMetadataArray().add(ngdNodeMetaData);
+        return ivrEvent;
     }
 
 }
