@@ -15,19 +15,17 @@ import com.haiyisoft.service.IVRService;
 import io.nats.client.Connection;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 /**
- * V6版本:
- * 基于V0,欢迎语在IVR
+ * V8版本:
+ * 基于V7,转人工前保存会话信息
  *
  * @author Chr.yl
  */
 @Slf4j
-@Primary
 @Component
-public class IVRServiceV6 implements IVRService {
+public class IVRServiceV8 implements IVRService {
     @Autowired
     private XCCConnection xccConnection;
     @Autowired
@@ -60,7 +58,6 @@ public class IVRServiceV6 implements IVRService {
                 //
                 String retKey = XCCConstants.YYSR;
                 String retValue = XCCConstants.WELCOME_TEXT;
-                //使用营销欢迎语
 //                String retValue = PMSHandler.welcomeText();
 
                 while (true) {
@@ -97,8 +94,6 @@ public class IVRServiceV6 implements IVRService {
                         ivrEvent = IVRHandler.transferRule(ivrEvent, channelEvent, nc, ngdEvent, callerIdNumber);
                         if (ivrEvent.isTransferFlag()) {
                             log.info("this call transferRule ,ivrEvent: {}", ivrEvent);
-                            //保存触发规则转人工话术
-                            ivrEvent = IVRHandler.convertTransferNgdNodeMetadata(ivrEvent, ngdNodeMetaData);
                             //转人工后挂机
                             break;
                         }
@@ -108,6 +103,7 @@ public class IVRServiceV6 implements IVRService {
                     retValue = ngdEvent.getRetValue();
 
                     log.info("revert ivrEvent data: {}", ivrEvent);
+
                 }
 
             } else if (XCCConstants.CHANNEL_CALLING.equals(state)) {
@@ -128,7 +124,7 @@ public class IVRServiceV6 implements IVRService {
             xccConnection.hangup(nc, channelEvent);
             log.info("hangup this call channelId: {} ,icdCallerId: {}", channelId, icdCallerId);
 
-            log.info("this call completed: {} , {}", ivrEvent, ngdEvent);
+            log.info("this call completed: {},{}", ivrEvent, ngdEvent);
             IVRHandler.afterHangup(ivrEvent, ngdEvent);
 
         }
