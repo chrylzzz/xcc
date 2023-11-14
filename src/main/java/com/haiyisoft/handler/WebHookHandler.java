@@ -137,7 +137,7 @@ public class WebHookHandler {
      */
     public static String convertCDRFromIVR(JSONArray metadataArray) {
         //欢迎语处理格式
-        String cdr = XCCConstants.B + DateUtil.getLocalDateTime() + XCCConstants.WELCOME_TEXT;
+        String cdr = XCCConstants.B + DateUtil.getLocalDateTime() + XCCConstants.TEMP_WELCOME_TEXT;
 //        for (Object o : metadataArray) {
 //
 //        }

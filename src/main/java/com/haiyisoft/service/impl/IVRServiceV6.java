@@ -59,9 +59,11 @@ public class IVRServiceV6 implements IVRService {
                 xccConnection.answer(nc, channelEvent);
                 //
                 String retKey = XCCConstants.YYSR;
-                String retValue = XCCConstants.WELCOME_TEXT;
                 //使用营销欢迎语
 //                String retValue = PMSHandler.welcomeText();
+                String retValue = XCCConstants.WELCOME_TEXT;
+                //欢迎语在fs时候,该临时变量赋值->保存会话记录时使用
+                XCCConstants.TEMP_WELCOME_TEXT = retValue;
 
                 while (true) {
 

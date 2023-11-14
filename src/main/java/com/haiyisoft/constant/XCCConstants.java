@@ -254,6 +254,8 @@ public class XCCConstants {
     public static final String NGD_SECOND_UNDERSTAND_TEXT = "您的意思我没有明白，麻烦您简要描述。";
     //欢迎语
     public static final String WELCOME_TEXT = "我是智能美美,现是前导流程, 您要咨询什么问题, 您请说";
+    //临时欢迎语
+    public static String TEMP_WELCOME_TEXT = "我是智能美美, 您要咨询什么问题, 您请说";
     //默认欢迎语
     public static String DEFAULT_WELCOME_TEXT = "我是智能美美,现是前导流程, 您要咨询什么问题, 您请说";
 
