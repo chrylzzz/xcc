@@ -35,6 +35,7 @@ public class PMSHandler {
         String icdCallerId = ivrEvent.getIcdCallerId();
         String intent = ngdEvent.getIntent();
         if (StringUtils.isBlank(intent)) {
+            //无意图默认为其他意图
             intent = EnumXCC.IVR_INTENT_QT.getValue();
         }
         IVRModel ivrModel = new IVRModel(cidPhoneNumber, fsCallerId, icdCallerId, ivrStartTime, intent, "", "", "");
@@ -86,6 +87,7 @@ public class PMSHandler {
         String icdCallerId = ivrEvent.getIcdCallerId();
         String rate = ngdEvent.getRate();
         if (StringUtils.isBlank(rate)) {
+            //无满意度默认为未评价
             rate = EnumXCC.IVR_RATE_NEUTRAL.getValue();
         }
         IVRModel ivrModel = new IVRModel(cidPhoneNumber, fsCallerId, icdCallerId, "", "", rate);
