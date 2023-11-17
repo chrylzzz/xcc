@@ -107,16 +107,20 @@ public class PMSHandler {
         log.info("QUERY_BBHS__URL, pms接口出参:{}", postJson);
         JSONObject jsonObject = JSON.parseObject(postJson);
         JSONArray data = jsonObject.getJSONArray("data");
-        JSONObject dataJSONObject = data.getJSONObject(0);
-//        String hsbh = dataJSONObject.getString("hsbh");//话术编号
-        String hsnr = dataJSONObject.getString("hsnr");//话术内容
+        String hsnr = "";
+        if (data != null) {
+            JSONObject dataJSONObject = data.getJSONObject(0);
+            String hsbh = dataJSONObject.getString("hsbh");//话术编号
+            if ("99".equals(hsbh)) {//欢迎语话术编号为99
+                hsnr = dataJSONObject.getString("hsnr");//话术内容
+            }
+        }
 
         //欢迎语赋值,若失败,赋值默认
         if (StringUtils.isBlank(hsnr)) {
             hsnr = XCCConstants.DEFAULT_WELCOME_TEXT;
         }
         log.info("QUERY_BBHS__URL, welcomeText: {}", hsnr);
-
         return hsnr;
     }
 
