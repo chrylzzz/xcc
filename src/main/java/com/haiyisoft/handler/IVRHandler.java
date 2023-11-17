@@ -193,7 +193,7 @@ public class IVRHandler {
     }
 
     /**
-     * 挂机后执行
+     * 挂机后执行:处理未转人工部分
      * 保存未转人工数据
      *
      * @param ivrEvent

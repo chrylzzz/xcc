@@ -125,7 +125,7 @@ public class IVRServiceV8 implements IVRService {
             log.info("hangup this call channelId: {} ,icdCallerId: {}", channelId, icdCallerId);
 
             log.info("this call completed: {} , {}", ivrEvent, ngdEvent);
-            IVRHandler.afterHangup(ivrEvent, ngdEvent);
+            IVRHandler.afterHangupNotTransfer(ivrEvent, ngdEvent);
 
         }
     }
