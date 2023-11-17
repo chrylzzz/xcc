@@ -188,13 +188,22 @@ public class IVRHandler {
      * @param ngdEvent
      */
     public static void afterHangup(IVREvent ivrEvent, NGDEvent ngdEvent) {
-        //已转人工的不重复保存
-//        if (!ivrEvent.isTransferFlag()) {
-//            saveData(ivrEvent, ngdEvent);
-//        }
-
         //全部保存
         saveData(ivrEvent, ngdEvent);
+    }
+
+    /**
+     * 挂机后执行
+     * 保存未转人工数据
+     *
+     * @param ivrEvent
+     * @param ngdEvent
+     */
+    public static void afterHangupNotTransfer(IVREvent ivrEvent, NGDEvent ngdEvent) {
+        //已转人工的不重复保存
+        if (!ivrEvent.isTransferFlag()) {
+            saveData(ivrEvent, ngdEvent);
+        }
     }
 
     /**

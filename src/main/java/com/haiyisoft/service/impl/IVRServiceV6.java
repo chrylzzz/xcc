@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 /**
  * V6版本:
  * 基于V0,欢迎语在IVR
+ * 挂机保存对话记录(转人工前未保存)
  *
  * @author Chr.yl
  */
