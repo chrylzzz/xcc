@@ -14,7 +14,7 @@ class XccApplicationTests {
 
 
         System.out.println("0-----");
-        System.out.println(IdGenerator.snowflakeId());
+        System.out.println(IdGenerator.nextId());
         try {
             Thread.sleep(5000);
         } catch (Exception e) {

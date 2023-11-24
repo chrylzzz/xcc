@@ -10,7 +10,6 @@ import cn.hutool.core.util.RandomUtil;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * 基于糊涂工具包的雪花id
@@ -95,8 +94,12 @@ public class IdGenerator {
      *
      * @return
      */
-    public static synchronized long snowflakeId() {
+    public static synchronized long nextId() {
         return snowflake.nextId();
+    }
+
+    public static synchronized String nextIdStr() {
+        return snowflake.nextIdStr();
     }
 
     /**
@@ -106,7 +109,7 @@ public class IdGenerator {
      * @param dataCenterId
      * @return
      */
-    public synchronized long snowflakeId(long workerId, long dataCenterId) {
+    public synchronized long nextId(long workerId, long dataCenterId) {
         Snowflake snowflake = IdUtil.createSnowflake(workerId, dataCenterId);
         return snowflake.nextId();
     }
