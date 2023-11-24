@@ -1,5 +1,6 @@
 package com.haiyisoft.util;
 
+import cn.hutool.core.util.CharsetUtil;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.JSONWriter;
@@ -13,6 +14,7 @@ import io.nats.client.Message;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.concurrent.Future;
@@ -167,6 +169,7 @@ public class RequestUtil {
         log.info("{} 执行开始", method);
         JSONObject jsonRpc = getJsonRpc(method, params);
         byte[] bytes = jsonRpc.toString().getBytes(StandardCharsets.UTF_8);
+//        byte[] bytesGBK = jsonRpc.toString().getBytes(CharsetUtil.CHARSET_GBK);
         log.info("{} 请求信息 service:[{}], Serializer json:{}", method, service, JSON.toJSONString(jsonRpc, JSONWriter.Feature.PrettyFormat));
         XCCEvent xccEvent;
         try {

@@ -16,4 +16,12 @@ public class CharsetUtil {
         return Charset.forName("GBK");
     }
 
+    /**
+     * 获取GBK编码字符集
+     *
+     * @return
+     */
+    public static Charset getCharsetGBK() {
+        return cn.hutool.core.util.CharsetUtil.CHARSET_GBK;
+    }
 }
