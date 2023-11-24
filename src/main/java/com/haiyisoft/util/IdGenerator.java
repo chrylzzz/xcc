@@ -94,11 +94,11 @@ public class IdGenerator {
      *
      * @return
      */
-    public static synchronized long nextId() {
+    public static synchronized long snowflakeId() {
         return snowflake.nextId();
     }
 
-    public static synchronized String nextIdStr() {
+    public static synchronized String snowflakeIdStr() {
         return snowflake.nextIdStr();
     }
 
@@ -109,7 +109,7 @@ public class IdGenerator {
      * @param dataCenterId
      * @return
      */
-    public synchronized long nextId(long workerId, long dataCenterId) {
+    public synchronized long snowflakeId(long workerId, long dataCenterId) {
         Snowflake snowflake = IdUtil.createSnowflake(workerId, dataCenterId);
         return snowflake.nextId();
     }
