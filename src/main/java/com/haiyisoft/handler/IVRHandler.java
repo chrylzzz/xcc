@@ -298,6 +298,7 @@ public class IVRHandler {
      */
     public static void beforeTransferRule(IVREvent ivrEvent, NGDEvent ngdEvent, NGDNodeMetaData ngdNodeMetaData) {
         log.info("执行 :{}", "beforeTransferRule");
+        log.info("转人工前保存数据");
         ivrEvent = convertTransferRuleNgdNodeMetadata(ivrEvent, ngdNodeMetaData);
         saveCallData(ivrEvent, ngdEvent);
     }
@@ -311,6 +312,7 @@ public class IVRHandler {
      */
     public static void beforeTransfer(IVREvent ivrEvent, NGDEvent ngdEvent) {
         log.info("执行 :{}", "beforeTransfer");
+        log.info("转人工前保存数据");
         saveCallData(ivrEvent, ngdEvent);
     }
 
@@ -322,9 +324,11 @@ public class IVRHandler {
      */
     public static IVREvent convertTransferRuleNgdNodeMetadata(IVREvent ivrEvent, NGDNodeMetaData ngdNodeMetaData) {
         log.info("执行 :{}", "convertTransferRuleNgdNodeMetadata");
+        log.info("执行 convertTransferRuleNgdNodeMetadata 前:{}", ivrEvent);
         ivrEvent.getNgdNodeMetadataArray().remove(ngdNodeMetaData);
         ngdNodeMetaData.setAnswer(XCCConstants.ARTIFICIAL_TEXT);
         ivrEvent.getNgdNodeMetadataArray().add(ngdNodeMetaData);
+        log.info("执行 convertTransferRuleNgdNodeMetadata 后:{}", ivrEvent);
         return ivrEvent;
     }
 
