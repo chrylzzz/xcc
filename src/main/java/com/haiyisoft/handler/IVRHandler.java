@@ -188,8 +188,10 @@ public class IVRHandler {
      * @param ngdEvent
      */
     public static void afterHangup(IVREvent ivrEvent, NGDEvent ngdEvent) {
-        //全部保存
-        saveData(ivrEvent, ngdEvent);
+        //保存通话数据
+        saveCallData(ivrEvent, ngdEvent);
+        //保存业务数据
+        saveBusinessData(ivrEvent);
     }
 
     /**
@@ -200,19 +202,21 @@ public class IVRHandler {
      * @param ngdEvent
      */
     public static void afterHangupNotTransfer(IVREvent ivrEvent, NGDEvent ngdEvent) {
-        //已转人工的不重复保存
+        //保存通话数据,已转人工的不重复保存
         if (!ivrEvent.isTransferFlag()) {
-            saveData(ivrEvent, ngdEvent);
+            saveCallData(ivrEvent, ngdEvent);
         }
+        //保存业务数据
+        saveBusinessData(ivrEvent);
     }
 
     /**
-     * 保存数据
+     * 保存通话数据
      *
      * @param ivrEvent
      * @param ngdEvent
      */
-    public static void saveData(IVREvent ivrEvent, NGDEvent ngdEvent) {
+    public static void saveCallData(IVREvent ivrEvent, NGDEvent ngdEvent) {
         //保存会话记录
         WebHookHandler.saveCDR(ivrEvent);
         //保存意图
@@ -221,6 +225,16 @@ public class IVRHandler {
         PMSHandler.saveCallData(ivrEvent, ngdEvent);
         //保存满意度
         PMSHandler.saveRate(ivrEvent, ngdEvent);
+    }
+
+    /**
+     * 保存业务数据
+     *
+     * @param ivrEvent
+     */
+    public static void saveBusinessData(IVREvent ivrEvent) {
+        //保存挂机打点数据
+        WebHookHandler.ivrEndPoint(ivrEvent);
     }
 
     /**
@@ -248,11 +262,11 @@ public class IVRHandler {
      */
     public static void beforeTransfer(IVREvent ivrEvent, NGDEvent ngdEvent, NGDNodeMetaData ngdNodeMetaData) {
         ivrEvent = convertTransferNgdNodeMetadata(ivrEvent, ngdNodeMetaData);
-        saveData(ivrEvent, ngdEvent);
+        saveCallData(ivrEvent, ngdEvent);
     }
 
     /**
-     * 校验三次规则后转人工,应答话术处理
+     * 校验三次规则后转人工,应答话术处理:保存会话记录到event
      *
      * @param ivrEvent
      * @param ngdNodeMetaData
