@@ -19,16 +19,15 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 /**
- * V6版本:
- * 基于V0,欢迎语在IVR
- * 挂机保存对话记录(转人工前未保存)
+ * V9版本:
+ * 基于V6,转人工前保存会话信息
  *
  * @author Chr.yl
  */
 @Slf4j
-//@Primary
+@Primary
 @Component
-public class IVRServiceV6 implements IVRService {
+public class IVRServiceV9 implements IVRService {
     @Autowired
     private XCCConnection xccConnection;
     @Autowired
@@ -97,7 +96,7 @@ public class IVRServiceV6 implements IVRService {
                     } else {
                         log.info("机器回复");
                         //触发转人工规则
-                        ivrEvent = IVRHandler.transferRule(ivrEvent, channelEvent, nc, ngdEvent, callerIdNumber);
+                        ivrEvent = IVRHandler.transferRule(ivrEvent, channelEvent, nc, ngdEvent, callerIdNumber, ngdNodeMetaData);
                         if (ivrEvent.isTransferFlag()) {
                             log.info("this call transferRule ,ivrEvent: {}", ivrEvent);
                             //保存触发规则转人工话术
@@ -132,7 +131,7 @@ public class IVRServiceV6 implements IVRService {
             log.info("hangup this call channelId: {} ,icdCallerId: {}", channelId, icdCallerId);
 
             log.info("this call completed: {} , {}", ivrEvent, ngdEvent);
-            IVRHandler.afterHangup(ivrEvent, ngdEvent);
+            IVRHandler.afterHangupNotTransfer(ivrEvent, ngdEvent);
 
         }
     }
