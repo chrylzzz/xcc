@@ -298,7 +298,7 @@ public class IVRHandler {
      */
     public static void beforeTransferRule(IVREvent ivrEvent, NGDEvent ngdEvent, NGDNodeMetaData ngdNodeMetaData) {
         log.info("执行 :{}", "beforeTransferRule");
-        log.info("转人工前保存数据");
+        log.info("转人工前保存数据: {}", ivrEvent.getChannelId());
         ivrEvent = convertTransferRuleNgdNodeMetadata(ivrEvent, ngdNodeMetaData);
         saveCallData(ivrEvent, ngdEvent);
     }
@@ -312,7 +312,7 @@ public class IVRHandler {
      */
     public static void beforeTransfer(IVREvent ivrEvent, NGDEvent ngdEvent) {
         log.info("执行 :{}", "beforeTransfer");
-        log.info("转人工前保存数据");
+        log.info("转人工前保存数据: {}", ivrEvent.getChannelId());
         saveCallData(ivrEvent, ngdEvent);
     }
 
