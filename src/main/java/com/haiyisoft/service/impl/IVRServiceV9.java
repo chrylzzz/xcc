@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 /**
  * V9版本:
  * 基于V6,转人工前保存会话信息
+ * 欢迎语在IVR
  *
  * @author Chr.yl
  */
@@ -99,8 +100,8 @@ public class IVRServiceV9 implements IVRService {
                         ivrEvent = IVRHandler.transferRule(ivrEvent, channelEvent, nc, ngdEvent, callerIdNumber, ngdNodeMetaData);
                         if (ivrEvent.isTransferFlag()) {
                             log.info("this call transferRule ,ivrEvent: {}", ivrEvent);
-                            //保存触发规则转人工话术
-                            ivrEvent = IVRHandler.convertTransferRuleNgdNodeMetadata(ivrEvent, ngdNodeMetaData);
+                            //触发转人工时直接保存对话记录,故这里不再处理会话
+//                            ivrEvent = IVRHandler.convertTransferRuleNgdNodeMetadata(ivrEvent, ngdNodeMetaData);
                             //转人工后挂机
                             break;
                         }
