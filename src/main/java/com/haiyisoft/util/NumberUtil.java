@@ -2,6 +2,7 @@ package com.haiyisoft.util;
 
 import com.haiyisoft.constant.XCCConstants;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by Chr.yl on 2023/6/4.
@@ -36,6 +37,9 @@ public class NumberUtil {
      * @return
      */
     public static String convertPhoneAdsCode2AreaCode(String phoneAdsCode) {
+        if (StringUtils.isBlank(phoneAdsCode)) {
+            return StringUtils.EMPTY;
+        }
         return phoneAdsCode.substring(5);
     }
 
