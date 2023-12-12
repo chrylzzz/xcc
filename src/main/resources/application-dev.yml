@@ -8,6 +8,7 @@ chryl:
   ######################################################################## XCC
   #  XSwitch config
   nats-url: nats://hy:h8klu6bRwW@nats.xswitch.cn:4222
+#  nats-url: nats://172.20.200.7:4222
 
   xctrl-subject: cn.xswitch.ctrl
   #  xctrl-subject: cn.xswitch.ctrl.>
