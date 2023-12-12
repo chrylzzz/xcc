@@ -289,7 +289,7 @@ public class XCCConstants {
     //FAQ非法字符异常话术
     public static final String NGD_FAQ_ERROR_MSG = "您的问题我正在学习";
     //NGD错误话术集合
-    public static final String[] SUGGEST_ANSWER_REPLY_FILTER_ARRAY = {"我不太理解您的意思", "没留下答案就跑了"};
+    public static final String[] SUGGEST_ANSWER_REPLY_FILTER_ARRAY = {"我不太理解您的意思", "没留下答案就跑了", "暂时无法获取到返回结果"};
     //ngd 用户请求过于频繁，请稍后再试
     public static final int NGD_REQUEST_TO_MUCH = 4000019;
     //bot token错误
