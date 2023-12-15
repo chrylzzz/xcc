@@ -56,7 +56,7 @@ public class IVRHandler {
         } else if (XCCConstants.DXFS.equals(retKey)) {//短信发送
             WebHookHandler.sendMessage(ivrEvent, retValue);
             xccEvent = XCCHandler.detectSpeechPlayTTSNotDTMF(nc, channelEvent, XCCConstants.FAQ_SEND_MESSAGE_TEXT);
-        } else if (XCCConstants.YYBB.equals(retKey)) {//语音播报，不收集
+        } else if (XCCConstants.PLAY.equals(retKey)) {//语音播报，不收集
             xccEvent = XCCHandler.playTTS(nc, channelEvent, retValue);
         } else {
             log.error("严格根据配置的指令开发");
