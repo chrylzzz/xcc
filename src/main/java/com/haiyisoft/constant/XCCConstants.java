@@ -170,11 +170,13 @@ public class XCCConstants {
     public static final String NGD_QUERY_URL = "https://api-ngd.baidu.com/api/v2/core/query";
     //百度NGD auth
     public static final String NGD_QUERY_AUTHORIZATION = "NGD 43b6f0be-4894-466f-a346-08046d935035";
-    //语音输入
+    //语音播报,不收集
+    public static final String YYBB = "YYBB";
+    //语音输入,可配置打断
     public static final String YYSR = "YYSR";
-    //按键输入
+    //按键输入,默认打断
     public static final String AJSR = "AJSR";
-    //一位按键
+    //一位按键,默认打断
     public static final String YWAJ = "YWAJ";
     //人工意图
     public static final String RGYT = "RGYT";
@@ -187,7 +189,7 @@ public class XCCConstants {
     //转分机
     public static final String FJYT = "FJYT";
     //指令集合数组
-    public static final String[] RET_KEY_STR_ARRAY = {YYSR, AJSR, YWAJ, YYGB, RGYT, JZLC, DXFS};
+    public static final String[] RET_KEY_STR_ARRAY = {YYSR, AJSR, YWAJ, YYGB, RGYT, JZLC, DXFS, YYBB};
     //过滤回复数组
     public static final String[] FAQ_REPLY_FILTER_ARRAY = {"image", "img", "url", "src", "<p>", "<br>"};
     /**
