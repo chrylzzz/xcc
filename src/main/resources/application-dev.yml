@@ -53,11 +53,11 @@ chryl:
   convert-solved: true
   ######################################################################## NGD
   ######################################################################## ASR
-  #  asr engine: asr引擎名称, 例如 ali/xunfei/baidu/huawei
+  #  asr engine: asr引擎名称, 若使用的为AI菜单底下, 查看profile name即可, 例如 ali/xunfei/baidu/huawei
   asr-engine: ali
   ######################################################################## ASR
   ######################################################################## TTS
-  #  tts engine: tts引擎名称, 例如 ali/xunfei/baidu/huawei
+  #  tts engine: tts引擎名称, 若使用的为AI菜单底下, 查看profile name即可, 例如 ali/xunfei/baidu/huawei
   tts-engine: ali
   #  Voice-Name: 发音人例如 default
   tts-voice: default

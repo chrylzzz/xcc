@@ -50,11 +50,11 @@ chryl:
   convert-solved: true
 ######################################################################## NGD
 ######################################################################## ASR
-  #  asr engine
+  #  asr engine: UniMRCP profile name, 注意前缀, 使用 unimrcp:xxx 规范
   asr-engine: unimrcp:asr
 ######################################################################## ASR
 ######################################################################## TTS
-  #  tts engine
+  #  tts engine: UniMRCP profile name, 注意前缀, 使用 unimrcp:xxx 规范
   tts-engine: unimrcp:tts
   #  Voice-Name
   tts-voice: yifei
