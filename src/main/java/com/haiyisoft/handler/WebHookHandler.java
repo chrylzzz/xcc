@@ -52,14 +52,6 @@ public class WebHookHandler {
         //营销接口会话记录入参
         String cdr = "";
         if (metadataArray != null) {
-//                metadataArray.forEach(metadata -> {
-//                    JSONObject jsonObject = (JSONObject) JSON.toJSON(metadata);
-//                    String query = jsonObject.getString("query");
-//                    String queryTime = jsonObject.getString("queryTime");
-//                    String answer = jsonObject.getString("answer");
-//                    String answerTime = jsonObject.getString("answerTime");
-//                    cdr = cdr + (XCCConstants.B + queryTime + query + XCCConstants.H + answerTime + answer);
-//                });
             /**
              * 前导流程在ngd
              */
@@ -125,7 +117,6 @@ public class WebHookHandler {
             String queryTime = jsonObject.getString("queryTime");
             String answer = jsonObject.getString("answer");
             String answerTime = jsonObject.getString("answerTime");
-//                cdr = cdr + (XCCConstants.B + queryTime + query + XCCConstants.H + answerTime + answer);
             cdr = cdr + (XCCConstants.H + queryTime + query + XCCConstants.B + answerTime + answer);
         }
         return cdr;
@@ -147,7 +138,6 @@ public class WebHookHandler {
             String queryTime = jsonObject.getString("queryTime");
             String answer = jsonObject.getString("answer");
             String answerTime = jsonObject.getString("answerTime");
-//                cdr = cdr + (XCCConstants.B + queryTime + query + XCCConstants.H + answerTime + answer);
             cdr = cdr + (XCCConstants.H + queryTime + query + XCCConstants.B + answerTime + answer);
         }
         return cdr;
