@@ -151,7 +151,7 @@ public class WebHookHandler {
      */
     public static void ivrEndPoint(IVREvent ivrEvent) {
         //通话开始时间
-        String startTime = ivrEvent.getStartTime();
+        String startTime = ivrEvent.getIvrStartTime();
         //fs id
         String channelId = ivrEvent.getChannelId();
         //来电号码
