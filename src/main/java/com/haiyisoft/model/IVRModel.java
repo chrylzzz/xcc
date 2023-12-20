@@ -42,7 +42,7 @@ public class IVRModel {
     @JSONField(name = "ivrkssj")
     private String ivrStartTime;
     @JSONField(name = "kssj")
-    private String startTime;
+    private String startTime;//应付业务接口
 
     /**
      * 来话结束时间
@@ -50,7 +50,7 @@ public class IVRModel {
     @JSONField(name = "ivrjssj")
     private String ivrEndTime;
     @JSONField(name = "jssj")
-    private String endTime;
+    private String endTime;//应付业务接口
 
     /**
      * 是否转人工:0否1是
@@ -122,6 +122,7 @@ public class IVRModel {
 
     public IVRModel() {
         this.ivrStartTime = DateUtil.getLocalDateTime();
+        this.startTime = this.ivrStartTime;
     }
 
     /**
