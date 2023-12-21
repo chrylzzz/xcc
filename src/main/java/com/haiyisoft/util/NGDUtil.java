@@ -371,11 +371,12 @@ public class NGDUtil {
                 retKey = XCCConstants.YYSR;
                 retValue = todoText;
             } else {//带#的话术
-//                String[] split = todoText.split(XCCConstants.NGD_SEPARATOR);
-                String[] split = todoText.split(XCCConstants.NGD_SEPARATOR, 2);//处理话术内容中带有#
+                String[] split = todoText.split(XCCConstants.NGD_SEPARATOR);
+//                String[] split = todoText.split(XCCConstants.NGD_SEPARATOR, 2);//处理话术内容中带有#
                 retKey = split[0];//指令
                 if (StringUtils.containsAnyIgnoreCase(retKey, XCCConstants.RET_KEY_STR_ARRAY)) {//有指令
                     retValue = split[1];//内容
+//                    retValue = split[1].replaceAll(XCCConstants.NGD_SEPARATOR, "");
                 } else {//无指令
                     retKey = XCCConstants.YYSR;
                     retValue = XCCConstants.XCC_MISSING_ANSWER_TEXT;
