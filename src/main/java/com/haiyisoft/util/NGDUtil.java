@@ -455,13 +455,15 @@ public class NGDUtil {
     }
 
     public static void main(String[] args) {
-//        String todoText = "YYSR##查询到您号码关联了地址为秀厢大道东段20#宝海公寓4#楼1单元4701房,的用电户，请问您是查询这一户吗？您可以说“是”或者“不是”,您请说";
+        String todoText = "YYSR#查询到您号码关联了地址为秀厢大道东段20#宝海公寓4#楼1单元4701房,的用电户，请问您是查询这一户吗？您可以说“是”或者“不是”,您请说";
 //        String todoText = "YYSR#查询到您号码关联了地址为秀厢大道东段20宝海公寓4楼1单元4701房,的用电户，请问您是查询这一户吗？您可以说“是”或者“不是”,您请说";
-        String todoText = "查询到您号码关联了地址为秀厢大道东段20宝海公寓4楼1单元4701房,的用电户，请问您是查询这一户吗？您可以说“是”或者“不是”,您请说";
+//        String todoText = "查询到您号码关联了地址为秀厢大道东段20宝海公寓4楼1单元4701房,的用电户，请问您是查询这一户吗？您可以说“是”或者“不是”,您请说";
+//        String todoText = "查询到您号码关联了地址为秀厢大道东段20#宝海公寓4#楼1单元4701房,的用电户，请问您是查询这一户吗？您可以说“是”或者“不是”,您请说";
 //        String[] split = todoText.split(XCCConstants.NGD_SEPARATOR, 2);//处理话术内容中带有#
-        NGDEvent ngdEvent = new NGDEvent();
-        ngdEvent.setAnswer(todoText);
-        System.out.println(convertText(ngdEvent));
+//        NGDEvent ngdEvent = new NGDEvent();
+//        ngdEvent.setAnswer(todoText);
+//        System.out.println(convertText(ngdEvent));
+        System.out.println(replyFilter(todoText));
 
     }
 }
