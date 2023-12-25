@@ -248,7 +248,7 @@ public class NGDUtil {
         //过滤NGD返回异常话术：如指令接口超时
         if (StringUtils.containsAny(answer, XCCConstants.SUGGEST_ANSWER_REPLY_FILTER_ARRAY)) {
             log.info("触发超时回复");
-            return  XCCConstants.RGYT + XCCConstants.NGD_SEPARATOR + XCCConstants.NGD_TIMEOUT_MSG;
+            return XCCConstants.RGYT + XCCConstants.NGD_SEPARATOR + XCCConstants.NGD_TIMEOUT_MSG;
         }
 
         //过滤非正常业务数据
@@ -455,14 +455,13 @@ public class NGDUtil {
     }
 
     public static void main(String[] args) {
-        String todoText = "YYSR#查询到您号码关联了地址为秀厢大道东段20#宝海公寓4#楼1单元4701房,的用电户，请问您是查询这一户吗？您可以说“是”或者“不是”,您请说";
+//        String todoText = "YYSR##查询到您号码关联了地址为秀厢大道东段20#宝海公寓4#楼1单元4701房,的用电户，请问您是查询这一户吗？您可以说“是”或者“不是”,您请说";
+//        String todoText = "YYSR#查询到您号码关联了地址为秀厢大道东段20宝海公寓4楼1单元4701房,的用电户，请问您是查询这一户吗？您可以说“是”或者“不是”,您请说";
+        String todoText = "查询到您号码关联了地址为秀厢大道东段20宝海公寓4楼1单元4701房,的用电户，请问您是查询这一户吗？您可以说“是”或者“不是”,您请说";
 //        String[] split = todoText.split(XCCConstants.NGD_SEPARATOR, 2);//处理话术内容中带有#
         NGDEvent ngdEvent = new NGDEvent();
         ngdEvent.setAnswer(todoText);
-//        System.out.println(convertText(ngdEvent));
-        final String substring = StringUtil.removeAnswerIllegalCharacter(todoText);
-        System.out.println(substring);
-
+        System.out.println(convertText(ngdEvent));
 
     }
 }
