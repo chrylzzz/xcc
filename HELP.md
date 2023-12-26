@@ -63,6 +63,13 @@ For further reference, please consider the following sections:
 * 拷贝freeswitch日志到宿主机,这里使用/tmp/chryl为例
   docker cp xswitch:/usr/local/freeswitch/log/freeswitch.log /tmp/chryl/
 
+### Linux ###
+* 查看防火墙允许端口
+  firewall-cmd --list-ports
+* 新增防火墙开通端口
+  firewall-cmd --zone=public --add-port=7060-8000/tcp --permanent
+* 重启防火墙
+  systemctl restart firewalld.service
 ### XSwitch管理平台 ###
 
 * 转接
