@@ -115,7 +115,10 @@ public class XCCUtil {
         String channelId = channelEvent.getUuid();
         params.put("uuid", channelId);
         log.info("TTS播报内容为 : {}", ttsContent);
+        //动态voice
         JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent, channelEvent.getCidVoiceName());
+        //静态voice
+//        JSONObject media = XCCUtil.getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
         params.put("media", media);
         String service = IVRInit.CHRYL_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
         return RequestUtil.natsRequestFutureByPlayTTS(nc, service, XCCConstants.XNODE_PLAY, params);
@@ -185,7 +188,10 @@ public class XCCUtil {
         String channelId = channelEvent.getUuid();
         params.put("uuid", channelId);
         log.info("TTS播报内容为 : {}", ttsContent);
+        //动态voice
         JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent, channelEvent.getCidVoiceName());
+        //静态voice
+//        JSONObject media = XCCUtil.getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
         params.put("media", media);
         String service = IVRInit.CHRYL_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
         return RequestUtil.natsRequestFutureByReadDTMF(nc, service, XCCConstants.XNODE_READ_DTMF, params, 0);
@@ -207,7 +213,10 @@ public class XCCUtil {
         String channelId = channelEvent.getUuid();
         params.put("uuid", channelId);
         log.info("TTS播报内容为 : {}", ttsContent);
+        //动态voice
         JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent, channelEvent.getCidVoiceName());
+        //静态voice
+//        JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
         params.put("media", media);
         String service = IVRInit.CHRYL_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
         return RequestUtil.natsRequestFutureByReadDTMF(nc, service, XCCConstants.XNODE_READ_DTMF, params, DynamicSpeech.convertPlayContentToMilliSeconds(ttsContent));
@@ -420,10 +429,10 @@ public class XCCUtil {
          */
         media.put("type", playType);
         //适配ifly tts
-        media.put("data", IVRInit.CHRYL_CONFIG_PROPERTY.getXttsS() + content);
+//        media.put("data", IVRInit.CHRYL_CONFIG_PROPERTY.getXttsS() + content);
 //        media.put("data", "[" + IVRInit.CHRYL_CONFIG_PROPERTY.getXttsS() + "]" + content);
-//        media.put("data", content);
-//        media.put("data", content);
+        //直接播报内容
+        media.put("data", content);
         //引擎TTS engine,若使用xswitch配置unimrcp,则为unimrcp:profile
         media.put("engine", IVRInit.CHRYL_CONFIG_PROPERTY.getTtsEngine());
         //嗓音Voice-Name，由TTS引擎决定，默认为default。
@@ -541,7 +550,10 @@ public class XCCUtil {
         String channelId = channelEvent.getUuid();
         params.put("uuid", channelId);
         log.info("TTS播报内容为 : {}", ttsContent);
+        //动态voice
         JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent, channelEvent.getCidVoiceName());
+        //静态voice
+//        JSONObject media = getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
         params.put("media", media);
         //如果不需要同时检测DTMF，可以不传该参数。
 //        params.put("dtmf", null);

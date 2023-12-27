@@ -130,7 +130,10 @@ public class ChrylXCCConnection implements XCCConnection {
         String channelId = channelEvent.getUuid();
         params.put("uuid", channelId);
         log.info("TTS播报内容为 : {}", ttsContent);
+        //动态voice
         JSONObject media = XCCUtil.getPlayMedia(XCCConstants.PLAY_TTS, ttsContent, channelEvent.getCidVoiceName());
+        //静态voice
+//        JSONObject media = XCCUtil.getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
         params.put("media", media);
         String service = IVRInit.CHRYL_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
         return RequestUtil.natsRequestFutureByPlayTTS(nc, service, XCCConstants.XNODE_PLAY, params);
@@ -203,7 +206,10 @@ public class ChrylXCCConnection implements XCCConnection {
         //当前channel 的uuid
         String channelId = channelEvent.getUuid();
         params.put("uuid", channelId);
+        //动态voice
         JSONObject media = XCCUtil.getPlayMedia(XCCConstants.PLAY_TTS, ttsContent, channelEvent.getCidVoiceName());
+        //静态voice
+//        JSONObject media = XCCUtil.getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
         params.put("media", media);
         String service = IVRInit.CHRYL_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
         return RequestUtil.natsRequestFutureByReadDTMF(nc, service, XCCConstants.XNODE_READ_DTMF, params, 0);
@@ -224,7 +230,10 @@ public class ChrylXCCConnection implements XCCConnection {
         //当前channel 的uuid
         String channelId = channelEvent.getUuid();
         params.put("uuid", channelId);
+        //动态voice
         JSONObject media = XCCUtil.getPlayMedia(XCCConstants.PLAY_TTS, ttsContent, channelEvent.getCidVoiceName());
+        //静态voice
+//        JSONObject media = XCCUtil.getPlayMedia(XCCConstants.PLAY_TTS, ttsContent);
         params.put("media", media);
         String service = IVRInit.CHRYL_CONFIG_PROPERTY.getXnodeSubjectPrefix() + channelEvent.getNodeUuid();
         return RequestUtil.natsRequestFutureByReadDTMF(nc, service, XCCConstants.XNODE_READ_DTMF, params, 0);

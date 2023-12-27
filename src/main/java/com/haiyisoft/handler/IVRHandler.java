@@ -47,10 +47,10 @@ public class IVRHandler {
         } else if (XCCConstants.RGYT.equals(retKey)) {//转人工
             //测试-分机
 //            xccEvent = XCCHandler.bridgeExtension(nc, channelEvent, retValue);
-            //转人工
-            xccEvent = XCCHandler.bridgeArtificial(nc, channelEvent, retValue, ngdEvent, callerIdNumber);
             //设置转人工标志
             ivrEvent.setTransferFlag(true);
+            //转人工
+            xccEvent = XCCHandler.bridgeArtificial(nc, channelEvent, retValue, ngdEvent, callerIdNumber);
         } else if (XCCConstants.JZLC.equals(retKey)) {//转精准IVR
             xccEvent = XCCHandler.bridgeIVR(nc, channelEvent, retValue, ivrEvent, ngdEvent, callerIdNumber);
         } else if (XCCConstants.DXFS.equals(retKey)) {//短信发送
