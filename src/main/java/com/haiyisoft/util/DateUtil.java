@@ -30,7 +30,7 @@ public class DateUtil {
     //yyyy-MM-dd
     public static final String LOCAL_DATE_PATTERN = DatePattern.NORM_DATE_PATTERN;
     private static final DateTimeFormatter DTF_LOCAL_DATE_PATTERN = DateTimeFormatter.ofPattern(LOCAL_DATE_PATTERN);
-
+    //yyyyMM
     public static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMM");
 
     /**
@@ -51,6 +51,16 @@ public class DateUtil {
     public static String getLocalDate() {
         LocalDate now = LocalDate.now(); // 当前时间
         return now.format(DTF_LOCAL_DATE_PATTERN);
+    }
+
+    /**
+     * 获取当前时间后几秒
+     *
+     * @return yyyy-MM-dd HH:mm:ss
+     */
+    public static String getLocalDateTimePlusSeconds(long seconds) {
+        LocalDateTime plusSeconds = LocalDateTime.now().plusSeconds(seconds);// 当前时间
+        return plusSeconds.format(DTF_LOCAL_DATETIME_PATTERN);
     }
 
     /**
@@ -101,9 +111,9 @@ public class DateUtil {
     }
 
     /**
-     * 时间字符串转为LocalDate
+     * 时间字符串 yyyyMM 转为 LocalDate
      *
-     * @param dateStr
+     * @param dateStr yyyyMM
      * @return
      * @throws ParseException
      */
@@ -122,7 +132,6 @@ public class DateUtil {
         return localDate;
     }
 
-
     public static void main(String[] args) throws ParseException {
         System.out.println(getLocalDate());
         System.out.println(getLocalDateTime());
@@ -137,7 +146,7 @@ public class DateUtil {
         System.out.println(s);
         String s1 = parseLocalDateTime_(bbb);
         System.out.println(s1);
-
+        System.out.println(getLocalDateTimePlusSeconds(2000 / 1000));
 
     }
 
