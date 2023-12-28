@@ -51,5 +51,23 @@ public class DynamicSpeech {
         }
     }
 
+    /**
+     * 根据播报内容计算播报时间
+     *
+     * @param ttsContent
+     * @return
+     */
+    public static long getPlayContentToMilliSeconds(String ttsContent) {
+        int length = ttsContent.length();
+        long playContentMilliSeconds = ((length / 4) * 1000L);
+        long sec;
+        if (length % 4 != 0) {
+            sec = playContentMilliSeconds + 1000L;
+        } else {
+            sec = playContentMilliSeconds;
+        }
+        return sec;
+    }
+
 
 }
