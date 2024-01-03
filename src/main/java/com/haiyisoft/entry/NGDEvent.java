@@ -1,6 +1,5 @@
 package com.haiyisoft.entry;
 
-import com.alibaba.fastjson2.JSONArray;
 import com.haiyisoft.model.NGDNodeMetaData;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -40,9 +39,7 @@ public class NGDEvent {
     }
 
     //----------------N G D 对话记录
-    //对话日志
-    private JSONArray conversation;
-    //记录完整的 ngd 节点
+    //记录一次完整的 ngd 节点
     private NGDNodeMetaData ngdNodeMetaData;
     //----------------N G D 对话记录
 
