@@ -12,8 +12,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.FutureTask;
 
 /**
+ * Thread have params
  * Created by Chr.yl on 2024/1/8.
  *
  * @author Chr.yl
@@ -44,10 +46,15 @@ public class ConcurrentASR {
         for (int x = 0; x < USER_NUMS; x++) {
 //            new Thread((Runnable) new ASRRequest(
 //                    nc, channelEvent, ivrEvent, callerIdNumber, phoneAdsCode
-//            )).start();
-            Thread thread = new Thread((Runnable) new ASRRequest(
-                    nc, channelEvent, ivrEvent, callerIdNumber, phoneAdsCode
-            ));
+////            )).start();
+
+//            Thread thread = new Thread((Runnable) new ASRRequest(
+//                    nc, channelEvent, ivrEvent, callerIdNumber, phoneAdsCode
+//            ));
+
+            FutureTask futureTask = new FutureTask(new ASRRequest());
+            Thread thread = new Thread(futureTask);
+
             log.info("ConcurrentASR contextLoads id: {}, name: {}", thread.getId(), thread.getName());
 
             thread.start();
