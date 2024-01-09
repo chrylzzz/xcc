@@ -32,8 +32,11 @@ public class ChrylConcurrent {
 //            thread.start();
 
             FutureTask futureTask = new FutureTask(new ChrylRequest());
-            new Thread(futureTask).start();
+            Thread thread = new Thread(futureTask);
 
+            log.info("ChrylConcurrent contextLoads id: {}, name: {}", thread.getId(), thread.getName());
+
+            thread.start();
             COUNTDOWNLATCH.countDown();
         }
     }

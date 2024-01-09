@@ -37,7 +37,11 @@ public class ConcurrentTemplate {
 //            new Thread((Runnable) new ASRRequest()).start();
 
             FutureTask futureTask = new FutureTask(new ASRRequest());
-            new Thread(futureTask).start();
+            Thread thread = new Thread(futureTask);
+
+            log.info("ChrylConcurrent contextLoads id: {}, name: {}", thread.getId(), thread.getName());
+
+            thread.start();
 
             COUNTDOWNLATCH.countDown();
         }
