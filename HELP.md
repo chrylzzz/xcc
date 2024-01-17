@@ -32,6 +32,8 @@ For further reference, please consider the following sections:
   tcpdump -i any -w /tmp/111.pcap
 * 指定网卡
   tcpdump -i en0  -w /tmp/222.pcap
+* 指定端口抓取
+  tcpdump -i any tcp port 9000 -w /tmp/111.pcap
 * 监控话务(10.194.31.200/202):
   sngrep
 * 模拟发送请求报文
