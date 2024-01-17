@@ -34,8 +34,9 @@ For further reference, please consider the following sections:
   tcpdump -i en0  -w /tmp/222.pcap
 * 监控话务(10.194.31.200/202):
   sngrep
-* ngrep网络包，指定网关，监控80端口
+* 模拟发送请求报文
   curl -I baidu.com
+* ngrep指定网关，监控80端口
   ngrep -W byline -d en0 -O /tmp/ngrep.pcap port 80
 
 ### FreeSwitch ###
